@@ -47,7 +47,7 @@ export default function WorksSection() {
           לא קולקציה של עבודות. גלריית מותגים שלא מדפדפים לידם.
         </p>
 
-        <div className="works-grid" dir="rtl">
+        <div id="works-grid" className="works-grid" dir="rtl">
           {works.map((work, i) => (
             <WorkCard
               key={work.slug}

@@ -866,11 +866,15 @@ body {
    ============================================================ */
 .dark-to-light {
   --s2h: 900px;
+  /* Default --grid-bottom large enough to keep the section light until
+     DarkToLightWrap measures the real grid bottom and writes the actual
+     value via ResizeObserver. */
+  --grid-bottom: 2000px;
   position: relative;
   background-color: #EEF5F6;
   background-image: linear-gradient(
     to bottom,
-    rgba(11, 13, 12, 0)   0,
+    rgba(11, 13, 12, 1)   0,
     rgba(11, 13, 12, 1)   140px,
     rgba(11, 13, 12, 1)   calc(var(--s2h) - 300px),
     #14343A               calc(var(--s2h) - 120px),
@@ -879,9 +883,13 @@ body {
     #A9CDD1               calc(var(--s2h) + 250px),
     #D7E8EA               calc(var(--s2h) + 340px),
     #EEF5F6               calc(var(--s2h) + 430px),
-    #EEF5F6               calc(100% - 560px),
-    #356A72               calc(100% - 250px),
-    #0B0D0C               calc(100% - 24px),
+    /* Bottom stops anchored to the works grid via --grid-bottom (set by
+       DarkToLightWrap). Stays fully #EEF5F6 until 48px past the last card
+       row, then darkens through the same teal route. CTA below sits in
+       the darkening zone by design. */
+    #EEF5F6               calc(var(--grid-bottom) + 48px),
+    #356A72               calc(var(--grid-bottom) + 240px),
+    #0B0D0C               calc(var(--grid-bottom) + 460px),
     #0B0D0C               100%
   );
 }

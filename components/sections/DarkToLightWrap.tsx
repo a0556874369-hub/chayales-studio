@@ -25,13 +25,31 @@ export default function DarkToLightWrap({ s2, s3 }: Props) {
     const wrap = wrapRef.current;
     const s2el = s2Ref.current;
     if (!wrap || !s2el) return;
+
     const update = () => {
       wrap.style.setProperty("--s2h", `${s2el.offsetHeight}px`);
+      // Anchor the bottom darkening to the works-grid bottom so the cards
+      // always sit on full-bright background; darkening starts only AFTER
+      // the last card row.
+      const grid = document.getElementById("works-grid");
+      if (grid) {
+        const gridBottom =
+          grid.getBoundingClientRect().bottom -
+          wrap.getBoundingClientRect().top;
+        wrap.style.setProperty("--grid-bottom", `${gridBottom}px`);
+      }
     };
+
     update();
     const ro = new ResizeObserver(update);
     ro.observe(s2el);
-    return () => ro.disconnect();
+    const grid = document.getElementById("works-grid");
+    if (grid) ro.observe(grid);
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   return (
