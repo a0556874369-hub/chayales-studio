@@ -39,6 +39,13 @@ export default function WorksSection() {
       data-theme="light"
       aria-label="גלריית מותגים"
     >
+      {/* Breathing teal glows — give the light surface depth + something for
+          the cards' backdrop-filter to actually refract. Pure CSS animation
+          on transform+opacity, disabled under prefers-reduced-motion. */}
+      <span className="works-glow works-glow-1" aria-hidden />
+      <span className="works-glow works-glow-2" aria-hidden />
+      <span className="works-glow works-glow-3" aria-hidden />
+
       <div className="works-content">
         <h2 className="works-headline">
           כל עבודה - שפה משלה, מותג שלם.

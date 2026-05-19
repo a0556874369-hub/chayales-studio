@@ -6,6 +6,7 @@
 // — visually highlighted via a teal border + teal halo, no text label.
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useGlassInteraction } from "@/lib/useGlassInteraction";
 
 interface Service {
   index: string;
@@ -48,8 +49,55 @@ const SERVICES: Service[] = [
   },
 ];
 
+function ServiceCard({
+  service,
+  index,
+  reduceMotion,
+}: {
+  service: Service;
+  index: number;
+  reduceMotion: boolean;
+}) {
+  // Same hook the work cards use — single tuning point for all glass.
+  // Lives on the outer article so its CSS vars cascade to the inner tilt
+  // (transform) AND are read by the outer ::after (full-card shine).
+  const cardRef = useGlassInteraction<HTMLElement>();
+
+  return (
+    <motion.article
+      ref={cardRef}
+      className={`service-card ${service.flagship ? "service-card-flagship" : ""}`}
+      initial={
+        reduceMotion ? { opacity: 0 } : { opacity: 0, y: 30, scale: 0.95 }
+      }
+      whileInView={
+        reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
+      }
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{
+        duration: 0.55,
+        delay: reduceMotion ? 0 : index * 0.12,
+        ease: [0.22, 0.61, 0.36, 1],
+      }}
+      aria-label={`שירות ${service.index}: ${service.name}`}
+    >
+      <div className="service-card-tilt">
+        <span className="service-card-index" aria-hidden>
+          {service.index}
+        </span>
+        <h3 className="service-card-name">{service.name}</h3>
+        <p className="service-card-desc">{service.description}</p>
+        <div className="service-card-footer">
+          <div className="service-card-divider" aria-hidden />
+          <p className="service-card-price">{service.price}</p>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
 export default function ServicesSection() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotion() ?? false;
 
   return (
     <section
@@ -57,6 +105,13 @@ export default function ServicesSection() {
       className="services-section"
       aria-label="שירותים"
     >
+      {/* Breathing teal glows behind the cards — same role as the
+          works-glow elements one section up: substrate for dark glass to
+          refract. Pure CSS animation, prefers-reduced-motion-safe. */}
+      <span className="services-glow services-glow-1" aria-hidden />
+      <span className="services-glow services-glow-2" aria-hidden />
+      <span className="services-glow services-glow-3" aria-hidden />
+
       <div className="services-content">
         <h2 className="services-headline">
           שירותים שיוצרים מותג שלם, לא רק לוגו.
@@ -67,35 +122,12 @@ export default function ServicesSection() {
 
         <div className="services-grid" dir="rtl">
           {SERVICES.map((s, i) => (
-            <motion.article
+            <ServiceCard
               key={s.index}
-              className={`service-card ${s.flagship ? "service-card-flagship" : ""}`}
-              initial={
-                reduceMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, y: 30, scale: 0.95 }
-              }
-              whileInView={
-                reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
-              }
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{
-                duration: 0.55,
-                delay: reduceMotion ? 0 : i * 0.12,
-                ease: [0.22, 0.61, 0.36, 1],
-              }}
-              aria-label={`שירות ${s.index}: ${s.name}`}
-            >
-              <span className="service-card-index" aria-hidden>
-                {s.index}
-              </span>
-              <h3 className="service-card-name">{s.name}</h3>
-              <p className="service-card-desc">{s.description}</p>
-              <div className="service-card-footer">
-                <div className="service-card-divider" aria-hidden />
-                <p className="service-card-price">{s.price}</p>
-              </div>
-            </motion.article>
+              service={s}
+              index={i}
+              reduceMotion={reduceMotion}
+            />
           ))}
         </div>
 

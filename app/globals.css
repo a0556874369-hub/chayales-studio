@@ -856,6 +856,7 @@ body {
      paints through and provides the substrate for the cards' backdrop-
      filter to refract. */
   background: transparent;
+  overflow: hidden; /* contain the breathing .works-glow elements */
 }
 
 /* ============================================================
@@ -1902,11 +1903,11 @@ body {
   z-index: 10;
   padding: clamp(80px, 12vh, 140px) 0 clamp(80px, 12vh, 140px);
   isolation: isolate;
-  background:
-    radial-gradient(ellipse 900px 600px at 22% 25%, rgba(77, 216, 229, 0.08), transparent 65%),
-    radial-gradient(ellipse 800px 550px at 78% 70%, rgba(110, 191, 201, 0.07), transparent 65%),
-    radial-gradient(ellipse 700px 500px at 50% 50%, rgba(45, 136, 150, 0.06), transparent 65%),
-    #0B0D0C;
+  /* Background is now provided by .services-glow-N divs (so each glow can
+     breathe on its own keyframe). The section keeps a solid base behind
+     them. */
+  background-color: #0B0D0C;
+  overflow: hidden;
 }
 
 .services-content {
@@ -2093,4 +2094,227 @@ body {
     0 20px 44px rgba(77, 216, 229, 0.55),
     var(--glow-teal-strong);
   outline: none;
+}
+
+/* ============================================================
+   LIVING LIGHT LAYER (System A — CSS-only ambient motion)
+   Every light/glow element on the site breathes via its own keyframe.
+   Different durations (24/31/38/45/52s) and negative delays so the
+   composite motion never visibly repeats. transform+opacity only.
+   ============================================================ */
+
+.lightray {
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+@keyframes breathLR1 {
+  0%, 100% { transform: rotate(25deg) translate3d(0, 0, 0) scale(1);    opacity: 1; }
+  50%      { transform: rotate(25deg) translate3d(10px, -8px, 0) scale(1.05); opacity: 0.82; }
+}
+@keyframes breathLR2 {
+  0%, 100% { transform: rotate(-30deg) translate3d(0, 0, 0) scale(1);   opacity: 0.92; }
+  50%      { transform: rotate(-30deg) translate3d(-8px, 10px, 0) scale(0.96); opacity: 1; }
+}
+@keyframes breathLR3 {
+  0%, 100% { transform: rotate(10deg) translate3d(0, 0, 0) scale(1);    opacity: 0.85; }
+  33%      { transform: rotate(10deg) translate3d(6px, 12px, 0) scale(1.06); opacity: 1; }
+  66%      { transform: rotate(10deg) translate3d(-10px, -4px, 0) scale(0.95); opacity: 0.9; }
+}
+@keyframes breathLR4 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1);   opacity: 1; }
+  50%      { transform: translate3d(0, -14px, 0) scale(1.08); opacity: 0.78; }
+}
+
+.lightray-1 { animation: breathLR1 38s ease-in-out -3s infinite; }
+.lightray-2 { animation: breathLR2 45s ease-in-out -12s infinite; }
+.lightray-3 { animation: breathLR3 31s ease-in-out -7s infinite; }
+.lightray-4 { animation: breathLR4 52s ease-in-out -19s infinite; }
+
+/* ---------- Section 3 breathing glows (light surface) ---------- */
+
+.works-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+}
+
+.works-glow-1 {
+  top: 22%;
+  left: 8%;
+  width: clamp(320px, 32vw, 540px);
+  height: clamp(320px, 32vw, 540px);
+  background: radial-gradient(circle, rgba(77, 216, 229, 0.18), transparent 65%);
+  animation: breathGlowA 38s ease-in-out -5s infinite;
+}
+
+.works-glow-2 {
+  top: 50%;
+  right: 6%;
+  width: clamp(360px, 36vw, 600px);
+  height: clamp(360px, 36vw, 600px);
+  background: radial-gradient(circle, rgba(184, 232, 237, 0.22), transparent 65%);
+  animation: breathGlowB 45s ease-in-out -14s infinite;
+}
+
+.works-glow-3 {
+  top: 60%;
+  left: 38%;
+  width: clamp(280px, 28vw, 460px);
+  height: clamp(280px, 28vw, 460px);
+  background: radial-gradient(circle, rgba(45, 136, 150, 0.10), transparent 65%);
+  animation: breathGlowC 31s ease-in-out -9s infinite;
+}
+
+/* ---------- Section 4 breathing glows (dark surface) ---------- */
+
+.services-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+}
+
+.services-glow-1 {
+  top: 12%;
+  left: 14%;
+  width: clamp(360px, 34vw, 600px);
+  height: clamp(360px, 34vw, 600px);
+  background: radial-gradient(circle, rgba(77, 216, 229, 0.10), transparent 65%);
+  animation: breathGlowA 52s ease-in-out -4s infinite;
+}
+
+.services-glow-2 {
+  bottom: 14%;
+  right: 12%;
+  width: clamp(340px, 32vw, 560px);
+  height: clamp(340px, 32vw, 560px);
+  background: radial-gradient(circle, rgba(110, 191, 201, 0.08), transparent 65%);
+  animation: breathGlowB 45s ease-in-out -22s infinite;
+}
+
+.services-glow-3 {
+  top: 42%;
+  left: 42%;
+  width: clamp(280px, 26vw, 460px);
+  height: clamp(280px, 26vw, 460px);
+  background: radial-gradient(circle, rgba(45, 136, 150, 0.07), transparent 65%);
+  animation: breathGlowC 38s ease-in-out -16s infinite;
+}
+
+@keyframes breathGlowA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1);    opacity: 1; }
+  50%      { transform: translate3d(40px, -32px, 0) scale(1.10); opacity: 0.78; }
+}
+@keyframes breathGlowB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1);    opacity: 0.92; }
+  50%      { transform: translate3d(-34px, 38px, 0) scale(0.94); opacity: 1; }
+}
+@keyframes breathGlowC {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1);    opacity: 0.88; }
+  33%      { transform: translate3d(22px, -20px, 0) scale(1.06); opacity: 1; }
+  66%      { transform: translate3d(-18px, 24px, 0) scale(0.97); opacity: 0.85; }
+}
+
+/* ============================================================
+   MOUSE-RESPONSIVE GLASS (System B — JS hook + CSS reads vars)
+   The useGlassInteraction hook writes:
+     --rx, --ry  → degrees for rotateX / rotateY
+     --mx, --my  → % position of the shine on the card
+   The tilt is applied to a child .*-tilt wrapper so framer-motion's
+   entrance transforms on the outer card aren't disturbed.
+   ============================================================ */
+
+/* Perspective on the parent — the card itself. Each card is its own 3D
+   context so the tilt reads naturally. */
+.work-card,
+.service-card {
+  perspective: 1000px;
+}
+
+/* The inner wrapper that actually rotates. Inherits all the layout
+   responsibilities so the card's content sits/flows identically. */
+.work-card-tilt,
+.service-card-tilt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
+  min-height: 0;
+  border-radius: inherit;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+/* Shine — a soft radial-gradient highlight that follows the cursor. Sits
+   on the OUTER card (not the tilt wrapper) so it covers the full glass
+   surface including the padding strip. Hidden when the cursor isn't over
+   the card (data-glass-active is set by the hook on enter, removed on
+   leave). */
+.work-card::after,
+.service-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(184, 232, 237, 0.22) 0%,
+    rgba(184, 232, 237, 0.10) 18%,
+    transparent 42%
+  );
+  opacity: 0;
+  transition: opacity 240ms ease;
+  z-index: 5;
+  mix-blend-mode: screen;
+}
+
+/* On dark glass (service cards) the shine needs more punch since the
+   substrate eats it. */
+.service-card::after {
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(184, 232, 237, 0.28) 0%,
+    rgba(77, 216, 229, 0.12) 20%,
+    transparent 45%
+  );
+}
+
+.work-card[data-glass-active="1"]::after,
+.service-card[data-glass-active="1"]::after {
+  opacity: 1;
+}
+
+/* ============================================================
+   prefers-reduced-motion: everything stops. No breathing, no aurora
+   drift, no tilt, no shine. The site is static.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .lightray,
+  .works-glow,
+  .services-glow {
+    animation: none !important;
+  }
+  .lightrays-inner {
+    transform: none !important;
+  }
+  .work-card-tilt,
+  .service-card-tilt {
+    transform: none !important;
+    transition: none !important;
+  }
+  .work-card::after,
+  .service-card::after {
+    display: none !important;
+  }
 }
