@@ -704,10 +704,11 @@ body {
   flex: 1 1 auto;
   border-radius: 12px;
   overflow: hidden;
-  /* Hairline dark border keeps light work images from getting lost in the
-     light glass background. */
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  background: linear-gradient(135deg, #FFFFFF 0%, #F3F8F9 100%);
+  /* No background, no border — the milky glass of the card shows through
+     wherever the contained image doesn't cover, so there are only two
+     visual layers: glass + image. */
+  background: transparent;
+  border: 0;
   min-height: 0; /* allow flex shrink so the image area scales with the card */
 }
 
