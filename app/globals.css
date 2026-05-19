@@ -1889,3 +1889,208 @@ body {
   color: rgba(184, 232, 237, 0.78);
   font-weight: 500;
 }
+
+/* ============================================================
+   Section 04 — שירותים
+   Dark glass cards on a #0B0D0C base with 3 subtle teal radial
+   glows. The radials give the cards' backdrop-filter something to
+   bend — without them, dark glass on flat dark reads as opaque.
+   ============================================================ */
+
+.services-section {
+  position: relative;
+  z-index: 10;
+  padding: clamp(80px, 12vh, 140px) 0 clamp(80px, 12vh, 140px);
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 900px 600px at 22% 25%, rgba(77, 216, 229, 0.08), transparent 65%),
+    radial-gradient(ellipse 800px 550px at 78% 70%, rgba(110, 191, 201, 0.07), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 50% 50%, rgba(45, 136, 150, 0.06), transparent 65%),
+    #0B0D0C;
+}
+
+.services-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Same typography as Sections 02 & 03 headlines */
+.services-headline {
+  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.875rem, 4.5vw, 3.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #FAFBFB;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 16px;
+}
+
+.services-subhead {
+  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  color: rgba(184, 232, 237, 0.7);
+  text-align: center;
+  margin: 0 auto clamp(40px, 6vh, 64px);
+  max-width: 720px;
+}
+
+/* ---------- 2x2 grid (md+) / 1 column on mobile ---------- */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch; /* same-row cards have equal height */
+}
+
+@media (min-width: 768px) {
+  .services-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+/* ---------- Dark glass card ---------- */
+
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  background: rgba(11, 13, 12, 0.50);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 22px;
+  padding: 36px 32px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 40px rgba(0, 0, 0, 0.35);
+  color: #F1F5F4;
+  isolation: isolate;
+}
+
+@media (max-width: 640px) {
+  .service-card {
+    padding: 28px 24px;
+  }
+}
+
+.service-card-index {
+  display: block;
+  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1;
+  color: #4DD8E5;
+  margin: 0 0 22px;
+  letter-spacing: -0.02em;
+}
+
+.service-card-name {
+  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 1.45rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #FAFBFB;
+  margin: 0 0 14px;
+}
+
+.service-card-desc {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(241, 245, 244, 0.78);
+  margin: 0 0 28px;
+  flex: 1 1 auto; /* push footer to bottom; aligns price across cards */
+}
+
+.service-card-footer {
+  margin-top: auto;
+}
+
+.service-card-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-bottom: 14px;
+}
+
+.service-card-price {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #4DD8E5;
+  margin: 0;
+}
+
+/* ---------- Flagship (4th) card: teal border + soft teal halo ---------- */
+
+.service-card-flagship {
+  border-color: rgba(77, 216, 229, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(184, 232, 237, 0.22),
+    0 10px 40px rgba(0, 0, 0, 0.35),
+    0 0 36px rgba(77, 216, 229, 0.18),
+    0 0 0 1px rgba(77, 216, 229, 0.10);
+}
+
+/* ---------- Section CTA ---------- */
+
+.services-cta-wrap {
+  margin-top: clamp(40px, 6vh, 64px);
+  display: flex;
+  justify-content: center;
+}
+
+/* Teal-glass pill on dark — white text for legibility (mirrors the
+   modal/section-3 CTAs in structure, with text colour flipped for dark
+   substrate). */
+.services-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 34px;
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: #FFFFFF;
+  text-decoration: none;
+  border-radius: var(--glass-radius-pill);
+  border: 1px solid rgba(184, 232, 237, 0.65);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 60%),
+    linear-gradient(135deg, rgba(77, 216, 229, 0.55) 0%, rgba(45, 136, 150, 0.40) 100%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  text-shadow: 0 1px 2px rgba(0, 30, 35, 0.40);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20),
+    0 14px 36px rgba(77, 216, 229, 0.35),
+    var(--glow-teal-soft);
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.services-cta:hover,
+.services-cta:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.70),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20),
+    0 20px 44px rgba(77, 216, 229, 0.55),
+    var(--glow-teal-strong);
+  outline: none;
+}
