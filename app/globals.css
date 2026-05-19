@@ -599,10 +599,14 @@ body {
 .ba-section {
   position: relative;
   min-height: 100vh;
-  /* Dark teal-charcoal substrate. Three overlapping radials make the glass
-     handle and any future glass UI actually have varied color to blur,
-     instead of flat black. LightRays still paints over this. */
+  /* Dark teal-charcoal substrate + a BOTTOM FADE built INTO the section's
+     own background (z-0). Because it's part of the bg (not an overlay), the
+     opaque slider that sits above (z-1) blocks it where they overlap — the
+     fade is only visible in the empty space below the slider, which is
+     where we want a transition into Section 03 anyway. Goes through neutral
+     grey (#5D6A6B), like the bottom of Section 03 does. */
   background:
+    linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(93, 106, 107, 0.7) 85%, #EEF5F6 100%),
     radial-gradient(ellipse 900px 600px at 25% 35%, rgba(45, 136, 150, 0.16), transparent 65%),
     radial-gradient(ellipse 700px 500px at 75% 65%, rgba(77, 216, 229, 0.12), transparent 65%),
     radial-gradient(ellipse 800px 550px at 50% 50%, rgba(110, 191, 201, 0.08), transparent 70%);
@@ -861,21 +865,19 @@ body {
      transitions feel like an aurora horizon. Radials only show in the
      bright middle band (28-72%), away from the dark ends. */
   background:
-    radial-gradient(ellipse 900px 600px at 22% 42%, rgba(184, 232, 237, 0.45), transparent 65%),
-    radial-gradient(ellipse 700px 500px at 78% 50%, rgba(77, 216, 229, 0.25), transparent 60%),
-    radial-gradient(ellipse 1000px 700px at 92% 58%, rgba(110, 191, 201, 0.22), transparent 65%),
+    radial-gradient(ellipse 900px 600px at 22% 28%, rgba(184, 232, 237, 0.45), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 78% 40%, rgba(77, 216, 229, 0.25), transparent 60%),
+    radial-gradient(ellipse 1000px 700px at 92% 62%, rgba(110, 191, 201, 0.22), transparent 65%),
     radial-gradient(ellipse 800px 550px at 8% 60%, rgba(45, 136, 150, 0.16), transparent 65%),
     radial-gradient(ellipse 600px 450px at 50% 50%, rgba(232, 251, 253, 0.45), transparent 70%),
-    /* Mirror-symmetric: both ends are #0B0D0C and route through a neutral
-       grey (#5D6A6B). The bottom was originally smooth precisely because
-       grey reads as "shadow" not "color" — no visible coloured band.
-       Replicating the same recipe for the top. */
+    /* Section 3 starts immediately at #EEF5F6 — the bottom of Section 02 now
+       owns the dark→light fade (built into its own background), so the seam
+       is a clean light-to-light meeting. The original bottom transition
+       (through neutral grey) stays — that one always read as smooth. */
     linear-gradient(
       to bottom,
-      #0B0D0C 0%,
-      #5D6A6B 10%,
-      #E5EFF0 30%,
-      #F2F8F9 50%,
+      #EEF5F6 0%,
+      #F2F8F9 38%,
       #E5EFF0 70%,
       #5D6A6B 90%,
       #0B0D0C 100%
