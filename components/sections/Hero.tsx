@@ -68,10 +68,11 @@ export default function Hero() {
   useVideoLoopPause(desktopVideoRef, !reduceMotion && !isMobile);
   useVideoLoopPause(mobileRef, !reduceMotion && isMobile);
 
-  // Mobile is snappier than desktop.
-  const delayHeadline = reduceMotion ? 0 : isMobile ? 1.0 : 1.5;
-  const delaySubhead = reduceMotion ? 0 : isMobile ? 1.3 : 2.0;
-  const delayCta = reduceMotion ? 0 : isMobile ? 1.5 : 2.3;
+  // Fast entrance — text appears almost immediately so the page never feels
+  // like it's still loading. Video keeps ramping in the background.
+  const delayHeadline = reduceMotion ? 0 : 0.15;
+  const delaySubhead = reduceMotion ? 0 : 0.35;
+  const delayCta = reduceMotion ? 0 : 0.55;
 
   return (
     <section className="relative min-h-screen overflow-hidden md:bg-black">

@@ -19,12 +19,13 @@
   --glass-blur: 20px;
   --glass-saturate: 160%;
 
-  /* Surface fills (use one of these as background) */
-  --glass-fill-dark: rgba(255, 255, 255, 0.06);
-  --glass-fill-mid:  rgba(255, 255, 255, 0.12);
-  --glass-fill-light: rgba(255, 255, 255, 0.55);
-  --glass-fill-teal: rgba(77, 216, 229, 0.10);
-  --glass-fill-teal-strong: rgba(77, 216, 229, 0.18);
+  /* Surface fills (use one of these as background).
+     Lower alphas = more transparent + shinier glass (less milky). */
+  --glass-fill-dark: rgba(255, 255, 255, 0.04);
+  --glass-fill-mid:  rgba(255, 255, 255, 0.08);
+  --glass-fill-light: rgba(255, 255, 255, 0.22);
+  --glass-fill-teal: rgba(77, 216, 229, 0.12);
+  --glass-fill-teal-strong: rgba(77, 216, 229, 0.22);
 
   /* Borders — the visible edge of the glass */
   --glass-border-soft: rgba(255, 255, 255, 0.18);
@@ -327,18 +328,24 @@ body {
   pointer-events: none;
 }
 
-/* The opaque pill that holds the icon navigation. No box-shadow so nothing
-   extends beyond the pill itself. */
+/* Crystal-glass nav pill — low alpha, bright top-edge highlight, soft
+   side highlights. Reads as glass on both dark and light backgrounds. */
 .header-pill {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
   border-radius: 100px;
-  background: rgba(11, 13, 12, 0.7);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04) 60%),
+    rgba(11, 13, 12, 0.18);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 10px 30px rgba(0, 0, 0, 0.25);
   pointer-events: auto;
 }
 
@@ -351,11 +358,12 @@ body {
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.92);
   padding: 8px 14px;
   border-radius: 100px;
   text-decoration: none;
   white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
   transition: all 200ms ease;
 }
 
@@ -364,23 +372,28 @@ body {
   background: rgba(77, 216, 229, 0.1);
 }
 
+/* "צור קשר" — the only colored link in the pill, gets a teal-tinted glass
+   chip so it reads as a CTA without breaking the glass language. */
 .text-link.contact-link {
-  background: linear-gradient(
-    135deg,
-    rgba(77, 216, 229, 0.3) 0%,
-    rgba(77, 216, 229, 0.1) 100%
-  );
-  color: #4DD8E5;
-  font-weight: 600;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05) 70%),
+    linear-gradient(135deg, rgba(77, 216, 229, 0.55) 0%, rgba(45, 136, 150, 0.40) 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 4px 14px rgba(77, 216, 229, 0.35);
 }
 
 .text-link.contact-link:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(77, 216, 229, 0.5) 0%,
-    rgba(77, 216, 229, 0.2) 100%
-  );
-  color: #B8E8ED;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.10) 70%),
+    linear-gradient(135deg, rgba(77, 216, 229, 0.75) 0%, rgba(45, 136, 150, 0.55) 100%);
+  color: #FFFFFF;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 6px 22px rgba(77, 216, 229, 0.55);
 }
 
 @media (max-width: 767px) {
@@ -795,16 +808,17 @@ body {
   padding: clamp(80px, 12vh, 140px) 0 clamp(80px, 12vh, 140px);
   isolation: isolate;
   z-index: 1;
-  /* Rich teal-on-light substrate. The cards' backdrop-filter blurs THIS, so
-     the more varied the color underneath, the more alive the glass looks.
-     Five overlapping teal washes spanning the full palette (icy, mid, deep)
-     plus the same dark transition at the bottom. */
+  /* Rich teal-on-light substrate. The TOP overlay (first layer) forces the
+     first 8% of the section to be pure #EEF5F6 so the seam with Section 02's
+     bottom-fade is invisible. Radials sit below it and only show from ~18%
+     down. Bottom 25% dissolves back to #0B0D0C. */
   background:
-    radial-gradient(ellipse 900px 600px at 22% 18%, rgba(184, 232, 237, 0.55), transparent 65%),
-    radial-gradient(ellipse 700px 500px at 78% 30%, rgba(77, 216, 229, 0.30), transparent 60%),
+    linear-gradient(to bottom, #EEF5F6 0%, #EEF5F6 8%, transparent 22%),
+    radial-gradient(ellipse 900px 600px at 22% 28%, rgba(184, 232, 237, 0.55), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 78% 40%, rgba(77, 216, 229, 0.30), transparent 60%),
     radial-gradient(ellipse 1000px 700px at 92% 70%, rgba(110, 191, 201, 0.28), transparent 65%),
     radial-gradient(ellipse 800px 550px at 8% 65%, rgba(45, 136, 150, 0.18), transparent 65%),
-    radial-gradient(ellipse 600px 450px at 50% 45%, rgba(232, 251, 253, 0.55), transparent 70%),
+    radial-gradient(ellipse 600px 450px at 50% 50%, rgba(232, 251, 253, 0.55), transparent 70%),
     linear-gradient(
       to bottom,
       #EEF5F6 0%,
@@ -920,16 +934,17 @@ body {
   display: flex;
   flex-direction: column;
   text-align: right;
-  border: 1px solid var(--glass-border-strong);
+  border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: var(--glass-radius-card);
-  /* Diagonal teal-tinted top-right wash + base milky fill — gives the glass
-     interior subtle color motion when the orbs drift behind. */
+  /* Crystal-glass recipe: very low white base (~0.18), plus two diagonal
+     teal washes for color depth. Saturate cranked higher so what's behind
+     the card pops through with vivid color. */
   background:
-    linear-gradient(135deg, rgba(184, 232, 237, 0.28), transparent 55%),
-    linear-gradient(225deg, rgba(77, 216, 229, 0.10), transparent 60%),
-    rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    linear-gradient(135deg, rgba(184, 232, 237, 0.18), transparent 55%),
+    linear-gradient(225deg, rgba(77, 216, 229, 0.08), transparent 60%),
+    rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   overflow: hidden;
   cursor: pointer;
   padding: 14px;
@@ -940,8 +955,10 @@ body {
     border-color 250ms ease,
     box-shadow 250ms ease;
   box-shadow:
-    inset 0 1px 0 var(--glass-highlight-bright),
-    inset 0 -1px 0 rgba(20, 40, 45, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 1px 0 0 rgba(255, 255, 255, 0.4),
+    inset -1px 0 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(20, 40, 45, 0.06),
     var(--glass-shadow-on-light);
   isolation: isolate;
 }
@@ -1118,40 +1135,46 @@ body {
   justify-content: center;
 }
 
-/* Section CTA on the LIGHT bg of section 03 — uses primary-style glass pill
-   recipe (solid teal gradient with glass highlight) so it reads strongly
-   against the milky surface. */
+/* Section CTA on the LIGHT bg of section 03 — translucent teal-tinted
+   glass (no solid fill). Reads as a delicate, shiny pill, not a heavy
+   button. White text with a soft shadow stays legible on the teal tint. */
 .works-cta {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 32px;
+  padding: 16px 34px;
   font-family: var(--font-heebo), sans-serif;
   font-weight: 700;
   font-size: 1rem;
-  color: #061417;
+  letter-spacing: -0.005em;
+  color: #FFFFFF;
   text-decoration: none;
   border-radius: var(--glass-radius-pill);
-  border: 1px solid rgba(184, 232, 237, 0.7);
+  border: 1px solid rgba(184, 232, 237, 0.85);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.0) 60%),
-    linear-gradient(135deg, var(--brand-teal) 0%, var(--teal-mid) 100%);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05) 60%),
+    linear-gradient(135deg, rgba(77, 216, 229, 0.55) 0%, rgba(45, 136, 150, 0.45) 100%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  text-shadow: 0 1px 2px rgba(0, 30, 35, 0.35);
   box-shadow:
-    inset 0 1px 0 var(--glass-highlight-bright),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 14px 36px rgba(77, 216, 229, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 12px 30px rgba(77, 216, 229, 0.35),
     var(--glow-teal-soft);
   transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    box-shadow 220ms ease;
+    box-shadow 220ms ease,
+    border-color 220ms ease;
 }
 
 .works-cta:hover,
 .works-cta:focus-visible {
   transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.95);
   box-shadow:
-    inset 0 1px 0 var(--glass-highlight-bright),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 22px 50px rgba(77, 216, 229, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 20px 44px rgba(77, 216, 229, 0.55),
     var(--glow-teal-strong);
   outline: none;
 }
@@ -1169,32 +1192,49 @@ body {
    Work modal — stage slider
    ============================================================ */
 
+/* Backdrop — tinted teal-on-light blur so the modal feels like it lifts
+   off the light section 03 surface, not a dark cinema curtain. */
 .work-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(7, 9, 9, 0.78);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background:
+    radial-gradient(ellipse 800px 600px at 30% 30%, rgba(184, 232, 237, 0.55), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 75% 70%, rgba(77, 216, 229, 0.35), transparent 65%),
+    rgba(232, 245, 246, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 200;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   padding: 4vh 16px;
-  overflow-y: auto;
 }
 
+/* Panel — light crystal glass. Has its OWN internal scroll so the CTA at
+   the bottom can stay sticky inside the panel even when the gallery is
+   long. */
 .work-modal-panel {
   position: relative;
   width: 100%;
   max-width: 960px;
-  background: rgba(13, 16, 16, 0.94);
-  border: 1px solid rgba(110, 191, 201, 0.22);
+  max-height: 92vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 24px;
   padding: clamp(20px, 3.5vw, 36px);
+  background:
+    linear-gradient(135deg, rgba(184, 232, 237, 0.22), transparent 60%),
+    linear-gradient(225deg, rgba(77, 216, 229, 0.08), transparent 60%),
+    rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   box-shadow:
-    inset 0 1px 0 rgba(184, 232, 237, 0.08),
-    0 40px 100px -30px rgba(0, 0, 0, 0.75);
-  color: #F1F5F4;
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(20, 40, 45, 0.06),
+    0 40px 80px rgba(20, 40, 45, 0.20);
+  color: #0F1817;
 }
 
 .work-modal-close {
@@ -1204,22 +1244,33 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(110, 191, 201, 0.3);
-  background: rgba(11, 13, 12, 0.7);
-  color: #B8E8ED;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.15) 60%),
+    rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #2D8896;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 180ms ease, transform 180ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 6px 18px rgba(20, 40, 45, 0.12);
+  transition: background 180ms ease, transform 180ms ease,
+    border-color 180ms ease;
   z-index: 5;
 }
 
 .work-modal-close:hover,
 .work-modal-close:focus-visible {
-  background: rgba(77, 216, 229, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.20) 60%),
+    rgba(77, 216, 229, 0.25);
+  border-color: rgba(255, 255, 255, 0.95);
   transform: scale(1.05);
   outline: none;
 }
@@ -1236,14 +1287,14 @@ body {
   font-size: clamp(1.5rem, 3.2vw, 2.1rem);
   letter-spacing: -0.01em;
   margin: 0 0 6px;
-  color: #FAFBFB;
+  color: #0F1817;
 }
 
 .work-modal-desc {
   font-family: var(--font-heebo), sans-serif;
   font-weight: 400;
   font-size: 1rem;
-  color: rgba(184, 232, 237, 0.78);
+  color: rgba(20, 40, 45, 0.72);
   margin: 0;
   line-height: 1.5;
 }
@@ -1265,8 +1316,12 @@ body {
   width: 100%;
   height: clamp(320px, 62vh, 620px);
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(20, 26, 26, 0.6), rgba(11, 13, 12, 0.6));
-  border: 1px solid rgba(110, 191, 201, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.30));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(20, 40, 45, 0.05);
   overflow: hidden;
   touch-action: pan-y;
 }
@@ -1283,21 +1338,32 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(110, 191, 201, 0.3);
-  background: rgba(11, 13, 12, 0.7);
-  color: #B8E8ED;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.15) 60%),
+    rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #2D8896;
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 180ms ease, transform 180ms ease, opacity 180ms ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 6px 18px rgba(20, 40, 45, 0.12);
+  transition: background 180ms ease, transform 180ms ease,
+    border-color 180ms ease, opacity 180ms ease;
 }
 
 .work-modal-nav:hover:not(:disabled),
 .work-modal-nav:focus-visible {
-  background: rgba(77, 216, 229, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.20) 60%),
+    rgba(77, 216, 229, 0.25);
+  border-color: rgba(255, 255, 255, 0.95);
   outline: none;
 }
 
@@ -1335,23 +1401,26 @@ body {
   font-family: var(--font-heebo), sans-serif;
   font-weight: 700;
   font-size: 0.85rem;
-  color: #E8FBFD;
-  background: rgba(11, 13, 12, 0.70);
-  border: 1px solid rgba(110, 191, 201, 0.22);
+  color: #2D8896;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.25) 60%),
+    rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 999px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
   pointer-events: none;
   line-height: 1;
 }
 
 .work-modal-counter-sep {
-  color: rgba(184, 232, 237, 0.5);
+  color: rgba(45, 136, 150, 0.5);
   margin: 0 2px;
 }
 
 .work-modal-counter-total {
-  color: rgba(184, 232, 237, 0.78);
+  color: rgba(45, 136, 150, 0.75);
   font-weight: 500;
 }
 
@@ -1488,11 +1557,11 @@ body {
   font-family: var(--font-heebo), sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: rgba(241, 245, 244, 0.85);
+  color: rgba(20, 40, 45, 0.85);
 }
 
 .slide-logo-cap-before {
-  color: rgba(184, 232, 237, 0.55);
+  color: rgba(20, 40, 45, 0.45);
 }
 
 .slide-logo-divider {
@@ -1508,12 +1577,15 @@ body {
   margin: 18px 0 0;
   padding: 12px 16px;
   border-radius: 12px;
-  background: rgba(110, 191, 201, 0.08);
-  border: 1px solid rgba(110, 191, 201, 0.14);
+  background: rgba(255, 255, 255, 0.40);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
   font-family: var(--font-heebo), sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 0.95rem;
-  color: rgba(184, 232, 237, 0.85);
+  color: rgba(20, 40, 45, 0.85);
   line-height: 1.5;
   text-align: center;
 }
@@ -1535,24 +1607,31 @@ body {
   height: 72px;
   border-radius: 10px;
   overflow: hidden;
-  border: 2px solid transparent;
-  background: rgba(11, 13, 12, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   cursor: pointer;
   padding: 0;
-  transition: transform 200ms ease, border-color 200ms ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: transform 200ms ease, border-color 200ms ease,
+    box-shadow 200ms ease;
   flex: 0 0 auto;
 }
 
 .work-modal-thumb:hover,
 .work-modal-thumb:focus-visible {
   transform: translateY(-2px);
-  border-color: rgba(110, 191, 201, 0.4);
+  border-color: rgba(77, 216, 229, 0.6);
   outline: none;
 }
 
 .work-modal-thumb.is-active {
   border-color: #4DD8E5;
-  box-shadow: 0 0 0 2px rgba(77, 216, 229, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 0 0 2px rgba(77, 216, 229, 0.30),
+    0 4px 16px rgba(77, 216, 229, 0.35);
 }
 
 .work-modal-thumb-img {
@@ -1566,43 +1645,68 @@ body {
 
 /* ---------- Modal CTA ---------- */
 
+/* Sticky CTA at the bottom of the modal panel — stays visible no matter
+   how long the gallery is. The wrapper sits at the bottom of the panel's
+   internal scroll area; the gradient mask above it softly fades content
+   that scrolls behind. */
 .work-modal-cta-wrap {
+  position: sticky;
+  bottom: 0;
   margin-top: 22px;
+  margin-left: calc(-1 * clamp(20px, 3.5vw, 36px));
+  margin-right: calc(-1 * clamp(20px, 3.5vw, 36px));
+  margin-bottom: calc(-1 * clamp(20px, 3.5vw, 36px));
+  padding: 18px clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 36px);
   display: flex;
   justify-content: center;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.85) 55%,
+    transparent 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 4;
 }
 
 .work-modal-cta {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 28px;
+  padding: 14px 30px;
   font-family: var(--font-heebo), sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #061417;
+  letter-spacing: -0.005em;
+  color: #FFFFFF;
   text-decoration: none;
   border-radius: var(--glass-radius-pill);
-  border: 1px solid rgba(184, 232, 237, 0.7);
+  border: 1px solid rgba(184, 232, 237, 0.85);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.0) 60%),
-    linear-gradient(135deg, var(--brand-teal) 0%, var(--teal-mid) 100%);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05) 60%),
+    linear-gradient(135deg, rgba(77, 216, 229, 0.55) 0%, rgba(45, 136, 150, 0.45) 100%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  text-shadow: 0 1px 2px rgba(0, 30, 35, 0.35);
   box-shadow:
-    inset 0 1px 0 var(--glass-highlight-bright),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 12px 32px rgba(77, 216, 229, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 10px 28px rgba(77, 216, 229, 0.35),
     var(--glow-teal-soft);
   transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
-    box-shadow 220ms ease;
+    box-shadow 220ms ease,
+    border-color 220ms ease;
 }
 
 .work-modal-cta:hover,
 .work-modal-cta:focus-visible {
   transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.95);
   box-shadow:
-    inset 0 1px 0 var(--glass-highlight-bright),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 20px 44px rgba(77, 216, 229, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.10),
+    0 18px 38px rgba(77, 216, 229, 0.55),
     var(--glow-teal-strong);
   outline: none;
 }
