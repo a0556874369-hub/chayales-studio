@@ -854,23 +854,32 @@ body {
   padding: clamp(80px, 12vh, 140px) 0 clamp(80px, 12vh, 140px);
   isolation: isolate;
   z-index: 1;
-  /* Rich teal-on-light substrate. The TOP overlay (first layer) forces the
-     first 8% of the section to be pure #EEF5F6 so the seam with Section 02's
-     bottom-fade is invisible. Radials sit below it and only show from ~18%
-     down. Bottom 25% dissolves back to #0B0D0C. */
+  /* Section 03 OWNS both transitions — top (dark→light) and bottom
+     (light→dark) — mirror-symmetric around its bright middle. Both ends
+     are #0B0D0C so they meet adjacent sections (which are also dark) with
+     zero seam. Inside, color routes through brand teal, not grey, so the
+     transitions feel like an aurora horizon. Radials only show in the
+     bright middle band (28-72%), away from the dark ends. */
   background:
-    linear-gradient(to bottom, #EEF5F6 0%, #EEF5F6 8%, transparent 22%),
-    radial-gradient(ellipse 900px 600px at 22% 28%, rgba(184, 232, 237, 0.55), transparent 65%),
-    radial-gradient(ellipse 700px 500px at 78% 40%, rgba(77, 216, 229, 0.30), transparent 60%),
-    radial-gradient(ellipse 1000px 700px at 92% 70%, rgba(110, 191, 201, 0.28), transparent 65%),
-    radial-gradient(ellipse 800px 550px at 8% 65%, rgba(45, 136, 150, 0.18), transparent 65%),
-    radial-gradient(ellipse 600px 450px at 50% 50%, rgba(232, 251, 253, 0.55), transparent 70%),
+    radial-gradient(ellipse 900px 600px at 22% 42%, rgba(184, 232, 237, 0.45), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 78% 50%, rgba(77, 216, 229, 0.25), transparent 60%),
+    radial-gradient(ellipse 1000px 700px at 92% 58%, rgba(110, 191, 201, 0.22), transparent 65%),
+    radial-gradient(ellipse 800px 550px at 8% 60%, rgba(45, 136, 150, 0.16), transparent 65%),
+    radial-gradient(ellipse 600px 450px at 50% 50%, rgba(232, 251, 253, 0.45), transparent 70%),
     linear-gradient(
       to bottom,
-      #EEF5F6 0%,
-      #F2F8F9 38%,
-      #E5EFF0 70%,
-      #5D6A6B 90%,
+      #0B0D0C 0%,
+      #2B4A4F 3%,
+      rgba(45, 136, 150, 1) 7%,
+      rgba(110, 191, 201, 1) 11%,
+      rgba(184, 232, 237, 1) 14%,
+      #EEF5F6 17%,
+      #F2F8F9 50%,
+      #E5EFF0 83%,
+      rgba(184, 232, 237, 1) 86%,
+      rgba(110, 191, 201, 1) 89%,
+      rgba(45, 136, 150, 1) 93%,
+      #2B4A4F 97%,
       #0B0D0C 100%
     );
 }
@@ -1805,4 +1814,95 @@ body {
 
 .lightbox-image {
   object-fit: contain !important;
+}
+
+/* Carousel arrows for the lightbox — match the modal nav recipe but float
+   over the dark backdrop, so they need slightly more presence. */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(184, 232, 237, 0.45);
+  background: rgba(11, 13, 12, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #E8FBFD;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.45);
+  transition: background 180ms ease, border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.lightbox-nav:hover,
+.lightbox-nav:focus-visible {
+  background: rgba(77, 216, 229, 0.25);
+  border-color: rgba(184, 232, 237, 0.75);
+  outline: none;
+}
+
+.lightbox-nav-prev {
+  right: 24px;
+}
+
+.lightbox-nav-next {
+  left: 24px;
+}
+
+@media (max-width: 640px) {
+  .lightbox-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+  }
+  .lightbox-nav-prev {
+    right: 8px;
+  }
+  .lightbox-nav-next {
+    left: 8px;
+  }
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 7px 16px;
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #E8FBFD;
+  background: rgba(11, 13, 12, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(184, 232, 237, 0.35);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.lightbox-counter-sep {
+  color: rgba(184, 232, 237, 0.55);
+  margin: 0 2px;
+}
+
+.lightbox-counter-total {
+  color: rgba(184, 232, 237, 0.78);
+  font-weight: 500;
 }

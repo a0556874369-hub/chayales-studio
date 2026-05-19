@@ -150,21 +150,11 @@ export default function BeforeAfterSection() {
         }}
       />
 
-      {/* Bottom fade — bridges into Section 03's light surface by routing
-          through TEAL (not grey). The previous straight fade went through
-          a 50/50 mix of dark + light which read as muddy grey. Going through
-          deep teal → mid teal → light teal → #EEF5F6 looks like an aurora
-          horizon and matches the brand. */}
-      <div
-        aria-hidden
-        className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{
-          height: "360px",
-          background:
-            "linear-gradient(to bottom, transparent 0%, rgba(45, 136, 150, 0.30) 35%, rgba(110, 191, 201, 0.55) 60%, rgba(184, 232, 237, 0.85) 82%, #EEF5F6 100%)",
-          zIndex: 5,
-        }}
-      />
+      {/* Bottom fade removed. Previously this lived as an overlay at z-5
+          which encroached on the slider visual. Section 03 now owns the
+          dark→light transition inside its own background gradient — same
+          architecture as the section 03 light→dark transition at the bottom
+          (which reads smoothly). Sections meet at solid #0B0D0C. */}
 
       <div className="ba-content">
         <h2 className="ba-headline">

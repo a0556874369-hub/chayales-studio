@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Slide, Work } from "@/lib/works-data";
 import { buildSlides } from "@/lib/works-data";
-import Lightbox from "./Lightbox";
+import Lightbox, { type LightboxItem } from "./Lightbox";
 import SafeImage from "./SafeImage";
 
 interface WorkModalProps {
@@ -36,8 +36,31 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
 
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 prev, +1 next, 0 init
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const [lightboxAlt, setLightboxAlt] = useState<string>("");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  // Build the lightbox carousel — every unique image in this work, in slide
+  // order. logoCompare contributes 2 items (after, before — matching the
+  // RTL visual order in the modal). Dedupe by src so the same image isn't
+  // repeated in the zoom carousel (e.g. kinor's grid + highlight share src).
+  const lightboxItems: LightboxItem[] = useMemo(() => {
+    if (!work) return [];
+    const seen = new Set<string>();
+    const items: LightboxItem[] = [];
+    const add = (src: string, alt: string) => {
+      if (seen.has(src)) return;
+      seen.add(src);
+      items.push({ src, alt });
+    };
+    for (const s of slides) {
+      if (s.kind === "image" || s.kind === "highlight") {
+        add(s.src, s.alt);
+      } else if (s.kind === "logoCompare") {
+        add(s.afterSrc, s.afterAlt);
+        add(s.beforeSrc, s.beforeAlt);
+      }
+    }
+    return items;
+  }, [work, slides]);
 
   // Reset index whenever the work changes.
   useEffect(() => {
@@ -77,7 +100,7 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (lightboxSrc) return; // let lightbox close first
+        if (lightboxIndex !== null) return; // let lightbox close first
         onClose();
         return;
       }
@@ -121,12 +144,15 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
       window.clearTimeout(t);
       previouslyFocused.current?.focus?.();
     };
-  }, [open, onClose, go, lightboxSrc]);
+  }, [open, onClose, go, lightboxIndex]);
 
-  const openLightbox = useCallback((src: string, alt: string) => {
-    setLightboxSrc(src);
-    setLightboxAlt(alt);
-  }, []);
+  const openLightbox = useCallback(
+    (src: string, _alt: string) => {
+      const idx = lightboxItems.findIndex((it) => it.src === src);
+      setLightboxIndex(idx >= 0 ? idx : 0);
+    },
+    [lightboxItems],
+  );
 
   // Swipe handler — RTL: swipe left = next, swipe right = prev.
   const onDragEnd = useCallback(
@@ -313,9 +339,9 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
       </AnimatePresence>
 
       <Lightbox
-        src={lightboxSrc}
-        alt={lightboxAlt}
-        onClose={() => setLightboxSrc(null)}
+        items={lightboxItems}
+        startIndex={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
       />
     </>,
     document.body,
