@@ -11,6 +11,181 @@
   --teal-glow: #B8E8ED;
   --text-muted: #6E6F6E;
   --border-light: #DCE1E1;
+
+  /* ============================================================
+     Glass system tokens — shared across pills, cards, modals.
+     Capped blur at 20px (mobile-safe). Never animate these.
+     ============================================================ */
+  --glass-blur: 20px;
+  --glass-saturate: 160%;
+
+  /* Surface fills (use one of these as background) */
+  --glass-fill-dark: rgba(255, 255, 255, 0.06);
+  --glass-fill-mid:  rgba(255, 255, 255, 0.12);
+  --glass-fill-light: rgba(255, 255, 255, 0.55);
+  --glass-fill-teal: rgba(77, 216, 229, 0.10);
+  --glass-fill-teal-strong: rgba(77, 216, 229, 0.18);
+
+  /* Borders — the visible edge of the glass */
+  --glass-border-soft: rgba(255, 255, 255, 0.18);
+  --glass-border-mid:  rgba(255, 255, 255, 0.35);
+  --glass-border-strong: rgba(255, 255, 255, 0.65);
+
+  /* The dewy top highlight (1px line of light) */
+  --glass-highlight: rgba(255, 255, 255, 0.55);
+  --glass-highlight-bright: rgba(255, 255, 255, 0.85);
+
+  /* Glow + depth */
+  --glass-shadow-soft: 0 12px 36px rgba(0, 0, 0, 0.35);
+  --glass-shadow-deep: 0 22px 60px rgba(0, 0, 0, 0.45);
+  --glass-shadow-on-light: 0 14px 40px rgba(20, 40, 45, 0.12);
+  --glow-teal-soft: 0 0 24px rgba(77, 216, 229, 0.25);
+  --glow-teal-strong: 0 0 36px rgba(77, 216, 229, 0.45);
+
+  /* Radii */
+  --glass-radius-pill: 999px;
+  --glass-radius-card: 22px;
+  --glass-radius-frame: 14px;
+}
+
+/* ============================================================
+   Glass utility classes — building blocks the components reuse.
+   Use these to keep the look consistent and the perf predictable.
+   ============================================================ */
+
+/* Pill button on dark backgrounds (Hero, Before/After, modal). */
+.glass-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 30px;
+  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: #E8FBFD;
+  text-decoration: none;
+  border-radius: var(--glass-radius-pill);
+  border: 1px solid var(--glass-border-mid);
+  background:
+    linear-gradient(135deg, var(--glass-fill-teal-strong), var(--glass-fill-teal)),
+    var(--glass-fill-mid);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    var(--glass-shadow-soft),
+    var(--glow-teal-soft);
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+  position: relative;
+  isolation: isolate;
+}
+
+.glass-pill:hover,
+.glass-pill:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    var(--glass-shadow-deep),
+    var(--glow-teal-strong);
+  outline: none;
+}
+
+/* Solid-teal variant — keeps the dewy highlight + glow, but reads as
+   primary CTA on either light or dark backgrounds. */
+.glass-pill-primary {
+  color: #061417;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.0) 60%),
+    linear-gradient(135deg, var(--brand-teal) 0%, var(--teal-mid) 100%);
+  border-color: rgba(184, 232, 237, 0.7);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 14px 36px rgba(77, 216, 229, 0.45),
+    var(--glow-teal-soft);
+}
+
+.glass-pill-primary:hover,
+.glass-pill-primary:focus-visible {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 20px 48px rgba(77, 216, 229, 0.6),
+    var(--glow-teal-strong);
+}
+
+/* Glass surface for cards/panels on dark backgrounds. */
+.glass-surface-dark {
+  background:
+    linear-gradient(135deg, var(--glass-fill-teal), transparent 60%),
+    var(--glass-fill-mid);
+  border: 1px solid var(--glass-border-soft);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border-radius: var(--glass-radius-card);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--glass-shadow-soft);
+}
+
+/* Glass surface for cards/panels on light backgrounds (section 03). */
+.glass-surface-light {
+  background:
+    linear-gradient(135deg, rgba(184, 232, 237, 0.22), transparent 65%),
+    var(--glass-fill-light);
+  border: 1px solid var(--glass-border-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border-radius: var(--glass-radius-card);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    var(--glass-shadow-on-light);
+}
+
+/* Performance: only allow these heavy-blur surfaces to paint when
+   visible on screen. Browsers ignore unknown values gracefully. */
+@supports (content-visibility: auto) {
+  .glass-surface-dark,
+  .glass-surface-light {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 300px;
+  }
+}
+
+/* Mobile fallback — drop blur cost in half on small screens so the GPU
+   doesn't stall. Glass still reads as glass because of the fill + border. */
+@media (max-width: 640px) {
+  :root {
+    --glass-blur: 10px;
+    --glass-saturate: 130%;
+  }
+}
+
+/* Perf: cards that aren't on screen don't need to paint their blur. */
+@supports (content-visibility: auto) {
+  .work-card {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 400px;
+  }
+}
+
+/* Respect users who asked for less motion. Disable transforms but keep
+   the visual treatment — glass should still LOOK like glass. */
+@media (prefers-reduced-motion: reduce) {
+  .glass-pill,
+  .glass-pill:hover,
+  .glass-pill:focus-visible {
+    transition: none;
+    transform: none;
+  }
 }
 
 body {
@@ -70,24 +245,41 @@ body {
   transform: translateY(-3px);
 }
 
-/* Primary CTA — teal outline, fills on hover. */
+/* Primary CTA — full glass pill. Translucent teal interior with a bright
+   dewy highlight on top, soft teal glow around. Overrides the hex clip-path
+   from .btn-glass; this is a rounded pill. */
 .btn-glass-primary {
-  background: transparent;
-  border: 2px solid #4DD8E5;
-  color: #4DD8E5;
-  border-radius: 100px;
   clip-path: none;
   -webkit-clip-path: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: none;
-  transition: all 300ms ease;
+  padding: 16px 36px;
+  border-radius: var(--glass-radius-pill);
+  color: #E8FBFD;
+  border: 1px solid var(--glass-border-mid);
+  background:
+    linear-gradient(135deg, var(--glass-fill-teal-strong), var(--glass-fill-teal)),
+    var(--glass-fill-mid);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    var(--glass-shadow-soft),
+    var(--glow-teal-soft);
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 220ms ease,
+    border-color 220ms ease;
 }
 
-.btn-glass-primary:hover {
-  background: #4DD8E5;
-  color: #000000;
-  box-shadow: 0 0 20px rgba(77, 216, 229, 0.4);
+.btn-glass-primary:hover,
+.btn-glass-primary:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    var(--glass-shadow-deep),
+    var(--glow-teal-strong);
+  outline: none;
 }
 
 /* Placeholder orb animations */
@@ -348,8 +540,13 @@ body {
 .ba-section {
   position: relative;
   min-height: 100vh;
-  /* No solid background — the body's ambient gradient bleeds through, then
-     the focal glow (.ba-section-glow) sits on top of it. */
+  /* Dark teal-charcoal substrate. Three overlapping radials make the glass
+     handle and any future glass UI actually have varied color to blur,
+     instead of flat black. LightRays still paints over this. */
+  background:
+    radial-gradient(ellipse 900px 600px at 25% 35%, rgba(45, 136, 150, 0.16), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 75% 65%, rgba(77, 216, 229, 0.12), transparent 65%),
+    radial-gradient(ellipse 800px 550px at 50% 50%, rgba(110, 191, 201, 0.08), transparent 70%);
   padding: 64px 16px;
   display: flex;
   flex-direction: column;
@@ -553,19 +750,40 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: #0B0D0C;
-  border: 2px solid #4DD8E5;
+  /* Glass orb — translucent teal-tinted fill with a bright crescent
+     highlight at the top-left (the wet-marble look). */
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.75), transparent 35%),
+    radial-gradient(circle at 70% 80%, rgba(77, 216, 229, 0.30), transparent 50%),
+    rgba(11, 13, 12, 0.55);
+  border: 1px solid rgba(184, 232, 237, 0.55);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
   box-shadow:
-    0 0 18px rgba(77, 216, 229, 0.35),
-    0 4px 12px rgba(0, 0, 0, 0.5);
-  transition: box-shadow 200ms ease;
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(77, 216, 229, 0.45),
+    0 6px 16px rgba(0, 0, 0, 0.55);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+/* While dragging or focused, intensify the glow. The parent .ba-slider
+   carries focus/drag state — we cascade via :focus-visible / :hover on
+   the slider itself. */
+.ba-slider:hover .ba-slider-handle,
+.ba-slider:focus-visible .ba-slider-handle {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.45),
+    0 0 36px rgba(77, 216, 229, 0.65),
+    0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 /* ============================================================
@@ -577,20 +795,68 @@ body {
   padding: clamp(80px, 12vh, 140px) 0 clamp(80px, 12vh, 140px);
   isolation: isolate;
   z-index: 1;
-  /* Light surface with subtle teal radial glows on top of a vertical gradient
-     that meets Section 02's bottom fade at #EEF5F6 and transitions back to
-     the brand dark (#0B0D0C) in the bottom ~25%. */
+  /* Rich teal-on-light substrate. The cards' backdrop-filter blurs THIS, so
+     the more varied the color underneath, the more alive the glass looks.
+     Five overlapping teal washes spanning the full palette (icy, mid, deep)
+     plus the same dark transition at the bottom. */
   background:
-    radial-gradient(ellipse 1200px 800px at 18% 28%, rgba(77, 216, 229, 0.13), transparent 65%),
-    radial-gradient(ellipse 1100px 750px at 82% 62%, rgba(45, 136, 150, 0.10), transparent 65%),
+    radial-gradient(ellipse 900px 600px at 22% 18%, rgba(184, 232, 237, 0.55), transparent 65%),
+    radial-gradient(ellipse 700px 500px at 78% 30%, rgba(77, 216, 229, 0.30), transparent 60%),
+    radial-gradient(ellipse 1000px 700px at 92% 70%, rgba(110, 191, 201, 0.28), transparent 65%),
+    radial-gradient(ellipse 800px 550px at 8% 65%, rgba(45, 136, 150, 0.18), transparent 65%),
+    radial-gradient(ellipse 600px 450px at 50% 45%, rgba(232, 251, 253, 0.55), transparent 70%),
     linear-gradient(
       to bottom,
       #EEF5F6 0%,
-      #F2F8F9 40%,
-      #E5EFF0 72%,
+      #F2F8F9 38%,
+      #E5EFF0 70%,
       #5D6A6B 90%,
       #0B0D0C 100%
     );
+}
+
+/* Floating teal "orbs" that drift behind the cards, giving the glass
+   backdrop-filter something dynamic to bend. Pointer-events:none so they
+   never intercept clicks. Pure transform animation — GPU-cheap. */
+.works-section::before,
+.works-section::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: -1;
+}
+
+.works-section::before {
+  top: 18%;
+  inset-inline-start: 6%;
+  width: clamp(280px, 32vw, 460px);
+  height: clamp(280px, 32vw, 460px);
+  background: radial-gradient(circle, rgba(77, 216, 229, 0.42), transparent 70%);
+  animation: orbDrift 18s ease-in-out infinite;
+}
+
+.works-section::after {
+  bottom: 32%;
+  inset-inline-end: 8%;
+  width: clamp(260px, 28vw, 400px);
+  height: clamp(260px, 28vw, 400px);
+  background: radial-gradient(circle, rgba(184, 232, 237, 0.55), transparent 70%);
+  animation: orbDrift 24s ease-in-out infinite reverse;
+}
+
+@keyframes orbDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(40px, -30px, 0) scale(1.08); }
+  66% { transform: translate3d(-30px, 30px, 0) scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .works-section::before,
+  .works-section::after {
+    animation: none;
+  }
 }
 
 .works-content {
@@ -654,11 +920,16 @@ body {
   display: flex;
   flex-direction: column;
   text-align: right;
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--glass-border-strong);
+  border-radius: var(--glass-radius-card);
+  /* Diagonal teal-tinted top-right wash + base milky fill — gives the glass
+     interior subtle color motion when the orbs drift behind. */
+  background:
+    linear-gradient(135deg, rgba(184, 232, 237, 0.28), transparent 55%),
+    linear-gradient(225deg, rgba(77, 216, 229, 0.10), transparent 60%),
+    rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   overflow: hidden;
   cursor: pointer;
   padding: 14px;
@@ -669,8 +940,29 @@ body {
     border-color 250ms ease,
     box-shadow 250ms ease;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 12px 40px rgba(20, 40, 45, 0.10);
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(20, 40, 45, 0.08),
+    var(--glass-shadow-on-light);
+  isolation: isolate;
+}
+
+/* Top-edge dewy highlight — a 1px bright streak that gives the "wet glass"
+   feel. Sits above the content but pointer-events:none. */
+.work-card::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.85) 50%,
+    transparent
+  );
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* Bento placement on desktop, full-width on mobile */
@@ -684,11 +976,13 @@ body {
 .work-card:hover,
 .work-card:focus-visible {
   transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.92);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 22px 56px rgba(20, 40, 45, 0.16),
-    0 18px 50px rgba(77, 216, 229, 0.22);
+    inset 0 -1px 0 rgba(77, 216, 229, 0.20),
+    0 28px 64px rgba(20, 40, 45, 0.20),
+    0 24px 60px rgba(77, 216, 229, 0.32),
+    var(--glow-teal-soft);
   outline: none;
 }
 
@@ -824,26 +1118,41 @@ body {
   justify-content: center;
 }
 
+/* Section CTA on the LIGHT bg of section 03 — uses primary-style glass pill
+   recipe (solid teal gradient with glass highlight) so it reads strongly
+   against the milky surface. */
 .works-cta {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 28px;
+  padding: 16px 32px;
   font-family: var(--font-heebo), sans-serif;
   font-weight: 700;
   font-size: 1rem;
-  color: #0B0D0C;
-  background: linear-gradient(135deg, #4DD8E5 0%, #6EBFC9 100%);
-  border-radius: 999px;
+  color: #061417;
   text-decoration: none;
-  transition: transform 220ms ease, box-shadow 220ms ease;
-  box-shadow: 0 12px 30px -10px rgba(77, 216, 229, 0.55);
+  border-radius: var(--glass-radius-pill);
+  border: 1px solid rgba(184, 232, 237, 0.7);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.0) 60%),
+    linear-gradient(135deg, var(--brand-teal) 0%, var(--teal-mid) 100%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 14px 36px rgba(77, 216, 229, 0.45),
+    var(--glow-teal-soft);
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 220ms ease;
 }
 
 .works-cta:hover,
 .works-cta:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 18px 40px -10px rgba(77, 216, 229, 0.75);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 22px 50px rgba(77, 216, 229, 0.6),
+    var(--glow-teal-strong);
   outline: none;
 }
 
@@ -1267,22 +1576,34 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 24px;
+  padding: 14px 28px;
   font-family: var(--font-heebo), sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #0B0D0C;
-  background: linear-gradient(135deg, #4DD8E5 0%, #6EBFC9 100%);
-  border-radius: 999px;
+  color: #061417;
   text-decoration: none;
-  transition: transform 220ms ease, box-shadow 220ms ease;
-  box-shadow: 0 10px 28px -10px rgba(77, 216, 229, 0.55);
+  border-radius: var(--glass-radius-pill);
+  border: 1px solid rgba(184, 232, 237, 0.7);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.0) 60%),
+    linear-gradient(135deg, var(--brand-teal) 0%, var(--teal-mid) 100%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 12px 32px rgba(77, 216, 229, 0.45),
+    var(--glow-teal-soft);
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 220ms ease;
 }
 
 .work-modal-cta:hover,
 .work-modal-cta:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px -10px rgba(77, 216, 229, 0.75);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight-bright),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 20px 44px rgba(77, 216, 229, 0.6),
+    var(--glow-teal-strong);
   outline: none;
 }
 
