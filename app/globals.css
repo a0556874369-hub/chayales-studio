@@ -396,6 +396,52 @@ body {
     0 6px 22px rgba(77, 216, 229, 0.55);
 }
 
+/* ============================================================
+   Adaptive header — flips to dark text on light pill when scrolled
+   over a section marked data-theme="light" (e.g. .works-section).
+   IntersectionObserver in Header.tsx adds/removes .header-pill-on-light.
+   Transition is smooth so the flip doesn't feel jarring.
+   ============================================================ */
+.header-pill {
+  transition:
+    background 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.header-pill-on-light {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.35) 60%),
+    rgba(255, 255, 255, 0.50);
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(20, 40, 45, 0.05),
+    0 10px 30px rgba(20, 40, 45, 0.15);
+}
+
+.header-pill-on-light .text-link {
+  color: rgba(15, 24, 23, 0.85);
+  text-shadow: none;
+  transition: color 300ms ease, background 200ms ease;
+}
+
+.header-pill-on-light .text-link:hover {
+  color: #2D8896;
+  background: rgba(77, 216, 229, 0.15);
+}
+
+/* "צור קשר" stays brand-colored on both themes — the teal chip reads
+   strongly against either backdrop. Just tighten its border on light. */
+.header-pill-on-light .text-link.contact-link {
+  border: 1px solid rgba(45, 136, 150, 0.25);
+  /* Background unchanged from dark theme — it's already teal + readable. */
+}
+
+.header-pill-on-light .text-link.contact-link:hover {
+  border-color: rgba(45, 136, 150, 0.45);
+}
+
 @media (max-width: 767px) {
   .site-header {
     padding-top: 12px;
@@ -1147,7 +1193,7 @@ body {
   font-weight: 700;
   font-size: 1rem;
   letter-spacing: -0.005em;
-  color: #FFFFFF;
+  color: #0F1817;
   text-decoration: none;
   border-radius: var(--glass-radius-pill);
   border: 1px solid rgba(184, 232, 237, 0.85);
@@ -1156,7 +1202,6 @@ body {
     linear-gradient(135deg, rgba(77, 216, 229, 0.55) 0%, rgba(45, 136, 150, 0.45) 100%);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  text-shadow: 0 1px 2px rgba(0, 30, 35, 0.35);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
     inset 0 -1px 0 rgba(0, 0, 0, 0.10),
@@ -1679,7 +1724,7 @@ body {
   font-weight: 700;
   font-size: 0.95rem;
   letter-spacing: -0.005em;
-  color: #FFFFFF;
+  color: #0F1817;
   text-decoration: none;
   border-radius: var(--glass-radius-pill);
   border: 1px solid rgba(184, 232, 237, 0.85);
@@ -1688,7 +1733,6 @@ body {
     linear-gradient(135deg, rgba(77, 216, 229, 0.55) 0%, rgba(45, 136, 150, 0.45) 100%);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  text-shadow: 0 1px 2px rgba(0, 30, 35, 0.35);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
     inset 0 -1px 0 rgba(0, 0, 0, 0.10),

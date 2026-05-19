@@ -150,16 +150,18 @@ export default function BeforeAfterSection() {
         }}
       />
 
-      {/* Bottom fade — bridges into Section 03's light surface. Transparent
-          at the top so LightRays + ambient stays visible, fading down into
-          the section-03 light color (#EEF5F6) at the bottom edge. */}
+      {/* Bottom fade — bridges into Section 03's light surface by routing
+          through TEAL (not grey). The previous straight fade went through
+          a 50/50 mix of dark + light which read as muddy grey. Going through
+          deep teal → mid teal → light teal → #EEF5F6 looks like an aurora
+          horizon and matches the brand. */}
       <div
         aria-hidden
         className="absolute bottom-0 left-0 right-0 pointer-events-none"
         style={{
-          height: "320px",
+          height: "360px",
           background:
-            "linear-gradient(to bottom, transparent 0%, rgba(238, 245, 246, 0.45) 55%, #EEF5F6 100%)",
+            "linear-gradient(to bottom, transparent 0%, rgba(45, 136, 150, 0.30) 35%, rgba(110, 191, 201, 0.55) 60%, rgba(184, 232, 237, 0.85) 82%, #EEF5F6 100%)",
           zIndex: 5,
         }}
       />

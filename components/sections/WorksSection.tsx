@@ -33,7 +33,12 @@ export default function WorksSection() {
   );
 
   return (
-    <section className="works-section" id="works" aria-label="גלריית מותגים">
+    <section
+      className="works-section"
+      id="works"
+      data-theme="light"
+      aria-label="גלריית מותגים"
+    >
       <div className="works-content">
         <h2 className="works-headline">
           כל עבודה - שפה משלה, מותג שלם.
