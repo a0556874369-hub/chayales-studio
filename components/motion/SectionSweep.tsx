@@ -40,13 +40,13 @@ export default function SectionSweep({ theme }: SectionSweepProps) {
 
   if (reduce) return null;
 
-  const bandAlpha = theme === "dark" ? 0.18 : 0.10;
+  const bandAlpha = theme === "dark" ? 0.32 : 0.20;
   const bandStyle: CSSProperties = {
     position: "absolute",
     left: 0,
     right: 0,
     top: 0,
-    height: "30vh",
+    height: "22vh",
     background: `linear-gradient(180deg, transparent 0%, rgba(77, 216, 229, ${bandAlpha}) 50%, transparent 100%)`,
     willChange: "transform",
     ...(theme === "dark" ? { mixBlendMode: "screen" } : {}),

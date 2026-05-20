@@ -956,6 +956,10 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  /* Perspective for the scroll-driven 3D card landing (rotateX on each
+     .work-card-wrap). Distinct from the per-card perspective:1000px that
+     owns the mouse-tilt — nesting them is fine. */
+  perspective: 1500px;
 }
 
 @media (min-width: 768px) {
@@ -1984,6 +1988,9 @@ body {
   grid-template-columns: 1fr;
   gap: 24px;
   align-items: stretch; /* same-row cards have equal height */
+  /* Perspective for the scroll-driven 3D card landing (rotateX on each
+     .service-card-wrap). */
+  perspective: 1500px;
 }
 
 @media (min-width: 768px) {

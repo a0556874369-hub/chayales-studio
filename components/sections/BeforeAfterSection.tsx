@@ -5,6 +5,7 @@ import { animate } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SectionSweep from "@/components/motion/SectionSweep";
+import HeadlineAccent from "@/components/motion/HeadlineAccent";
 
 const REVEAL_TARGET = 50; // % from left where the slider settles after the auto animation
 const AUTO_ANIM_SECONDS = 2.5;
@@ -170,6 +171,7 @@ export default function BeforeAfterSection() {
           תבנית גנרית. אנחנו מוציאים אותם{" "}
           <span style={{ color: "#4DD8E5" }}>לאור</span>.
         </ScrollReveal>
+        <HeadlineAccent />
         <ScrollReveal as="p" className="ba-subhead">
           גררו את הסליידר וראו את ההבדל
         </ScrollReveal>

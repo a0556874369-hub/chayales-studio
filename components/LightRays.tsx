@@ -32,7 +32,7 @@ export default function LightRays() {
   const parallaxY = useTransform(
     scrollY,
     [0, 2000],
-    reduce ? [0, 0] : [0, -120],
+    reduce ? [0, 0] : [0, -260],
     { clamp: true },
   );
 

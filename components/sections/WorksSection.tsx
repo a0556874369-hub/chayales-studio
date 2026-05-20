@@ -11,6 +11,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { works } from "@/lib/works-data";
 import WorkCard from "@/components/works/WorkCard";
 import HeadlineReveal from "@/components/motion/HeadlineReveal";
+import HeadlineAccent from "@/components/motion/HeadlineAccent";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SectionSweep from "@/components/motion/SectionSweep";
 
@@ -53,7 +54,7 @@ export default function WorksSection() {
   const glowsY = useTransform(
     scrollYProgress,
     [0, 1],
-    reduce ? [0, 0] : [60, -60],
+    reduce ? [0, 0] : [120, -120],
   );
 
   return (
@@ -86,6 +87,7 @@ export default function WorksSection() {
           className="works-headline"
           text="כל עבודה - שפה משלה, מותג שלם."
         />
+        <HeadlineAccent />
 
         <ScrollReveal as="p" className="works-subhead">
           לא קולקציה של עבודות. גלריית מותגים שלא מדפדפים לידם.
@@ -98,6 +100,8 @@ export default function WorksSection() {
               <ScrollReveal
                 key={work.slug}
                 className="work-card-wrap"
+                scaleFrom={0.94}
+                rotateXFrom={6}
                 style={
                   area
                     ? ({

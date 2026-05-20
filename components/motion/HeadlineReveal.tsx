@@ -4,9 +4,9 @@
 // Splits `text` by spaces. Each word is a motion span with its own
 // useTransform range derived from the parent's scrollYProgress, with the
 // ranges overlapping so the cascade feels continuous (one word starts
-// fading in while the next is still mid-blur). No motion at all when the
-// user prefers reduced motion — everything is rendered visible from frame
-// one.
+// fading in while the next is still mid-rise). Opacity + y only — no
+// blur (the blur read as glitch, not motion). No animation under
+// prefers-reduced-motion — everything is rendered visible from frame one.
 //
 // Headlines with inline markup (colored highlight spans, custom line
 // breaks) don't fit this model — use ScrollReveal as="h1"/"h2" for those.
@@ -57,14 +57,7 @@ function Word({
   const y = useTransform(
     scrollYProgress,
     [start, end],
-    reduce ? [0, 0] : [20, 0],
-  );
-  const filter = useTransform(
-    scrollYProgress,
-    [start, end],
-    reduce
-      ? ["blur(0px)", "blur(0px)"]
-      : ["blur(6px)", "blur(0px)"],
+    reduce ? [0, 0] : [40, 0],
   );
 
   return (
@@ -73,8 +66,7 @@ function Word({
         display: "inline-block",
         opacity,
         y,
-        filter,
-        willChange: reduce ? undefined : "transform, opacity, filter",
+        willChange: reduce ? undefined : "transform, opacity",
       }}
     >
       {word}

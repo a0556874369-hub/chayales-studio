@@ -15,6 +15,7 @@ import {
 import { useRef } from "react";
 import { useGlassInteraction } from "@/lib/useGlassInteraction";
 import HeadlineReveal from "@/components/motion/HeadlineReveal";
+import HeadlineAccent from "@/components/motion/HeadlineAccent";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SectionSweep from "@/components/motion/SectionSweep";
 
@@ -93,7 +94,7 @@ export default function ServicesSection() {
   const glowsY = useTransform(
     scrollYProgress,
     [0, 1],
-    reduce ? [0, 0] : [60, -60],
+    reduce ? [0, 0] : [120, -120],
   );
 
   return (
@@ -121,6 +122,7 @@ export default function ServicesSection() {
           className="services-headline"
           text="שירותים שיוצרים מותג שלם, לא רק לוגו."
         />
+        <HeadlineAccent />
 
         <ScrollReveal as="p" className="services-subhead">
           מתחילים מאסטרטגיה. ממשיכים בשפה ויזואלית. מסיימים במותג שמדבר בעצמו.
@@ -128,7 +130,12 @@ export default function ServicesSection() {
 
         <div className="services-grid" dir="rtl">
           {SERVICES.map((s) => (
-            <ScrollReveal key={s.index} className="service-card-wrap">
+            <ScrollReveal
+              key={s.index}
+              className="service-card-wrap"
+              scaleFrom={0.94}
+              rotateXFrom={6}
+            >
               <ServiceCard service={s} />
             </ScrollReveal>
           ))}

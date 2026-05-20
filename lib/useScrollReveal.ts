@@ -1,9 +1,12 @@
 "use client";
 
 // Scroll-coupled reveal: as the element travels through the viewport its
-// opacity, y, and blur change with scroll progress. Bi-directional —
-// scrolling back up un-reveals. One source of truth for ALL reveals on
+// opacity, y, scale and rotateX change with scroll progress. Bi-directional
+// — scrolling back up un-reveals. One source of truth for ALL reveals on
 // the site (ScrollReveal component, plus headline/subhead/CTA wrappers).
+//
+// No blur — the previous filter:blur was perceived as a glitch, not motion.
+// Reveals are crisp from frame 1.
 
 import {
   useScroll,
@@ -14,36 +17,42 @@ import {
 import type { RefObject } from "react";
 
 export interface ScrollRevealOptions {
+  /** Vertical translate distance the element rises from (px). */
   yFrom?: number;
-  blurFrom?: number;
+  /** Initial scale factor (1 = no scale entrance). */
+  scaleFrom?: number;
+  /** Initial rotateX in degrees (0 = no 3D entrance). */
+  rotateXFrom?: number;
   /**
    * framer-motion's offset signature — a tuple of two `["target viewport"]`
    * strings defining where progress is 0 and 1.
    * Default: starts revealing when target's top hits viewport bottom,
-   * fully revealed when target's center reaches 70% from top.
+   * fully revealed when target's center reaches 75% from top.
    */
-  // framer-motion's offset typing changes between minors; keep this loose
-  // and let the call-site pass strings.
   offset?: ReadonlyArray<string>;
 }
 
 export interface ScrollRevealValues {
   opacity: MotionValue<number>;
   y: MotionValue<number>;
-  filter: MotionValue<string>;
+  scale: MotionValue<number>;
+  rotateX: MotionValue<number>;
 }
 
-const DEFAULT_OFFSET = ["start end", "center 70%"] as const;
+const DEFAULT_OFFSET = ["start end", "center 75%"] as const;
 
 export function useScrollReveal(
   ref: RefObject<HTMLElement | null>,
   options: ScrollRevealOptions = {},
 ): ScrollRevealValues {
-  const { yFrom = 40, blurFrom = 8, offset = DEFAULT_OFFSET } = options;
+  const {
+    yFrom = 80,
+    scaleFrom = 1,
+    rotateXFrom = 0,
+    offset = DEFAULT_OFFSET,
+  } = options;
   const reduce = useReducedMotion();
 
-  // framer-motion's offset type is awkward across versions; cast at the
-  // boundary. The runtime accepts any tuple of two strings.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: offset as never,
@@ -59,13 +68,16 @@ export function useScrollReveal(
     [0, 1],
     reduce ? [0, 0] : [yFrom, 0],
   );
-  const filter = useTransform(
+  const scale = useTransform(
     scrollYProgress,
     [0, 1],
-    reduce
-      ? ["blur(0px)", "blur(0px)"]
-      : [`blur(${blurFrom}px)`, "blur(0px)"],
+    reduce ? [1, 1] : [scaleFrom, 1],
+  );
+  const rotateX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? [0, 0] : [rotateXFrom, 0],
   );
 
-  return { opacity, y, filter };
+  return { opacity, y, scale, rotateX };
 }
