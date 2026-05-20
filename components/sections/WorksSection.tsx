@@ -10,7 +10,7 @@ import {
 import { useCallback, useMemo, useRef, useState } from "react";
 import { works } from "@/lib/works-data";
 import WorkCard from "@/components/works/WorkCard";
-import HeadlineReveal from "@/components/motion/HeadlineReveal";
+import CharacterReveal from "@/components/motion/CharacterReveal";
 import HeadlineAccent from "@/components/motion/HeadlineAccent";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SectionSweep from "@/components/motion/SectionSweep";
@@ -82,10 +82,11 @@ export default function WorksSection() {
       <SectionSweep theme="light" />
 
       <div className="works-content">
-        <HeadlineReveal
+        <CharacterReveal
           as="h2"
+          mode="scroll"
           className="works-headline"
-          text="כל עבודה - שפה משלה, מותג שלם."
+          segments={[{ text: "כל עבודה - שפה משלה, מותג שלם.", color: "white" }]}
         />
         <HeadlineAccent />
 
@@ -94,14 +95,18 @@ export default function WorksSection() {
         </ScrollReveal>
 
         <div className="works-grid" dir="rtl">
-          {works.map((work) => {
+          {works.map((work, i) => {
             const area = BENTO_POSITIONS[work.slug];
+            // Cards slide in from alternating sides — even-index from the
+            // left (xFrom -120), odd-index from the right (+120).
+            const xFrom = i % 2 === 0 ? -120 : 120;
             return (
               <ScrollReveal
                 key={work.slug}
                 className="work-card-wrap"
                 scaleFrom={0.94}
                 rotateXFrom={6}
+                xFrom={xFrom}
                 style={
                   area
                     ? ({

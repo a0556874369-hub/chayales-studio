@@ -40,7 +40,7 @@ export default function ScrollReveal({
   ...options
 }: ScrollRevealProps) {
   const ref = useRef<HTMLElement | null>(null);
-  const { opacity, y, scale, rotateX } = useScrollReveal(ref, options);
+  const { opacity, y, x, scale, rotateX } = useScrollReveal(ref, options);
 
   const Tag = motion[as] as unknown as ElementType;
 
@@ -51,6 +51,7 @@ export default function ScrollReveal({
       style={{
         opacity,
         y,
+        x,
         scale,
         rotateX,
         // Scale grows from the bottom edge so 3D entrances look like the

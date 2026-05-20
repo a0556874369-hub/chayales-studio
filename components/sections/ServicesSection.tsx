@@ -14,7 +14,7 @@ import {
 } from "framer-motion";
 import { useRef } from "react";
 import { useGlassInteraction } from "@/lib/useGlassInteraction";
-import HeadlineReveal from "@/components/motion/HeadlineReveal";
+import CharacterReveal from "@/components/motion/CharacterReveal";
 import HeadlineAccent from "@/components/motion/HeadlineAccent";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SectionSweep from "@/components/motion/SectionSweep";
@@ -117,10 +117,13 @@ export default function ServicesSection() {
       <SectionSweep theme="dark" />
 
       <div className="services-content">
-        <HeadlineReveal
+        <CharacterReveal
           as="h2"
+          mode="scroll"
           className="services-headline"
-          text="שירותים שיוצרים מותג שלם, לא רק לוגו."
+          segments={[
+            { text: "שירותים שיוצרים מותג שלם, לא רק לוגו.", color: "white" },
+          ]}
         />
         <HeadlineAccent />
 

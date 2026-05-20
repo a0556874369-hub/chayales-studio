@@ -19,6 +19,8 @@ import type { RefObject } from "react";
 export interface ScrollRevealOptions {
   /** Vertical translate distance the element rises from (px). */
   yFrom?: number;
+  /** Horizontal translate distance the element slides in from (px). Negative = from the left, positive = from the right. */
+  xFrom?: number;
   /** Initial scale factor (1 = no scale entrance). */
   scaleFrom?: number;
   /** Initial rotateX in degrees (0 = no 3D entrance). */
@@ -35,6 +37,7 @@ export interface ScrollRevealOptions {
 export interface ScrollRevealValues {
   opacity: MotionValue<number>;
   y: MotionValue<number>;
+  x: MotionValue<number>;
   scale: MotionValue<number>;
   rotateX: MotionValue<number>;
 }
@@ -47,6 +50,7 @@ export function useScrollReveal(
 ): ScrollRevealValues {
   const {
     yFrom = 80,
+    xFrom = 0,
     scaleFrom = 1,
     rotateXFrom = 0,
     offset = DEFAULT_OFFSET,
@@ -68,6 +72,11 @@ export function useScrollReveal(
     [0, 1],
     reduce ? [0, 0] : [yFrom, 0],
   );
+  const x = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? [0, 0] : [xFrom, 0],
+  );
   const scale = useTransform(
     scrollYProgress,
     [0, 1],
@@ -79,5 +88,5 @@ export function useScrollReveal(
     reduce ? [0, 0] : [rotateXFrom, 0],
   );
 
-  return { opacity, y, scale, rotateX };
+  return { opacity, y, x, scale, rotateX };
 }

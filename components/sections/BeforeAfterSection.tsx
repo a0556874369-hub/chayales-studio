@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import SectionSweep from "@/components/motion/SectionSweep";
 import HeadlineAccent from "@/components/motion/HeadlineAccent";
+import CharacterReveal from "@/components/motion/CharacterReveal";
 
 const REVEAL_TARGET = 50; // % from left where the slider settles after the auto animation
 const AUTO_ANIM_SECONDS = 2.5;
@@ -163,14 +164,20 @@ export default function BeforeAfterSection() {
       <SectionSweep theme="dark" />
 
       <div className="ba-content">
-        {/* HeadlineReveal can't be used here because the h2 has inline
-            color spans (split-by-space would lose them). ScrollReveal
-            as="h2" preserves the styling and still couples to scroll. */}
-        <ScrollReveal as="h2" className="ba-headline">
-          רוב העסקים <span style={{ color: "#6EBFC9" }}>מסתתרים</span> מאחורי
-          תבנית גנרית. אנחנו מוציאים אותם{" "}
-          <span style={{ color: "#4DD8E5" }}>לאור</span>.
-        </ScrollReveal>
+        {/* Per-character scroll reveal. Both highlights ("מסתתרים" and
+            "לאור") collapse to brand-teal under the 2-color model. */}
+        <CharacterReveal
+          as="h2"
+          mode="scroll"
+          className="ba-headline"
+          segments={[
+            { text: "רוב העסקים " },
+            { text: "מסתתרים", color: "teal" },
+            { text: " מאחורי תבנית גנרית. אנחנו מוציאים אותם " },
+            { text: "לאור", color: "teal" },
+            { text: "." },
+          ]}
+        />
         <HeadlineAccent />
         <ScrollReveal as="p" className="ba-subhead">
           גררו את הסליידר וראו את ההבדל
