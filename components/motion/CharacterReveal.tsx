@@ -2,20 +2,30 @@
 
 // CharacterReveal — heading reveal at character resolution.
 //
-// Two modes:
-//   • 'scroll' — each character's opacity + y are bound to the parent's
-//     scrollYProgress via overlapping windows. The headline writes itself
-//     in as the user scrolls past it, and un-writes when they scroll up.
-//   • 'mount'  — once the headline enters the viewport (useInView with
-//     once:true), each character animates in with a staggered delay.
-//     If colorFlash=true, each char starts coloured teal and animates
-//     to its final colour ("white" or "teal" per segment) during entry.
+// Render tree (the important bit, after v2):
+//   <Tag aria-label="...">
+//     <span nowrap>                ← word wrapper (inline-block, nowrap)
+//       <motion.span>ר</motion.span>
+//       <motion.span>ו</motion.span>
+//       <motion.span>ב</motion.span>
+//     </span>
+//     {' '}                        ← literal text-node space between words
+//     <span nowrap>...</span>
+//     ...
+//   </Tag>
 //
-// transforms + opacity (+ color in mount mode) only. No filter/blur.
-// Spaces are static text nodes (not animated). Each animated character
-// is a motion.span; the outer Tag carries an aria-label with the full
-// text and the spans are aria-hidden so screen readers don't read them
-// letter-by-letter.
+// Wrapping each word in a nowrap inline-block lets the browser break ONLY
+// between words — never inside a word. The animated character index is
+// global and runs continuously across all words.
+//
+// Two modes:
+//   • 'scroll' — each character's opacity + y bound to scrollYProgress via
+//     overlapping windows (stagger 0.01 per char → even a 70-char heading
+//     finishes well inside the section's scroll range).
+//   • 'mount'  — useInView(once:true). Each char animates via variants
+//     with delay i * 0.025. colorFlash starts teal, lands at finalColor.
+//
+// transforms + opacity (+ color in mount) only. No filter/blur.
 
 import {
   motion,
@@ -41,38 +51,65 @@ interface CharacterRevealProps {
   className?: string;
 }
 
-// Resolved brand colors. framer-motion can interpolate hex strings reliably
-// (it can't always handle var(--...) on inline style values).
 const COLOR_WHITE = "#FAFBFB";
 const COLOR_TEAL = "#4DD8E5";
+
+// Timing constants — tightened from v1 so long headlines finish their
+// reveal well before the section scrolls past.
+const SCROLL_STAGGER = 0.01;       // per-char progress-units step
+const SCROLL_WINDOW = 0.25;        // per-char progress-units window
+const MOUNT_DELAY_PER_CHAR = 0.025; // seconds per char
+const MOUNT_DURATION = 0.5;        // seconds per char
 
 interface CharData {
   char: string;
   color: "white" | "teal";
-  /** null for spaces (not animated). Otherwise the running animated index. */
-  animatedIndex: number | null;
+  /** Stable index across the whole headline (skips spaces). */
+  animatedIndex: number;
+}
+
+interface Word {
+  chars: CharData[];
 }
 
 function flattenSegments(segments: Segment[]): {
-  chars: CharData[];
+  words: Word[];
   fullText: string;
 } {
   let animatedIndex = 0;
-  const chars: CharData[] = [];
+  const words: Word[] = [];
+  let current: CharData[] = [];
   const parts: string[] = [];
+
+  const flushWord = () => {
+    if (current.length > 0) {
+      words.push({ chars: current });
+      current = [];
+    }
+  };
+
   for (const seg of segments) {
     const color = seg.color ?? "white";
     parts.push(seg.text);
     for (const ch of seg.text) {
-      const isSpace = ch === " ";
-      chars.push({
+      if (ch === " ") {
+        flushWord();
+        // The space itself isn't recorded — it's rendered as a literal
+        // text-node BETWEEN word spans at the JSX layer.
+        continue;
+      }
+      current.push({
         char: ch,
         color,
-        animatedIndex: isSpace ? null : animatedIndex++,
+        animatedIndex: animatedIndex++,
       });
     }
+    // A segment boundary inside a word doesn't end the word — keep
+    // accumulating into the same word until the next space (or end).
   }
-  return { chars, fullText: parts.join("") };
+  flushWord();
+
+  return { words, fullText: parts.join("") };
 }
 
 function colorValue(c: "white" | "teal"): string {
@@ -94,8 +131,8 @@ function ScrollChar({
   scrollYProgress: MotionValue<number>;
   reduce: boolean;
 }) {
-  const start = animatedIndex * 0.015;
-  const end = start + 0.25;
+  const start = animatedIndex * SCROLL_STAGGER;
+  const end = start + SCROLL_WINDOW;
   const opacity = useTransform(
     scrollYProgress,
     [start, end],
@@ -112,6 +149,10 @@ function ScrollChar({
       aria-hidden="true"
       style={{
         display: "inline-block",
+        // Anchor each inline-block char to the parent's text baseline so
+        // mixed-script / Hebrew + Latin chars stay perfectly aligned.
+        verticalAlign: "baseline",
+        lineHeight: "inherit",
         opacity,
         y,
         color: colorValue(color),
@@ -144,7 +185,12 @@ function MountChar({
     return (
       <span
         aria-hidden="true"
-        style={{ display: "inline-block", color: finalColor }}
+        style={{
+          display: "inline-block",
+          verticalAlign: "baseline",
+          lineHeight: "inherit",
+          color: finalColor,
+        }}
       >
         {char}
       </span>
@@ -154,7 +200,11 @@ function MountChar({
   return (
     <motion.span
       aria-hidden="true"
-      style={{ display: "inline-block" }}
+      style={{
+        display: "inline-block",
+        verticalAlign: "baseline",
+        lineHeight: "inherit",
+      }}
       initial={{
         opacity: 0,
         y: 30,
@@ -167,8 +217,8 @@ function MountChar({
               y: 0,
               color: finalColor,
               transition: {
-                delay: animatedIndex * 0.04,
-                duration: 0.5,
+                delay: animatedIndex * MOUNT_DELAY_PER_CHAR,
+                duration: MOUNT_DURATION,
                 ease: "easeOut",
               },
             }
@@ -193,49 +243,58 @@ export default function CharacterReveal({
   const reduce = useReducedMotion() ?? false;
   const Tag = as;
 
-  const { chars, fullText } = flattenSegments(segments);
+  const { words, fullText } = flattenSegments(segments);
 
   // Both observers are always created so hook order stays stable; the
-  // unused one is effectively a no-op (one useScroll observer + one
-  // useInView observer per headline — cheap).
+  // unused one is effectively a no-op (one useScroll + one useInView per
+  // headline — cheap).
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "center 80%"] as never,
   });
   const inView = useInView(ref, { once: true });
 
+  const renderChar = (c: CharData, charKey: number) => {
+    if (mode === "scroll") {
+      return (
+        <ScrollChar
+          key={charKey}
+          char={c.char}
+          color={c.color}
+          animatedIndex={c.animatedIndex}
+          scrollYProgress={scrollYProgress}
+          reduce={reduce}
+        />
+      );
+    }
+    return (
+      <MountChar
+        key={charKey}
+        char={c.char}
+        color={c.color}
+        animatedIndex={c.animatedIndex}
+        inView={inView}
+        colorFlash={colorFlash}
+        reduce={reduce}
+      />
+    );
+  };
+
   return (
     <Tag ref={ref} className={className} aria-label={fullText}>
-      {chars.map((c, i) => {
-        if (c.animatedIndex === null) {
-          // Space — render as a text node directly so it acts as natural
-          // inter-word whitespace between the inline-block char spans.
-          return <Fragment key={i}>{c.char}</Fragment>;
-        }
-        if (mode === "scroll") {
-          return (
-            <ScrollChar
-              key={i}
-              char={c.char}
-              color={c.color}
-              animatedIndex={c.animatedIndex}
-              scrollYProgress={scrollYProgress}
-              reduce={reduce}
-            />
-          );
-        }
-        return (
-          <MountChar
-            key={i}
-            char={c.char}
-            color={c.color}
-            animatedIndex={c.animatedIndex}
-            inView={inView}
-            colorFlash={colorFlash}
-            reduce={reduce}
-          />
-        );
-      })}
+      {words.map((word, wi) => (
+        <Fragment key={wi}>
+          {/* Literal space text node BETWEEN word wrappers — this is the
+              only place line-breaks are allowed. */}
+          {wi > 0 ? " " : null}
+          <span
+            aria-hidden="true"
+            style={{ display: "inline-block", whiteSpace: "nowrap" }}
+          >
+            {word.chars.map((c, ci) => renderChar(c, ci))}
+          </span>
+        </Fragment>
+      ))}
     </Tag>
   );
 }
