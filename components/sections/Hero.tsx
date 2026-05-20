@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { type RefObject, useEffect, useRef, useState } from "react";
+import ScrollReveal from "@/components/motion/ScrollReveal";
 
 const MOBILE_QUERY = "(max-width: 767px)";
 const LOOP_PAUSE_MS = 2500;
@@ -68,11 +68,8 @@ export default function Hero() {
   useVideoLoopPause(desktopVideoRef, !reduceMotion && !isMobile);
   useVideoLoopPause(mobileRef, !reduceMotion && isMobile);
 
-  // Fast entrance — text appears almost immediately so the page never feels
-  // like it's still loading. Video keeps ramping in the background.
-  const delayHeadline = reduceMotion ? 0 : 0.15;
-  const delaySubhead = reduceMotion ? 0 : 0.35;
-  const delayCta = reduceMotion ? 0 : 0.55;
+  // Entrance is now owned by <ScrollReveal> wrappers around each piece —
+  // they reveal as the user scrolls and un-reveal on scroll up.
 
   return (
     <section className="relative min-h-screen overflow-hidden md:bg-black">
@@ -170,16 +167,11 @@ export default function Hero() {
           Top padding clears the fixed site header. */}
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-[65fr_35fr] items-end md:items-center min-h-screen max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-[8vh] md:pt-24 md:pb-20">
         <div className="flex flex-col gap-8 md:gap-10 text-center md:text-right items-center md:items-stretch max-w-2xl md:max-w-none mx-auto md:mx-0 md:ms-0 md:me-auto">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.8,
-              delay: delayHeadline,
-              ease: "easeOut",
-            }}
-            className="hero-headline"
-          >
+          {/* HeadlineReveal isn't a fit here — the h1 has multi-line
+              <span> children + inline colored spans. ScrollReveal as="h1"
+              gives a whole-block scroll-coupled reveal while preserving
+              the existing structure and styling. */}
+          <ScrollReveal as="h1" className="hero-headline">
             <span className="block whitespace-nowrap">רוב העסקים נראים</span>
             <span className="block whitespace-nowrap">
               כמו <span style={{ color: "#6EBFC9" }}>תבנית</span>,
@@ -200,35 +192,17 @@ export default function Hero() {
               </span>
               .
             </span>
-          </motion.h1>
+          </ScrollReveal>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.8,
-              delay: delaySubhead,
-              ease: "easeOut",
-            }}
-            className="hero-subhead mx-auto md:mx-0"
-          >
+          <ScrollReveal as="p" className="hero-subhead mx-auto md:mx-0">
             מיתוג, אתר ופרסום בסטודיו אחד
-          </motion.p>
+          </ScrollReveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.8,
-              delay: delayCta,
-              ease: "easeOut",
-            }}
-            className="w-full sm:w-auto self-center md:self-start"
-          >
+          <ScrollReveal className="w-full sm:w-auto self-center md:self-start">
             <a href="#works" className="btn-glass btn-glass-primary">
               לעבודות ↓
             </a>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </div>
 

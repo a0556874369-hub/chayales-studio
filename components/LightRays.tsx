@@ -1,13 +1,22 @@
 "use client";
 
 // Four diffused beams of teal light, fixed to the viewport.
-// Each ray BREATHES via its own CSS keyframe (different durations so the
-// composite motion never visibly repeats).
-// The inner container also DRIFTS toward the cursor — single mousemove
-// listener feeding a single rAF lerp; no DOM writes per event.
-// Both systems are disabled under prefers-reduced-motion. The cursor-drift
-// is additionally disabled on touch-only devices.
+// THREE motion layers nest cleanly:
+//   • OUTER (motion.div, scroll parallax)  — drifts slowly as the page
+//     scrolls, giving the aurora depth versus the rest of the content.
+//   • INNER (.lightrays-inner, cursor drift) — leans toward the cursor
+//     via a rAF lerp.
+//   • RAYS (each .lightray-N, breathing)   — CSS keyframes with mismatched
+//     durations so the composite motion never visibly repeats.
+// All three respect prefers-reduced-motion; the cursor drift is additionally
+// disabled on touch-only devices.
 
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useRef } from "react";
 
 const MAX_TRANSLATE_PX = 40;
@@ -15,6 +24,17 @@ const LERP = 0.06;
 
 export default function LightRays() {
   const innerRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll parallax on the OUTER fixed container (not on .lightrays-inner,
+  // which is owned by the cursor-lean rAF below).
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const parallaxY = useTransform(
+    scrollY,
+    [0, 2000],
+    reduce ? [0, 0] : [0, -120],
+    { clamp: true },
+  );
 
   useEffect(() => {
     const el = innerRef.current;
@@ -57,9 +77,10 @@ export default function LightRays() {
   }, []);
 
   return (
-    <div
+    <motion.div
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
       aria-hidden
+      style={{ y: parallaxY }}
     >
       <div
         ref={innerRef}
@@ -128,6 +149,6 @@ export default function LightRays() {
           }}
         />
       </div>
-    </div>
+    </motion.div>
   );
 }

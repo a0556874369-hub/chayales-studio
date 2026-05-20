@@ -1021,12 +1021,47 @@ body {
   z-index: 2;
 }
 
-/* Bento placement on desktop, full-width on mobile */
+/* Bento placement moved one level out to .work-card-wrap (the ScrollReveal
+   wrapper) — the wrap is the grid item now; the card fills it. */
+.work-card-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.work-card-wrap > .work-card {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
 @media (min-width: 768px) {
-  .work-card {
+  .work-card-wrap {
     grid-column: var(--work-col, auto);
     grid-row: var(--work-row, auto);
   }
+}
+
+/* Service card wrap — each ScrollReveal in the services grid is itself a
+   grid item; the card inside fills it so equal-row heights still work. */
+.service-card-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.service-card-wrap > .service-card {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+/* parallax-glows: holds the breathing glow spans of a section and drifts
+   slowly with scroll for parallax depth. Sits behind the content. */
+.parallax-glows {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
 }
 
 .work-card:hover,

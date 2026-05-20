@@ -1,9 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { works } from "@/lib/works-data";
 import WorkCard from "@/components/works/WorkCard";
+import HeadlineReveal from "@/components/motion/HeadlineReveal";
+import ScrollReveal from "@/components/motion/ScrollReveal";
+import SectionSweep from "@/components/motion/SectionSweep";
 
 // Heavy modal — load only when first opened. SSR off because it uses portals.
 const WorkModal = dynamic(() => import("@/components/works/WorkModal"), {
@@ -11,7 +20,8 @@ const WorkModal = dynamic(() => import("@/components/works/WorkModal"), {
 });
 
 // Bento positions per slug. RTL is set on the grid container; column 1 is
-// the right-most column in RTL flow.
+// the right-most column in RTL flow. These are now applied to the
+// .work-card-wrap (ScrollReveal) — the wrap is the grid item.
 const BENTO_POSITIONS: Record<string, { col: string; row: string }> = {
   krauss: { col: "1 / 3", row: "1 / 4" },
   "bait-beklik": { col: "3 / 5", row: "1 / 3" },
@@ -23,6 +33,8 @@ const BENTO_POSITIONS: Record<string, { col: string; row: string }> = {
 
 export default function WorksSection() {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const reduce = useReducedMotion();
 
   const openWork = useCallback((slug: string) => setOpenSlug(slug), []);
   const closeWork = useCallback(() => setOpenSlug(null), []);
@@ -32,45 +44,80 @@ export default function WorksSection() {
     [openSlug],
   );
 
+  // Parallax drift for the breathing glow layer — moves slightly slower
+  // than the main content, giving the section depth.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"] as never,
+  });
+  const glowsY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? [0, 0] : [60, -60],
+  );
+
   return (
     <section
+      ref={sectionRef}
       className="works-section"
       id="works"
       data-theme="light"
       aria-label="גלריית מותגים"
     >
-      {/* Breathing teal glows — give the light surface depth + something for
-          the cards' backdrop-filter to actually refract. Pure CSS animation
-          on transform+opacity, disabled under prefers-reduced-motion. */}
-      <span className="works-glow works-glow-1" aria-hidden />
-      <span className="works-glow works-glow-2" aria-hidden />
-      <span className="works-glow works-glow-3" aria-hidden />
+      {/* Breathing teal glows wrapped in a scroll-parallax layer. Inner
+          breathing keyframes still fire on each span; the wrapper drifts
+          with scroll for parallax depth. */}
+      <motion.div
+        className="parallax-glows"
+        aria-hidden
+        style={{ y: glowsY }}
+      >
+        <span className="works-glow works-glow-1" aria-hidden />
+        <span className="works-glow works-glow-2" aria-hidden />
+        <span className="works-glow works-glow-3" aria-hidden />
+      </motion.div>
+
+      {/* Vertical teal sweep coupled to scroll progress. */}
+      <SectionSweep theme="light" />
 
       <div className="works-content">
-        <h2 className="works-headline">
-          כל עבודה - שפה משלה, מותג שלם.
-        </h2>
-        <p className="works-subhead">
-          לא קולקציה של עבודות. גלריית מותגים שלא מדפדפים לידם.
-        </p>
+        <HeadlineReveal
+          as="h2"
+          className="works-headline"
+          text="כל עבודה - שפה משלה, מותג שלם."
+        />
 
-        <div id="works-grid" className="works-grid" dir="rtl">
-          {works.map((work, i) => (
-            <WorkCard
-              key={work.slug}
-              work={work}
-              index={i}
-              onOpen={openWork}
-              desktopArea={BENTO_POSITIONS[work.slug]}
-            />
-          ))}
+        <ScrollReveal as="p" className="works-subhead">
+          לא קולקציה של עבודות. גלריית מותגים שלא מדפדפים לידם.
+        </ScrollReveal>
+
+        <div className="works-grid" dir="rtl">
+          {works.map((work) => {
+            const area = BENTO_POSITIONS[work.slug];
+            return (
+              <ScrollReveal
+                key={work.slug}
+                className="work-card-wrap"
+                style={
+                  area
+                    ? ({
+                        ["--work-col" as string]: area.col,
+                        ["--work-row" as string]: area.row,
+                      } as React.CSSProperties)
+                    : undefined
+                }
+              >
+                <WorkCard work={work} onOpen={openWork} />
+              </ScrollReveal>
+            );
+          })}
         </div>
 
-        <div className="works-cta-wrap">
+        <ScrollReveal className="works-cta-wrap">
           <a href="#contact" className="works-cta">
             צרו איתי קשר לפרויקט שלכם <span aria-hidden>←</span>
           </a>
-        </div>
+        </ScrollReveal>
       </div>
 
       <WorkModal work={currentWork} onClose={closeWork} />

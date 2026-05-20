@@ -2,11 +2,21 @@
 
 // Section 04 — שירותים.
 // Dark continuation of Section 03's bottom. 4 dark-glass cards in a 2x2
-// bento (1 column on mobile). The 4th card ("חבילה מלאה") is the flagship
-// — visually highlighted via a teal border + teal halo, no text label.
+// bento (1 column on mobile). The 4th card ("חבילה מלאה") is the flagship.
+// Entrance animation owned by <ScrollReveal> wrappers; the cards
+// themselves only host the mouse-driven glass interaction.
 
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useRef } from "react";
 import { useGlassInteraction } from "@/lib/useGlassInteraction";
+import HeadlineReveal from "@/components/motion/HeadlineReveal";
+import ScrollReveal from "@/components/motion/ScrollReveal";
+import SectionSweep from "@/components/motion/SectionSweep";
 
 interface Service {
   index: string;
@@ -49,36 +59,12 @@ const SERVICES: Service[] = [
   },
 ];
 
-function ServiceCard({
-  service,
-  index,
-  reduceMotion,
-}: {
-  service: Service;
-  index: number;
-  reduceMotion: boolean;
-}) {
-  // Same hook the work cards use — single tuning point for all glass.
-  // Lives on the outer article so its CSS vars cascade to the inner tilt
-  // (transform) AND are read by the outer ::after (full-card shine).
+function ServiceCard({ service }: { service: Service }) {
   const cardRef = useGlassInteraction<HTMLElement>();
-
   return (
-    <motion.article
-      ref={cardRef}
+    <article
+      ref={cardRef as React.Ref<HTMLElement>}
       className={`service-card ${service.flagship ? "service-card-flagship" : ""}`}
-      initial={
-        reduceMotion ? { opacity: 0 } : { opacity: 0, y: 30, scale: 0.95 }
-      }
-      whileInView={
-        reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
-      }
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{
-        duration: 0.55,
-        delay: reduceMotion ? 0 : index * 0.12,
-        ease: [0.22, 0.61, 0.36, 1],
-      }}
       aria-label={`שירות ${service.index}: ${service.name}`}
     >
       <div className="service-card-tilt">
@@ -92,50 +78,67 @@ function ServiceCard({
           <p className="service-card-price">{service.price}</p>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
 export default function ServicesSection() {
-  const reduceMotion = useReducedMotion() ?? false;
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const reduce = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"] as never,
+  });
+  const glowsY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? [0, 0] : [60, -60],
+  );
 
   return (
     <section
+      ref={sectionRef}
       id="services"
       className="services-section"
       aria-label="שירותים"
     >
-      {/* Breathing teal glows behind the cards — same role as the
-          works-glow elements one section up: substrate for dark glass to
-          refract. Pure CSS animation, prefers-reduced-motion-safe. */}
-      <span className="services-glow services-glow-1" aria-hidden />
-      <span className="services-glow services-glow-2" aria-hidden />
-      <span className="services-glow services-glow-3" aria-hidden />
+      <motion.div
+        className="parallax-glows"
+        aria-hidden
+        style={{ y: glowsY }}
+      >
+        <span className="services-glow services-glow-1" aria-hidden />
+        <span className="services-glow services-glow-2" aria-hidden />
+        <span className="services-glow services-glow-3" aria-hidden />
+      </motion.div>
+
+      <SectionSweep theme="dark" />
 
       <div className="services-content">
-        <h2 className="services-headline">
-          שירותים שיוצרים מותג שלם, לא רק לוגו.
-        </h2>
-        <p className="services-subhead">
+        <HeadlineReveal
+          as="h2"
+          className="services-headline"
+          text="שירותים שיוצרים מותג שלם, לא רק לוגו."
+        />
+
+        <ScrollReveal as="p" className="services-subhead">
           מתחילים מאסטרטגיה. ממשיכים בשפה ויזואלית. מסיימים במותג שמדבר בעצמו.
-        </p>
+        </ScrollReveal>
 
         <div className="services-grid" dir="rtl">
-          {SERVICES.map((s, i) => (
-            <ServiceCard
-              key={s.index}
-              service={s}
-              index={i}
-              reduceMotion={reduceMotion}
-            />
+          {SERVICES.map((s) => (
+            <ScrollReveal key={s.index} className="service-card-wrap">
+              <ServiceCard service={s} />
+            </ScrollReveal>
           ))}
         </div>
 
-        <div className="services-cta-wrap">
+        <ScrollReveal className="services-cta-wrap">
           <a href="#contact" className="services-cta">
             בואו נדבר <span aria-hidden>←</span>
           </a>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
