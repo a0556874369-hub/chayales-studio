@@ -1,29 +1,6 @@
 "use client";
 
-// A single teal sphere that lives as an AMBIENT presence across the whole
-// scroll. Not a dramatic element — a quiet companion.
-//
-//   1. Hero       — invisible.
-//   2. Section 2  — appears small (~22vw), shifted slightly right,
-//                   opacity ~0.35. Doesn't block content.
-//   3. Section 3  — stays present but smaller and more transparent
-//                   (~17vw, opacity ~0.22), seen THROUGH the works
-//                   cards rather than competing with them.
-//   4. Transition — fades to 0 for a single moment between Sections 3
-//                   and 4.
-//   5. Section 4  — re-enters gently and grows + brightens slowly to a
-//                   calm peak (~34vw, opacity 0.65). No "BOOM".
-//
-// CSS-only sphere — see .orb in globals.css. All channels (x, y, scale,
-// opacity, rotate) are scroll-coupled. The wrapper is position:fixed
-// with overflow:hidden. pointer-events:none → clicks pass through.
-
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export default function Orb() {
@@ -33,8 +10,6 @@ export default function Orb() {
   const [vw, setVw] = useState(1024);
   const [vh, setVh] = useState(800);
 
-  // Defaults keep the layout sane for first paint; measure() below
-  // replaces them with real section offsets.
   const [bp, setBp] = useState({
     sec2Start: 800,
     sec2Mid: 1500,
@@ -42,23 +17,33 @@ export default function Orb() {
     sec3End: 3500,
     sec4Start: 3700,
     sec4End: 4500,
+    sec5Start: 4700,
+    sec5Mid: 5400,
+    sec5End: 6200,
   });
 
   useEffect(() => {
     const measure = () => {
-      const newVw = window.innerWidth;
+      setVw(window.innerWidth);
       const newVh = window.innerHeight;
-      setVw(newVw);
       setVh(newVh);
 
       const sec2 = document.getElementById("before-after");
       const sec3 = document.getElementById("works");
       const sec4 = document.getElementById("services");
+      const sec5 = document.getElementById("why-clean-code");
       if (!sec2 || !sec3 || !sec4) return;
 
       const sec2Top = sec2.getBoundingClientRect().top + window.scrollY;
       const sec3Top = sec3.getBoundingClientRect().top + window.scrollY;
       const sec4Top = sec4.getBoundingClientRect().top + window.scrollY;
+
+      // אם סקשן 5 עוד לא קיים - נשתמש בערכי ברירת מחדל אחרי סקשן 4
+      const sec4Bottom = sec4Top + sec4.offsetHeight;
+      const sec5Top = sec5
+        ? sec5.getBoundingClientRect().top + window.scrollY
+        : sec4Bottom + 200;
+      const sec5Height = sec5 ? sec5.offsetHeight : newVh * 1.5;
 
       setBp({
         sec2Start: sec2Top - newVh * 0.3,
@@ -67,28 +52,21 @@ export default function Orb() {
         sec3End: sec4Top - newVh * 0.15,
         sec4Start: sec4Top + newVh * 0.1,
         sec4End: sec4Top + newVh * 0.9,
+        sec5Start: sec5Top - newVh * 0.2,
+        sec5Mid: sec5Top + sec5Height * 0.5,
+        sec5End: sec5Top + sec5Height + newVh * 0.1,
       });
     };
-
     measure();
     window.addEventListener("resize", measure);
     const ro = new ResizeObserver(measure);
     document.querySelectorAll("section").forEach((s) => ro.observe(s));
-
     return () => {
-      window.removeEventListener("resize", measure);
       ro.disconnect();
+      window.removeEventListener("resize", measure);
     };
   }, []);
 
-  // 7 stops. Index → meaning:
-  //   0  page start
-  //   1  sec2Start  (still invisible)
-  //   2  sec2Mid    (gentle reveal — small + right + low opacity)
-  //   3  sec3Mid    (smaller + lower opacity — "under" the gallery)
-  //   4  sec3End    (briefly fades to 0 for the 3→4 handoff)
-  //   5  sec4Start  (returns gently)
-  //   6  sec4End    (calm peak — bigger but still ~34vw, opacity 0.65)
   const points = [
     0,
     bp.sec2Start,
@@ -97,43 +75,72 @@ export default function Orb() {
     bp.sec3End,
     bp.sec4Start,
     bp.sec4End,
+    bp.sec5Start,
+    bp.sec5Mid,
+    bp.sec5End,
   ];
 
-  const opacity = useTransform(
-    scrollY,
-    points,
-    [0, 0, 0.35, 0.22, 0, 0.35, 0.65],
-  );
-  // Sec 2 mid: a calm right-of-centre pose (~68vw).
-  // Sec 3: peaks all the way to the right edge (~90 → 92vw).
-  // Sec 4: gently drifts back toward centre (~82 → 70vw) — still on
-  // the right half but heading back, never overlapping the centred CTA.
-  const x = useTransform(
-    scrollY,
-    points,
-    [0, 0, vw * 0.18, vw * 0.4, vw * 0.42, vw * 0.32, vw * 0.2],
-  );
-  // y stays at 0 (centre, ~40vh) through sections 2 and 3. At sec3End
-  // the orb is opacity 0, so it can invisibly "fall" 20vh down — when it
-  // re-emerges in sec 4 it's already centred lower at ~60vh, then grows
-  // in place without shifting vertically.
-  const y = useTransform(
-    scrollY,
-    points,
-    [0, 0, 0, 0, vh * 0.2, vh * 0.2, vh * 0.2],
-  );
-  const scale = useTransform(
-    scrollY,
-    points,
-    [0.5, 0.5, 0.6, 0.45, 0.3, 0.5, 0.9],
-  );
-  const rotate = useTransform(
-    scrollY,
-    points,
-    [0, 0, 0.5, 0, 0, -0.5, -1],
-  );
+  // opacity - בסקשן 5 הכדור נוכח יותר אבל לא דומיננטי (הטקסט הגיבור)
+  const opacity = useTransform(scrollY, points, [
+    0,    // top
+    0,    // sec2Start
+    0.35, // sec2Mid
+    0.22, // sec3Mid
+    0,    // sec3End
+    0.35, // sec4Start
+    0.65, // sec4End
+    0.25, // sec5Start - מתחיל קטן
+    0.55, // sec5Mid - שיא הנוכחות
+    0.15, // sec5End - מתפוגג
+  ]);
 
-  // prefers-reduced-motion: render only the calm sec4End pose, static.
+  // x - בסקשן 5 חוזר למרכז המסך (0)
+  const x = useTransform(scrollY, points, [
+    0,
+    0,
+    vw * 0.18,
+    vw * 0.40,
+    vw * 0.42,
+    vw * 0.32,
+    vw * 0.20,
+    vw * 0.10, // sec5Start - מתחיל ימינה
+    0,          // sec5Mid - מרכז מושלם
+    0,          // sec5End - נשאר במרכז
+  ]);
+
+  // y - בסקשן 5 ממורכז גם אנכית
+  const y = useTransform(scrollY, points, [
+    0,
+    0,
+    0,
+    0,
+    vh * 0.20,
+    vh * 0.20,
+    vh * 0.20,
+    vh * 0.10,
+    0,
+    0,
+  ]);
+
+  // scale - גדילה דרמטית! מ-0.9 ל-2.2 (כדי לכסות ~95vw)
+  const scale = useTransform(scrollY, points, [
+    0.5,
+    0.5,
+    0.6,
+    0.45,
+    0.3,
+    0.5,
+    0.9,
+    1.1,   // sec5Start - גדל
+    2.2,   // sec5Mid - ענק במרכז
+    1.4,   // sec5End - מתחיל להתכווץ
+  ]);
+
+  // rotate
+  const rotate = useTransform(scrollY, points, [
+    0, 0, 0.5, 0, 0, -0.5, -1, -0.5, 0, 0.5,
+  ]);
+
   if (prefersReducedMotion) {
     return (
       <div
@@ -171,14 +178,7 @@ export default function Orb() {
       <motion.div
         className="orb"
         style={{ x, y, scale, opacity, rotate }}
-        // .orb in globals.css sets top:40vh / left:50vw and uses
-        // transform: translate(-50%, -50%) to centre itself on that anchor.
-        // framer-motion's inline `style.transform` REPLACES that base
-        // transform, so without this template the anchor becomes the
-        // top-left corner of the orb and it shifts ~half its size down and
-        // right. transformTemplate prepends our centering translate to
-        // whatever framer-motion generates, restoring the centre anchor.
-        transformTemplate={(_values, generated) =>
+        transformTemplate={(_, generated) =>
           `translate(-50%, -50%) ${generated}`
         }
       />

@@ -2294,3 +2294,250 @@ body {
   height: clamp(280px, 26vw, 460px);
   background: radial-gradient(circle, rgba(45, 136, 150, 0.07), transparent 65%);
 }
+
+/* ============================================
+   LIGHT WRAP - עוטף סקשן 5 בגרדיאנט dark-light-dark
+   ============================================ */
+.light-wrap {
+  --sec5-light-start: 200px;
+  --sec5-light-end: 1200px;
+  position: relative;
+  background-color: #0B0D0C;
+  background-image: linear-gradient(
+    to bottom,
+    #0B0D0C 0,
+    #14343A calc(var(--sec5-light-start) - 280px),
+    #356A72 calc(var(--sec5-light-start) - 180px),
+    #6C9DA3 calc(var(--sec5-light-start) - 100px),
+    #A9CDD1 calc(var(--sec5-light-start) - 40px),
+    #D7E8EA calc(var(--sec5-light-start) - 10px),
+    #EEF5F6 var(--sec5-light-start),
+    #EEF5F6 var(--sec5-light-end),
+    #D7E8EA calc(var(--sec5-light-end) + 30px),
+    #A9CDD1 calc(var(--sec5-light-end) + 100px),
+    #6C9DA3 calc(var(--sec5-light-end) + 180px),
+    #356A72 calc(var(--sec5-light-end) + 260px),
+    #14343A calc(var(--sec5-light-end) + 340px),
+    #0B0D0C 100%
+  );
+}
+
+/* ============================================
+   SECTION 05 - WHY CLEAN CODE
+   ============================================ */
+.why-section {
+  position: relative;
+  width: 100%;
+  padding: clamp(120px, 18vh, 200px) clamp(16px, 4vw, 64px) clamp(140px, 20vh, 240px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(80px, 12vh, 140px);
+  min-height: 100vh;
+  color: #0B0D0C;
+  isolation: isolate;
+}
+
+.why-header {
+  position: relative;
+  z-index: 3;
+  max-width: 980px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.why-headline {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: clamp(28px, 5vw, 56px);
+  color: #0B0D0C;
+  margin: 0;
+  display: block;
+  min-height: 1.15em;
+}
+
+.why-headline-part1 { color: #1A1F22; }
+.why-headline-part2 { color: #0B0D0C; font-weight: 900; }
+
+.why-subhead {
+  font-family: var(--font-heebo), sans-serif;
+  font-size: clamp(15px, 1.6vw, 19px);
+  font-weight: 500;
+  color: #3D5358;
+  margin: 8px 0 0;
+  letter-spacing: 0;
+  min-height: 1.4em;
+}
+
+.code-cursor {
+  display: inline-block;
+  width: 0.55ch;
+  background: #4DD8E5;
+  color: transparent;
+  margin-inline-start: 1px;
+  vertical-align: baseline;
+  animation: cursorBlink 0.85s steps(2) infinite;
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(77, 216, 229, 0.55);
+}
+
+.headline-cursor {
+  background: #2D8896;
+  box-shadow: 0 0 12px rgba(45, 136, 150, 0.45);
+}
+
+@keyframes cursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.why-cards-wrap {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1480px;
+}
+
+.why-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 0.7fr) 1fr;
+  gap: clamp(20px, 3vw, 40px);
+  align-items: stretch;
+}
+
+.why-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 2.5vw, 32px);
+}
+
+.why-center-gap { min-height: 1px; }
+
+.code-card {
+  position: relative;
+  background: linear-gradient(
+    145deg,
+    rgba(17, 22, 24, 0.92) 0%,
+    rgba(11, 13, 12, 0.95) 100%
+  );
+  border: 1px solid rgba(77, 216, 229, 0.18);
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow:
+    0 24px 60px -20px rgba(0, 0, 0, 0.45),
+    0 2px 0 0 rgba(255, 255, 255, 0.04) inset,
+    0 -1px 0 0 rgba(77, 216, 229, 0.08) inset;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
+}
+
+.code-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(77, 216, 229, 0.32);
+  box-shadow:
+    0 32px 72px -22px rgba(0, 0, 0, 0.55),
+    0 2px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 0 0 1px rgba(77, 216, 229, 0.12) inset;
+}
+
+.code-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(77, 216, 229, 0.12);
+}
+
+.code-card-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.code-card-dot-1 { background: #FF6157; }
+.code-card-dot-2 { background: #FFC130; }
+.code-card-dot-3 { background: #2ACB42; }
+
+.code-card-filename {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-size: 12px;
+  color: rgba(232, 244, 246, 0.55);
+  margin-inline-start: auto;
+  letter-spacing: 0.02em;
+}
+
+.code-card-body {
+  margin: 0;
+  padding: 18px 18px 22px;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", "Consolas", monospace;
+  font-size: clamp(13px, 1.1vw, 14.5px);
+  line-height: 1.7;
+  color: #E8F4F6;
+  white-space: pre;
+  overflow-x: auto;
+  min-height: 180px;
+  text-align: left;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(77, 216, 229, 0.2) transparent;
+}
+
+.code-card-body::-webkit-scrollbar { height: 4px; }
+.code-card-body::-webkit-scrollbar-track { background: transparent; }
+.code-card-body::-webkit-scrollbar-thumb {
+  background: rgba(77, 216, 229, 0.18);
+  border-radius: 2px;
+}
+
+.code-card-body code {
+  font-family: inherit;
+  display: block;
+}
+
+.code-line { display: block; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1024px) {
+  .why-cards-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 3vw, 24px);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .why-center-gap { display: none; }
+  .why-col { gap: clamp(16px, 3vw, 24px); }
+}
+
+@media (max-width: 600px) {
+  .why-section {
+    padding: clamp(80px, 14vh, 140px) 16px clamp(100px, 16vh, 160px);
+    gap: clamp(56px, 9vh, 88px);
+  }
+  .code-card-body {
+    font-size: 12.5px;
+    padding: 14px 14px 18px;
+    min-height: 160px;
+  }
+  .code-card-header { padding: 9px 12px; }
+  .code-card-filename { font-size: 11px; }
+}
