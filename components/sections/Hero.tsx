@@ -1,8 +1,6 @@
 "use client";
 
 import { type RefObject, useEffect, useRef, useState } from "react";
-import ScrollReveal from "@/components/motion/ScrollReveal";
-import CharacterReveal from "@/components/motion/CharacterReveal";
 
 const MOBILE_QUERY = "(max-width: 767px)";
 const LOOP_PAUSE_MS = 2500;
@@ -69,8 +67,7 @@ export default function Hero() {
   useVideoLoopPause(desktopVideoRef, !reduceMotion && !isMobile);
   useVideoLoopPause(mobileRef, !reduceMotion && isMobile);
 
-  // Entrance is now owned by <ScrollReveal> wrappers around each piece —
-  // they reveal as the user scrolls and un-reveal on scroll up.
+  // Static heading + subhead + CTA — no entrance animations.
 
   return (
     <section className="relative min-h-screen overflow-hidden md:bg-black">
@@ -168,32 +165,40 @@ export default function Hero() {
           Top padding clears the fixed site header. */}
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-[65fr_35fr] items-end md:items-center min-h-screen max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-[8vh] md:pt-24 md:pb-20">
         <div className="flex flex-col gap-8 md:gap-10 text-center md:text-right items-center md:items-stretch max-w-2xl md:max-w-none mx-auto md:mx-0 md:ms-0 md:me-auto">
-          {/* Hero h1 — per-character mount reveal with a teal color flash.
-              Same text/highlights as before; the original mid-teal "תבנית"
-              becomes brand-teal under the unified 2-color model. */}
-          <CharacterReveal
-            as="h1"
-            mode="mount"
-            colorFlash
-            className="hero-headline"
-            segments={[
-              { text: "רוב העסקים נראים כמו " },
-              { text: "תבנית", color: "teal" },
-              { text: ", שלכם " },
-              { text: "לא", color: "teal" },
-              { text: "." },
-            ]}
-          />
+          {/* Static h1 with the original inline color spans + forced line
+              breaks preserved exactly. */}
+          <h1 className="hero-headline">
+            <span className="block whitespace-nowrap">רוב העסקים נראים</span>
+            <span className="block whitespace-nowrap">
+              כמו <span style={{ color: "#6EBFC9" }}>תבנית</span>,
+            </span>
+            <span
+              className="block whitespace-nowrap hero-headline-emphasis"
+              style={{ textShadow: "0 0 60px rgba(77, 216, 229, 0.2)" }}
+            >
+              שלכם{" "}
+              <span
+                style={{
+                  color: "#4DD8E5",
+                  fontWeight: 900,
+                  textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
+                }}
+              >
+                לא
+              </span>
+              .
+            </span>
+          </h1>
 
-          <ScrollReveal as="p" className="hero-subhead mx-auto md:mx-0">
+          <p className="hero-subhead mx-auto md:mx-0">
             מיתוג, אתר ופרסום בסטודיו אחד
-          </ScrollReveal>
+          </p>
 
-          <ScrollReveal className="w-full sm:w-auto self-center md:self-start">
+          <div className="w-full sm:w-auto self-center md:self-start">
             <a href="#works" className="btn-glass btn-glass-primary">
               לעבודות ↓
             </a>
-          </ScrollReveal>
+          </div>
         </div>
       </div>
 

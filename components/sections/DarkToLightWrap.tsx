@@ -1,50 +1,64 @@
 "use client";
 
-// Wraps the dark Before/After section + the light Works section in a single
-// gradient surface. The transition becomes ONE continuous gradient anchored
-// to the boundary between the two sections, instead of two separate
-// per-section gradients meeting at a seam.
+// Wraps the dark BeforeAfter section + the light Works section + the dark
+// Services section in a single gradient surface. The dark↔light↔dark
+// transitions become two pieces of ONE continuous gradient anchored to
+// the boundaries between the three sections, instead of three separate
+// per-section backgrounds meeting at seams.
 //
-// A ResizeObserver measures the height of the inner s2 wrapper and writes
-// it to the `--s2h` CSS variable on the outer container. The gradient stops
-// in globals.css use that variable so the dark→teal→light ramp lands
-// exactly across the section boundary regardless of section size or zoom.
+// A ResizeObserver writes three CSS custom properties on the outer
+// container:
+//   --s2h          : height of section 2 (== top of section 3 in
+//                    wrapper-local coordinates)
+//   --sec3-bottom  : bottom of section 3 (== top of section 4)
+//   --sec4-mid     : Y where section 4 has fully settled into dark
+//
+// The gradient stops in globals.css use those vars so the dark→teal→light
+// ramp at the 2/3 boundary and the mirrored light→teal→dark ramp at the
+// 3/4 boundary always land in the right place regardless of section size
+// or zoom.
 
 import { useEffect, useRef, type ReactNode } from "react";
 
 interface Props {
   s2: ReactNode;
   s3: ReactNode;
+  s4: ReactNode;
 }
 
-export default function DarkToLightWrap({ s2, s3 }: Props) {
+export default function DarkToLightWrap({ s2, s3, s4 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const s2Ref = useRef<HTMLDivElement | null>(null);
+  const s3Ref = useRef<HTMLDivElement | null>(null);
+  const s4Ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const wrap = wrapRef.current;
     const s2el = s2Ref.current;
-    if (!wrap || !s2el) return;
+    const s3el = s3Ref.current;
+    const s4el = s4Ref.current;
+    if (!wrap || !s2el || !s3el || !s4el) return;
 
     const update = () => {
-      wrap.style.setProperty("--s2h", `${s2el.offsetHeight}px`);
-      // Anchor the bottom darkening to the works-grid bottom so the cards
-      // always sit on full-bright background; darkening starts only AFTER
-      // the last card row.
-      const grid = document.getElementById("works-grid");
-      if (grid) {
-        const gridBottom =
-          grid.getBoundingClientRect().bottom -
-          wrap.getBoundingClientRect().top;
-        wrap.style.setProperty("--grid-bottom", `${gridBottom}px`);
-      }
+      const wrapTop = wrap.getBoundingClientRect().top;
+      const s2h = s2el.offsetHeight;
+      const s3Bottom = s3el.getBoundingClientRect().bottom - wrapTop;
+      const s4Top = s4el.getBoundingClientRect().top - wrapTop;
+      // sec4-mid: well into section 4 where the dark is stable. 40% of
+      // section 4's height past its top, capped at 400px so even a very
+      // tall section 4 doesn't push the dark transition unreasonably far.
+      const s4Mid = s4Top + Math.min(400, s4el.offsetHeight * 0.4);
+
+      wrap.style.setProperty("--s2h", `${s2h}px`);
+      wrap.style.setProperty("--sec3-bottom", `${s3Bottom}px`);
+      wrap.style.setProperty("--sec4-mid", `${s4Mid}px`);
     };
 
     update();
     const ro = new ResizeObserver(update);
     ro.observe(s2el);
-    const grid = document.getElementById("works-grid");
-    if (grid) ro.observe(grid);
+    ro.observe(s3el);
+    ro.observe(s4el);
     window.addEventListener("resize", update);
     return () => {
       ro.disconnect();
@@ -55,7 +69,8 @@ export default function DarkToLightWrap({ s2, s3 }: Props) {
   return (
     <div className="dark-to-light" ref={wrapRef}>
       <div ref={s2Ref}>{s2}</div>
-      {s3}
+      <div ref={s3Ref}>{s3}</div>
+      <div ref={s4Ref}>{s4}</div>
     </div>
   );
 }

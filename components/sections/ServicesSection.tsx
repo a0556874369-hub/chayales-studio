@@ -2,22 +2,10 @@
 
 // Section 04 — שירותים.
 // Dark continuation of Section 03's bottom. 4 dark-glass cards in a 2x2
-// bento (1 column on mobile). The 4th card ("חבילה מלאה") is the flagship.
-// Entrance animation owned by <ScrollReveal> wrappers; the cards
-// themselves only host the mouse-driven glass interaction.
-
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
-import { useRef } from "react";
-import { useGlassInteraction } from "@/lib/useGlassInteraction";
-import CharacterReveal from "@/components/motion/CharacterReveal";
-import HeadlineAccent from "@/components/motion/HeadlineAccent";
-import ScrollReveal from "@/components/motion/ScrollReveal";
-import SectionSweep from "@/components/motion/SectionSweep";
+// bento (1 column on mobile). The 4th card ("חבילה מלאה") is the flagship
+// — visually highlighted via a teal border + teal halo, no text label.
+// Fully static — no motion wrappers, no scroll-coupled reveals, no
+// mouse interaction.
 
 interface Service {
   index: string;
@@ -61,94 +49,58 @@ const SERVICES: Service[] = [
 ];
 
 function ServiceCard({ service }: { service: Service }) {
-  const cardRef = useGlassInteraction<HTMLElement>();
   return (
     <article
-      ref={cardRef as React.Ref<HTMLElement>}
       className={`service-card ${service.flagship ? "service-card-flagship" : ""}`}
       aria-label={`שירות ${service.index}: ${service.name}`}
     >
-      <div className="service-card-tilt">
-        <span className="service-card-index" aria-hidden>
-          {service.index}
-        </span>
-        <h3 className="service-card-name">{service.name}</h3>
-        <p className="service-card-desc">{service.description}</p>
-        <div className="service-card-footer">
-          <div className="service-card-divider" aria-hidden />
-          <p className="service-card-price">{service.price}</p>
-        </div>
+      <span className="service-card-index" aria-hidden>
+        {service.index}
+      </span>
+      <h3 className="service-card-name">{service.name}</h3>
+      <p className="service-card-desc">{service.description}</p>
+      <div className="service-card-footer">
+        <div className="service-card-divider" aria-hidden />
+        <p className="service-card-price">{service.price}</p>
       </div>
     </article>
   );
 }
 
 export default function ServicesSection() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const reduce = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"] as never,
-  });
-  const glowsY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    reduce ? [0, 0] : [120, -120],
-  );
-
   return (
     <section
-      ref={sectionRef}
       id="services"
       className="services-section"
       aria-label="שירותים"
     >
-      <motion.div
-        className="parallax-glows"
-        aria-hidden
-        style={{ y: glowsY }}
-      >
-        <span className="services-glow services-glow-1" aria-hidden />
-        <span className="services-glow services-glow-2" aria-hidden />
-        <span className="services-glow services-glow-3" aria-hidden />
-      </motion.div>
-
-      <SectionSweep theme="dark" />
+      {/* Static teal glow divs — positioning + gradient only. */}
+      <span className="services-glow services-glow-1" aria-hidden />
+      <span className="services-glow services-glow-2" aria-hidden />
+      <span className="services-glow services-glow-3" aria-hidden />
 
       <div className="services-content">
-        <CharacterReveal
-          as="h2"
-          mode="scroll"
-          className="services-headline"
-          segments={[
-            { text: "שירותים שיוצרים מותג שלם, לא רק לוגו.", color: "white" },
-          ]}
-        />
-        <HeadlineAccent />
+        <h2 className="services-headline">
+          שירותים שיוצרים מותג שלם, לא רק לוגו.
+        </h2>
 
-        <ScrollReveal as="p" className="services-subhead">
+        <p className="services-subhead">
           מתחילים מאסטרטגיה. ממשיכים בשפה ויזואלית. מסיימים במותג שמדבר בעצמו.
-        </ScrollReveal>
+        </p>
 
         <div className="services-grid" dir="rtl">
           {SERVICES.map((s) => (
-            <ScrollReveal
-              key={s.index}
-              className="service-card-wrap"
-              scaleFrom={0.94}
-              rotateXFrom={6}
-            >
+            <div key={s.index} className="service-card-wrap">
               <ServiceCard service={s} />
-            </ScrollReveal>
+            </div>
           ))}
         </div>
 
-        <ScrollReveal className="services-cta-wrap">
+        <div className="services-cta-wrap">
           <a href="#contact" className="services-cta">
             בואו נדבר <span aria-hidden>←</span>
           </a>
-        </ScrollReveal>
+        </div>
       </div>
     </section>
   );
