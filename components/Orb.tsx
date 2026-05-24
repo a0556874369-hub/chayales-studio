@@ -104,13 +104,13 @@ export default function Orb() {
     points,
     [0, 0, 0.35, 0.22, 0, 0.35, 0.65],
   );
-  // Monotonically drifts right across the whole journey — never returns
-  // toward centre after the sec 2 mid pose. By sec 4 end it sits clearly
-  // on the right side of the viewport, over the right column of cards.
+  // Monotonically drifts right across the whole journey. Sec 3 pushed
+  // noticeably further right than before; sec 4 follows to maintain the
+  // monotonic flow. Centre positions: ~68 → 80 → 84 → 87 → 90 vw.
   const x = useTransform(
     scrollY,
     points,
-    [0, 0, vw * 0.18, vw * 0.22, vw * 0.25, vw * 0.28, vw * 0.32],
+    [0, 0, vw * 0.18, vw * 0.3, vw * 0.34, vw * 0.37, vw * 0.4],
   );
   // y stays at 0 (centre, ~40vh) through sections 2 and 3. At sec3End
   // the orb is opacity 0, so it can invisibly "fall" 20vh down — when it
