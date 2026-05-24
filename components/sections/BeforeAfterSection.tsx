@@ -136,7 +136,7 @@ export default function BeforeAfterSection() {
   const afterOpacity = Math.min(1, (100 - sliderPosition) / 50);
 
   return (
-    <section className="ba-section">
+    <section id="before-after" className="ba-section">
       {/* Top fade — continues the dark band from the Hero, then dissolves
           downward to reveal the global LightRays beneath this section. */}
       <div

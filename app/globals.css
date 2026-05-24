@@ -1925,6 +1925,62 @@ body {
 }
 
 /* ============================================================
+   Scrolling teal orb (components/Orb.tsx).
+   A CSS-only sphere: radial gradient for the body, soft outer
+   teal halo via box-shadow, and an inset shadow at the bottom-
+   right to read as a 3D sphere instead of a flat disc.
+   Positioned dead-centre of the viewport — framer-motion's
+   motion values (x/scale/rotate/opacity) drive the rest.
+   ============================================================ */
+
+.orb {
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  width: 38vw;
+  height: 38vw;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #B8E8ED 0%,
+    #4DD8E5 35%,
+    #2D8896 92%
+  );
+  box-shadow:
+    0 0 80px rgba(77, 216, 229, 0.32),
+    inset -10px -14px 40px rgba(11, 13, 12, 0.28);
+  /* The base transform centres the element on (50vw, 50vh). framer-motion
+     APPENDS its x/scale/rotate to this via motion values — it doesn't
+     replace this transform. */
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  .orb {
+    width: 56vw;
+    height: 56vw;
+  }
+}
+
+/* ============================================================
+   z-index bumps so section content stays above the orb (z:2).
+   The orb lives in main's stacking context at z:2. We DO NOT want
+   to give .dark-to-light itself a stacking context — that would
+   bury the orb beneath the wrapper's opaque gradient. Instead, the
+   three direct children of the wrapper (the s2/s3/s4 ref divs) get
+   z:3 each. The wrapper stays at z-auto, its gradient paints at the
+   z-auto layer of main (below orb), and the three child divs paint
+   on top of the orb. Section content, being inside those child divs,
+   is also above orb — except where pixels are transparent, where the
+   orb shows through. That's exactly the desired effect.
+   ============================================================ */
+.dark-to-light > * {
+  position: relative;
+  z-index: 3;
+}
+
+/* ============================================================
    Section 04 — שירותים
    Dark glass cards on a #0B0D0C base with 3 subtle teal radial
    glows. The radials give the cards' backdrop-filter something to
