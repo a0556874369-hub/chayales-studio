@@ -2,15 +2,20 @@
 
 // A single teal 3D-ish sphere that accompanies the scroll across the page.
 // - Hidden during Hero.
-// - Slides in from the right and settles ~40% off the right edge in Section 2.
+// - Rises in DURING the Hero→Section 2 transition so it's already settled
+//   on the right (xMax, opacity 0.65) by the time Section 2 begins.
 // - Fades out completely across Section 3 (the gallery shouldn't compete).
-// - Reappears centred and large in Section 4.
+// - Reappears in Section 4, scaled up and pushed DOWN (~25vh) so it sits
+//   behind the card row instead of behind the headline. The cards'
+//   backdrop-blur softens the orb where they overlap; the headline + sub
+//   sit on clean air above it.
 //
 // CSS-only sphere (no image asset) — see .orb in globals.css.
-// Position/scale/opacity are scroll-coupled via framer-motion useScroll +
-// useTransform. The wrapper is position:fixed with overflow:hidden so the
-// orb can sit ~40% off-screen on the right without inducing horizontal
-// scroll. pointer-events:none means clicks pass through to content below.
+// Position / scale / opacity / y / rotate are all scroll-coupled via
+// framer-motion useScroll + useTransform. The wrapper is position:fixed
+// with overflow:hidden so the orb can sit ~40% off-screen on the right
+// without inducing horizontal scroll. pointer-events:none means clicks
+// pass through to content below.
 
 import {
   motion,
@@ -24,16 +29,17 @@ export default function Orb() {
   const { scrollY } = useScroll();
   const prefersReducedMotion = useReducedMotion();
 
-  // Viewport width — drives the mobile/desktop fork for max horizontal
-  // displacement and the Section 4 final scale.
+  // Viewport size drives mobile/desktop forks and the Section-4 downward
+  // offset. Updated in measure() below.
   const [vw, setVw] = useState(1024);
+  const [vh, setVh] = useState(800);
 
   // Scroll-Y breakpoints. Defaults are reasonable for first paint; the
   // measure() effect below replaces them with the actual section offsets
   // as soon as the DOM is laid out.
   const [bp, setBp] = useState({
-    sec2Start: 800,
-    sec2Mid: 1500,
+    orbInStart: 600,
+    orbInEnd: 1100,
     sec3Start: 2400,
     sec3End: 3500,
     sec4Start: 3700,
@@ -42,34 +48,34 @@ export default function Orb() {
 
   useEffect(() => {
     const measure = () => {
-      setVw(window.innerWidth);
+      const newVw = window.innerWidth;
+      const newVh = window.innerHeight;
+      setVw(newVw);
+      setVh(newVh);
 
       const sec2 = document.getElementById("before-after");
       const sec3 = document.getElementById("works");
       const sec4 = document.getElementById("services");
       if (!sec2 || !sec3 || !sec4) return;
 
-      // offsetTop is relative to the offsetParent. The sections live inside
-      // DarkToLightWrap which lives inside <main>. We need page-relative Y
-      // so getBoundingClientRect + scrollY is the safer measurement.
       const sec2Top = sec2.getBoundingClientRect().top + window.scrollY;
       const sec3Top = sec3.getBoundingClientRect().top + window.scrollY;
       const sec4Top = sec4.getBoundingClientRect().top + window.scrollY;
-      const vh = window.innerHeight;
 
       setBp({
-        sec2Start: sec2Top - vh * 0.3,
-        sec2Mid: (sec2Top + sec3Top) / 2,
-        sec3Start: sec3Top - vh * 0.3,
+        // The rise happens DURING the Hero → Section 2 transition so the
+        // orb is already settled at xMax by the time Section 2 begins.
+        orbInStart: sec2Top - newVh * 0.6, // 60vh before sec 2 — start
+        orbInEnd: sec2Top + newVh * 0.1, //  10vh into sec 2 — settled
+        sec3Start: sec3Top - newVh * 0.3,
         sec3End: sec3Top + (sec4Top - sec3Top) * 0.7,
-        sec4Start: sec4Top - vh * 0.3,
-        sec4Mid: sec4Top + vh * 0.5,
+        sec4Start: sec4Top - newVh * 0.3,
+        sec4Mid: sec4Top + newVh * 0.5,
       });
     };
 
     measure();
     window.addEventListener("resize", measure);
-    // Re-measure if any section resizes (images load, modal closes, etc.).
     const ro = new ResizeObserver(measure);
     document.querySelectorAll("section").forEach((s) => ro.observe(s));
 
@@ -82,14 +88,14 @@ export default function Orb() {
   const isMobile = vw < 768;
   const xMax = isMobile ? vw * 0.3 : vw * 0.46;
   const scaleSec4 = isMobile ? 1.3 : 1.58;
+  // In Section 4 the orb drops 25vh below centre so its body sits behind
+  // the card row, not behind the headline.
+  const yOffsetSec4 = vh * 0.25;
 
-  // Always provide a strictly-increasing input array — framer-motion
-  // requires it. The defaults satisfy this; after measure() the real
-  // section offsets are also strictly increasing top → bottom.
   const points = [
     0,
-    bp.sec2Start,
-    bp.sec2Mid,
+    bp.orbInStart,
+    bp.orbInEnd,
     bp.sec3Start,
     bp.sec3End,
     bp.sec4Start,
@@ -99,9 +105,14 @@ export default function Orb() {
   const opacity = useTransform(
     scrollY,
     points,
-    [0, 0, 0.65, 0.65, 0, 0, 0.7],
+    [0, 0, 0.65, 0.65, 0, 0, 0.6],
   );
   const x = useTransform(scrollY, points, [0, 0, xMax, xMax, 0, 0, 0]);
+  const y = useTransform(
+    scrollY,
+    points,
+    [0, 0, 0, 0, 0, 0, yOffsetSec4],
+  );
   const scale = useTransform(
     scrollY,
     points,
@@ -109,7 +120,8 @@ export default function Orb() {
   );
   const rotate = useTransform(scrollY, points, [0, 0, 1, 1, 0, 0, -1.5]);
 
-  // prefers-reduced-motion: render only the Section 4 final pose, static.
+  // prefers-reduced-motion: render only the Section 4 final pose,
+  // static — including the new downward offset.
   if (prefersReducedMotion) {
     return (
       <div
@@ -125,8 +137,8 @@ export default function Orb() {
         <div
           className="orb"
           style={{
-            opacity: 0.7,
-            transform: `translate(-50%, -50%) scale(${scaleSec4})`,
+            opacity: 0.6,
+            transform: `translate(-50%, -50%) translateY(${yOffsetSec4}px) scale(${scaleSec4})`,
           }}
         />
       </div>
@@ -144,7 +156,7 @@ export default function Orb() {
         overflow: "hidden",
       }}
     >
-      <motion.div className="orb" style={{ x, scale, opacity, rotate }} />
+      <motion.div className="orb" style={{ x, y, scale, opacity, rotate }} />
     </div>
   );
 }
