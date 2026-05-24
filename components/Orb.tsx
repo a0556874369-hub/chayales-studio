@@ -1,24 +1,22 @@
 "use client";
 
-// A single teal 3D-ish sphere that accompanies the scroll across the page.
-// Acts:
-//   1. Hero      — invisible.
-//   2. Section 2 — appears settled on the right at full size, opacity
-//                  0.65. The rise (opacity 0 → 0.65, x 0 → xMax,
-//                  scale 0.6 → 1) happens BEFORE Section 2 begins, so
-//                  by the time the user lands in Section 2 the orb is
-//                  already in its final pose and stays there.
-//   3. Section 3 — fades out (the gallery shouldn't compete).
-//   4. Section 4 — returns centred, scaled up (1.58 desktop / 1.3 mobile),
-//                  pushed ~25vh down so it sits behind the card row
-//                  rather than the headline. Opacity 0.60 so the in-card
-//                  text stays crisp through the glass blur.
+// A single teal sphere that lives as an AMBIENT presence across the whole
+// scroll. Not a dramatic element — a quiet companion.
+//
+//   1. Hero       — invisible.
+//   2. Section 2  — appears small (~22vw), shifted slightly right,
+//                   opacity ~0.35. Doesn't block content.
+//   3. Section 3  — stays present but smaller and more transparent
+//                   (~17vw, opacity ~0.22), seen THROUGH the works
+//                   cards rather than competing with them.
+//   4. Transition — fades to 0 for a single moment between Sections 3
+//                   and 4.
+//   5. Section 4  — re-enters gently and grows + brightens slowly to a
+//                   calm peak (~34vw, opacity 0.65). No "BOOM".
 //
 // CSS-only sphere — see .orb in globals.css. All channels (x, y, scale,
 // opacity, rotate) are scroll-coupled. The wrapper is position:fixed
-// with overflow:hidden so the orb can sit ~40% off-screen on the right
-// without inducing horizontal scroll. pointer-events:none → clicks pass
-// through.
+// with overflow:hidden. pointer-events:none → clicks pass through.
 
 import {
   motion,
@@ -38,12 +36,12 @@ export default function Orb() {
   // Defaults keep the layout sane for first paint; measure() below
   // replaces them with real section offsets.
   const [bp, setBp] = useState({
-    orbInStart: 600, // approaching sec 2 — still invisible
-    orbInEnd: 1100, // settled right pose by here
-    sec3Start: 2400,
+    sec2Start: 800,
+    sec2Mid: 1500,
+    sec3Mid: 2400,
     sec3End: 3500,
     sec4Start: 3700,
-    sec4Mid: 4500,
+    sec4End: 4500,
   });
 
   useEffect(() => {
@@ -63,14 +61,12 @@ export default function Orb() {
       const sec4Top = sec4.getBoundingClientRect().top + window.scrollY;
 
       setBp({
-        // The rise happens DURING the Hero → Section 2 transition so the
-        // orb is already settled at xMax by the time Section 2 begins.
-        orbInStart: sec2Top - newVh * 0.6, // -60vh from sec 2 — start
-        orbInEnd: sec2Top + newVh * 0.1, //  +10vh into sec 2 — settled
-        sec3Start: sec3Top - newVh * 0.3,
-        sec3End: sec3Top + (sec4Top - sec3Top) * 0.7,
-        sec4Start: sec4Top - newVh * 0.3,
-        sec4Mid: sec4Top + newVh * 0.5,
+        sec2Start: sec2Top - newVh * 0.3,
+        sec2Mid: sec2Top + (sec3Top - sec2Top) / 2,
+        sec3Mid: sec3Top + (sec4Top - sec3Top) / 2,
+        sec3End: sec4Top - newVh * 0.15,
+        sec4Start: sec4Top + newVh * 0.1,
+        sec4End: sec4Top + newVh * 0.9,
       });
     };
 
@@ -85,56 +81,51 @@ export default function Orb() {
     };
   }, []);
 
-  const isMobile = vw < 768;
-  const xMax = isMobile ? vw * 0.3 : vw * 0.46;
-  const scaleSec4 = isMobile ? 1.3 : 1.58;
-  const yOffsetSec4 = vh * 0.25;
-
   // 7 stops. Index → meaning:
   //   0  page start
-  //   1  orbInStart  (still invisible — rise starts here)
-  //   2  orbInEnd    (settled at right, full pose — already by start of sec 2)
-  //   3  sec3Start
-  //   4  sec3End
-  //   5  sec4Start
-  //   6  sec4Mid
+  //   1  sec2Start  (still invisible)
+  //   2  sec2Mid    (gentle reveal — small + right + low opacity)
+  //   3  sec3Mid    (smaller + lower opacity — "under" the gallery)
+  //   4  sec3End    (briefly fades to 0 for the 3→4 handoff)
+  //   5  sec4Start  (returns gently)
+  //   6  sec4End    (calm peak — bigger but still ~34vw, opacity 0.65)
   const points = [
     0,
-    bp.orbInStart,
-    bp.orbInEnd,
-    bp.sec3Start,
+    bp.sec2Start,
+    bp.sec2Mid,
+    bp.sec3Mid,
     bp.sec3End,
     bp.sec4Start,
-    bp.sec4Mid,
+    bp.sec4End,
   ];
 
   const opacity = useTransform(
     scrollY,
     points,
-    [0, 0, 0.65, 0.65, 0, 0, 0.6],
+    [0, 0, 0.35, 0.22, 0, 0.35, 0.65],
   );
   const x = useTransform(
     scrollY,
     points,
-    [0, 0, xMax, xMax, xMax, 0, 0],
+    [0, 0, vw * 0.15, vw * 0.1, vw * 0.05, 0, 0],
   );
   const y = useTransform(
     scrollY,
     points,
-    [0, 0, 0, 0, 0, 0, yOffsetSec4],
+    [0, 0, 0, vh * 0.08, vh * 0.05, 0, 0],
   );
   const scale = useTransform(
     scrollY,
     points,
-    [0.6, 0.6, 1, 1, 0.8, 0.8, scaleSec4],
+    [0.5, 0.5, 0.6, 0.45, 0.3, 0.5, 0.9],
   );
   const rotate = useTransform(
     scrollY,
     points,
-    [0, 0, 1, 1, 0, 0, -1.5],
+    [0, 0, 0.5, 0, 0, -0.5, -1],
   );
 
-  // prefers-reduced-motion: render only the Section 4 final pose, static.
+  // prefers-reduced-motion: render only the calm sec4End pose, static.
   if (prefersReducedMotion) {
     return (
       <div
@@ -150,8 +141,8 @@ export default function Orb() {
         <div
           className="orb"
           style={{
-            opacity: 0.6,
-            transform: `translate(-50%, -50%) translateY(${yOffsetSec4}px) scale(${scaleSec4})`,
+            opacity: 0.65,
+            transform: `translate(-50%, -50%) scale(0.9)`,
           }}
         />
       </div>
