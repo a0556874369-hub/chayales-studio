@@ -164,7 +164,20 @@ export default function Orb() {
         overflow: "hidden",
       }}
     >
-      <motion.div className="orb" style={{ x, y, scale, opacity, rotate }} />
+      <motion.div
+        className="orb"
+        style={{ x, y, scale, opacity, rotate }}
+        // .orb in globals.css sets top:40vh / left:50vw and uses
+        // transform: translate(-50%, -50%) to centre itself on that anchor.
+        // framer-motion's inline `style.transform` REPLACES that base
+        // transform, so without this template the anchor becomes the
+        // top-left corner of the orb and it shifts ~half its size down and
+        // right. transformTemplate prepends our centering translate to
+        // whatever framer-motion generates, restoring the centre anchor.
+        transformTemplate={(_values, generated) =>
+          `translate(-50%, -50%) ${generated}`
+        }
+      />
     </div>
   );
 }
