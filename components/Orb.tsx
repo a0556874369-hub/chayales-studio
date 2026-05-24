@@ -3,11 +3,10 @@
 // A single teal 3D-ish sphere that accompanies the scroll across the page.
 // Acts:
 //   1. Hero      — invisible.
-//   2. Section 2 — appears settled on the right at full size, opacity
-//                  0.65. The rise (opacity 0 → 0.65, x 0 → xMax,
-//                  scale 0.6 → 1) happens BEFORE Section 2 begins, so
-//                  by the time the user lands in Section 2 the orb is
-//                  already in its final pose and stays there.
+//   2. Section 2 — rises in during the section (starts as soon as the
+//                  user approaches sec 2, settles at full pose by the
+//                  middle of sec 2). Settled = right edge, ~38vw, opacity
+//                  0.65.
 //   3. Section 3 — fades out (the gallery shouldn't compete).
 //   4. Section 4 — returns centred, scaled up (1.58 desktop / 1.3 mobile),
 //                  pushed ~25vh down so it sits behind the card row
@@ -38,8 +37,8 @@ export default function Orb() {
   // Defaults keep the layout sane for first paint; measure() below
   // replaces them with real section offsets.
   const [bp, setBp] = useState({
-    orbInStart: 600, // approaching sec 2 — still invisible
-    orbInEnd: 1100, // settled right pose by here
+    sec2Start: 800,
+    sec2Mid: 1500,
     sec3Start: 2400,
     sec3End: 3500,
     sec4Start: 3700,
@@ -63,10 +62,8 @@ export default function Orb() {
       const sec4Top = sec4.getBoundingClientRect().top + window.scrollY;
 
       setBp({
-        // The rise happens DURING the Hero → Section 2 transition so the
-        // orb is already settled at xMax by the time Section 2 begins.
-        orbInStart: sec2Top - newVh * 0.6, // -60vh from sec 2 — start
-        orbInEnd: sec2Top + newVh * 0.1, //  +10vh into sec 2 — settled
+        sec2Start: sec2Top - newVh * 0.3, // 30vh before sec 2 — rise begins
+        sec2Mid: (sec2Top + sec3Top) / 2, // midpoint of sec 2 → sec 3 = settled
         sec3Start: sec3Top - newVh * 0.3,
         sec3End: sec3Top + (sec4Top - sec3Top) * 0.7,
         sec4Start: sec4Top - newVh * 0.3,
@@ -92,16 +89,16 @@ export default function Orb() {
 
   // 7 stops. Index → meaning:
   //   0  page start
-  //   1  orbInStart  (still invisible)
-  //   2  orbInEnd    (settled at right, full pose)
+  //   1  sec2Start  (rise begins)
+  //   2  sec2Mid    (settled at right, full pose)
   //   3  sec3Start
   //   4  sec3End
   //   5  sec4Start
   //   6  sec4Mid
   const points = [
     0,
-    bp.orbInStart,
-    bp.orbInEnd,
+    bp.sec2Start,
+    bp.sec2Mid,
     bp.sec3Start,
     bp.sec3End,
     bp.sec4Start,
