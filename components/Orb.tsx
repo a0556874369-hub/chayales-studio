@@ -104,13 +104,14 @@ export default function Orb() {
     points,
     [0, 0, 0.35, 0.22, 0, 0.35, 0.65],
   );
-  // Monotonically drifts right across the whole journey. Sec 3 pushed
-  // noticeably further right than before; sec 4 follows to maintain the
-  // monotonic flow. Centre positions: ~68 → 80 → 84 → 87 → 90 vw.
+  // Sec 2 mid: a calm right-of-centre pose (~68vw).
+  // Sec 3: peaks all the way to the right edge (~90 → 92vw).
+  // Sec 4: gently drifts back toward centre (~82 → 70vw) — still on
+  // the right half but heading back, never overlapping the centred CTA.
   const x = useTransform(
     scrollY,
     points,
-    [0, 0, vw * 0.18, vw * 0.3, vw * 0.34, vw * 0.37, vw * 0.4],
+    [0, 0, vw * 0.18, vw * 0.4, vw * 0.42, vw * 0.32, vw * 0.2],
   );
   // y stays at 0 (centre, ~40vh) through sections 2 and 3. At sec3End
   // the orb is opacity 0, so it can invisibly "fall" 20vh down — when it
