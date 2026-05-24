@@ -1062,16 +1062,6 @@ body {
   width: 100%;
 }
 
-/* parallax-glows: holds the breathing glow spans of a section and drifts
-   slowly with scroll for parallax depth. Sits behind the content. */
-.parallax-glows {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
-}
-
 .work-card:hover,
 .work-card:focus-visible {
   transform: translateY(-6px);
@@ -1988,79 +1978,115 @@ body {
 
 /* ---------- 2x2 grid (md+) / 1 column on mobile ---------- */
 
+/* Portrait layout: 4 columns on desktop, 2 on tablet, 1 on mobile.
+   align-items: stretch keeps cards in the same row at equal height so
+   the prices line up on the same baseline. */
 .services-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
-  align-items: stretch; /* same-row cards have equal height */
+  gap: 16px;
+  align-items: stretch;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .services-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
   }
 }
 
 /* ---------- Dark glass card ---------- */
 
+/* Portrait card — content stacks vertically and centers horizontally.
+   min-height anchors the lower rail so prices align across cards even
+   when descriptions wrap to different line counts. */
 .service-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  text-align: right;
+  text-align: center;
+  align-items: center;
   background: rgba(11, 13, 12, 0.50);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 22px;
-  padding: 36px 32px;
+  padding: 28px 22px;
+  min-height: 400px;
+  height: 100%;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 10px 40px rgba(0, 0, 0, 0.35);
   color: #F1F5F4;
   isolation: isolate;
+  transition: border-color 220ms ease;
+}
+
+.service-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 @media (max-width: 640px) {
   .service-card {
-    padding: 28px 24px;
+    padding: 26px 22px;
+    min-height: 360px;
   }
 }
 
-.service-card-index {
+/* Icon wrap — fixed 96×96 sits at the top of the portrait card. */
+.service-card-icon-wrap {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 18px;
+  flex: 0 0 auto;
+}
+
+/* Re-tint the 3dicons.co source (multi-colored 3D render) to brand
+   teal while preserving all the 3D lighting (shadows, highlights, depth).
+   grayscale strips the original colors → sepia gives a uniform mid-tone →
+   hue-rotate spins it into the teal range → saturate amps it up → tiny
+   contrast bump keeps the 3D form readable. Tunable in one place. */
+.service-icon-3d {
+  filter: grayscale(100%) brightness(0.95) sepia(100%) hue-rotate(155deg)
+    saturate(2.8) contrast(1.05);
+  object-fit: contain;
   display: block;
-  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
-  font-weight: 400;
-  font-size: 56px;
-  line-height: 1;
-  color: #4DD8E5;
-  margin: 0 0 22px;
-  letter-spacing: -0.02em;
+  margin: 0 auto;
 }
 
 .service-card-name {
   font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
   font-weight: 800;
-  font-size: 1.45rem;
+  font-size: 1.2rem;
   line-height: 1.25;
   letter-spacing: -0.01em;
   color: #FAFBFB;
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 }
 
 .service-card-desc {
   font-family: var(--font-heebo), sans-serif;
   font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: rgba(241, 245, 244, 0.78);
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   flex: 1 1 auto; /* push footer to bottom; aligns price across cards */
 }
 
 .service-card-footer {
   margin-top: auto;
+  width: 100%;
 }
 
 .service-card-divider {
