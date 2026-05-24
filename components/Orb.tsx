@@ -109,10 +109,14 @@ export default function Orb() {
     points,
     [0, 0, vw * 0.15, vw * 0.1, vw * 0.05, 0, 0],
   );
+  // y stays at 0 (centre, ~40vh) through sections 2 and 3. At sec3End
+  // the orb is opacity 0, so it can invisibly "fall" 20vh down — when it
+  // re-emerges in sec 4 it's already centred lower at ~60vh, then grows
+  // in place without shifting vertically.
   const y = useTransform(
     scrollY,
     points,
-    [0, 0, 0, vh * 0.08, vh * 0.05, 0, 0],
+    [0, 0, 0, 0, vh * 0.2, vh * 0.2, vh * 0.2],
   );
   const scale = useTransform(
     scrollY,
