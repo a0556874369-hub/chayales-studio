@@ -1,17 +1,23 @@
 "use client";
 
 // Section 04 — שירותים.
-// Dark continuation of Section 03. 4 portrait cards in one row on desktop,
-// 2×2 on tablet, single column on mobile. Each card carries a 3D icon
-// (3dicons.co, CC0) re-tinted to brand teal via a CSS filter chain. The
-// 4th card ("חבילה מלאה") is the flagship — teal border + soft halo, no
-// text badge. Fully static — no motion, no mouse interaction.
+// 4 portrait cards in one row on desktop, 2×2 on tablet, single column
+// on mobile. Each card carries a Phosphor Thin icon at the top in brand
+// teal (no platform/background — pure line art). The 4th card
+// ("חבילה מלאה") is the flagship — teal border + soft halo, no badge.
+// Fully static — no motion, no mouse interaction beyond a soft hover
+// border tint.
 
-import Image from "next/image";
+import {
+  Compass,
+  Browsers,
+  PaperPlaneTilt,
+  Stack,
+  type Icon,
+} from "@phosphor-icons/react";
 
 interface Service {
-  iconSrc: string;
-  iconAlt: string;
+  Icon: Icon;
   name: string;
   description: string;
   price: string;
@@ -21,32 +27,28 @@ interface Service {
 // Copy is locked verbatim from the brief — do not rephrase.
 const SERVICES: Service[] = [
   {
-    iconSrc: "/icons/3d/branding.webp",
-    iconAlt: "מיתוג עסקי",
+    Icon: Compass,
     name: "מיתוג עסקי",
     description:
       "לוגו, פלטת צבעים, טיפוגרפיה, שפה ויזואלית - כל מה שצריך כדי שהעסק שלכם ייראה כמו עצמו ולא כמו אחר.",
     price: "החל מ-3,500 ₪",
   },
   {
-    iconSrc: "/icons/3d/websites.webp",
-    iconAlt: "אתרים בקוד נקי",
+    Icon: Browsers,
     name: "אתרים בקוד נקי",
     description:
       "אתרים מותאמים אישית, מהירים, עם אנימציות ייחודיות. בלי תבניות, בלי וורדפרס. רק קוד שעובד בשבילכם.",
     price: "החל מ-9,500 ₪",
   },
   {
-    iconSrc: "/icons/3d/ads.webp",
-    iconAlt: "מודעות לעיתון ודיגיטל",
+    Icon: PaperPlaneTilt,
     name: "מודעות לעיתון ודיגיטל",
     description:
       "מודעות שעוצרות אצבע. בעיתון או בפיד. בעברית או באנגלית. תמיד עם מסר ברור והבטחה ויזואלית.",
     price: "החל מ-950 ₪ למודעה",
   },
   {
-    iconSrc: "/icons/3d/package.webp",
-    iconAlt: "חבילה מלאה - מותג שלם",
+    Icon: Stack,
     name: "חבילה מלאה - מותג שלם",
     description:
       "מיתוג + אתר + מודעות. הכל מאותה יד, באותה שפה. הדרך הבטוחה למותג שלם בלי להתעסק עם 5 ספקים שונים.",
@@ -56,20 +58,14 @@ const SERVICES: Service[] = [
 ];
 
 function ServiceCard({ service }: { service: Service }) {
+  const { Icon: ServiceIcon } = service;
   return (
     <article
       className={`service-card ${service.flagship ? "service-card-flagship" : ""}`}
       aria-label={`שירות: ${service.name}`}
     >
       <div className="service-card-icon-wrap" aria-hidden>
-        <Image
-          src={service.iconSrc}
-          alt={service.iconAlt}
-          width={96}
-          height={96}
-          className="service-icon-3d"
-          loading="lazy"
-        />
+        <ServiceIcon size={56} weight="thin" color="#4DD8E5" />
       </div>
       <h3 className="service-card-name">{service.name}</h3>
       <p className="service-card-desc">{service.description}</p>
@@ -104,7 +100,7 @@ export default function ServicesSection() {
 
         <div className="services-grid" dir="rtl">
           {SERVICES.map((s) => (
-            <div key={s.iconSrc} className="service-card-wrap">
+            <div key={s.name} className="service-card-wrap">
               <ServiceCard service={s} />
             </div>
           ))}

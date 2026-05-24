@@ -2004,64 +2004,59 @@ body {
 
 /* ---------- Dark glass card ---------- */
 
-/* Portrait card — content stacks vertically and centers horizontally.
-   min-height anchors the lower rail so prices align across cards even
-   when descriptions wrap to different line counts. */
+/* Portrait card — designed glass surface (not generic-AI glass).
+   Asymmetric top+left teal hairline border (only those two sides — feels
+   like raking light from the top-left corner). Diagonal gradient instead
+   of a flat dark fill. Inset teal highlight along the bottom edge — like
+   light settling at the base of the glass. 24px radius. Depth comes from
+   the border + gradient + inset, NOT from a heavy drop shadow. */
 .service-card {
   position: relative;
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
-  background: rgba(11, 13, 12, 0.50);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 22px;
+  border: 0;
+  border-top: 1px solid rgba(77, 216, 229, 0.15);
+  border-left: 1px solid rgba(77, 216, 229, 0.15);
+  border-radius: 24px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 55%,
+    rgba(77, 216, 229, 0.02) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 28px 22px;
-  min-height: 400px;
+  min-height: 380px;
   height: 100%;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 10px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 -1px 0 rgba(77, 216, 229, 0.10);
   color: #F1F5F4;
   isolation: isolate;
-  transition: border-color 220ms ease;
+  transition: border-color 300ms ease;
 }
 
 .service-card:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-top-color: rgba(77, 216, 229, 0.30);
+  border-left-color: rgba(77, 216, 229, 0.30);
 }
 
 @media (max-width: 640px) {
   .service-card {
     padding: 26px 22px;
-    min-height: 360px;
+    min-height: 340px;
   }
 }
 
-/* Icon wrap — fixed 96×96 sits at the top of the portrait card. */
+/* Phosphor icon slot — pure line art, no platform/background. Centered
+   above the title. */
 .service-card-icon-wrap {
-  width: 96px;
-  height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 0 18px;
   flex: 0 0 auto;
-}
-
-/* Re-tint the 3dicons.co source (multi-colored 3D render) to brand
-   teal while preserving all the 3D lighting (shadows, highlights, depth).
-   grayscale strips the original colors → sepia gives a uniform mid-tone →
-   hue-rotate spins it into the teal range → saturate amps it up → tiny
-   contrast bump keeps the 3D form readable. Tunable in one place. */
-.service-icon-3d {
-  filter: grayscale(100%) brightness(0.95) sepia(100%) hue-rotate(155deg)
-    saturate(2.8) contrast(1.05);
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
 }
 
 .service-card-name {
@@ -2105,13 +2100,21 @@ body {
 
 /* ---------- Flagship (4th) card: teal border + soft teal halo ---------- */
 
+/* Flagship card (4th, "חבילה מלאה") — pushes the top/left teal hairline
+   to a higher alpha and adds a soft teal halo around the card so it
+   reads as the chosen offering. Preserves the new asymmetric border
+   structure of the base card. */
 .service-card-flagship {
-  border-color: rgba(77, 216, 229, 0.45);
+  border-top-color: rgba(77, 216, 229, 0.45);
+  border-left-color: rgba(77, 216, 229, 0.45);
   box-shadow:
-    inset 0 1px 0 rgba(184, 232, 237, 0.22),
-    0 10px 40px rgba(0, 0, 0, 0.35),
-    0 0 36px rgba(77, 216, 229, 0.18),
-    0 0 0 1px rgba(77, 216, 229, 0.10);
+    inset 0 -1px 0 rgba(77, 216, 229, 0.20),
+    0 0 36px rgba(77, 216, 229, 0.16);
+}
+
+.service-card-flagship:hover {
+  border-top-color: rgba(77, 216, 229, 0.65);
+  border-left-color: rgba(77, 216, 229, 0.65);
 }
 
 /* ---------- Section CTA ---------- */
