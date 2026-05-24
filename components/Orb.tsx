@@ -1,20 +1,22 @@
 "use client";
 
 // A single teal 3D-ish sphere that accompanies the scroll across the page.
-// Five acts as you scroll:
-//   1. Hero           — invisible.
-//   2. Section 2 reveal — appears small at viewport centre.
-//   3. Section 2 grow   — grows to full size, still centred.
-//   4. Section 2 settle — slides right and settles ~40% off-screen.
-//   5. Section 3       — fades out (the gallery shouldn't compete).
-//   6. Section 4       — returns centre+down+large, behind the cards.
+// Acts:
+//   1. Hero              — invisible.
+//   2. Section 2 top-left — appears at full size, top-left of the
+//                           viewport (clipped ~40% off the left, raised
+//                           ~18vh above centre).
+//   3. Section 2 right    — slides diagonally to right-of-centre, the
+//                           classic settled pose (clipped ~40% off the
+//                           right, vertically centred).
+//   4. Section 3          — fades out (the gallery shouldn't compete).
+//   5. Section 4          — returns centre, scaled up, pushed ~25vh
+//                           down so it sits behind the cards.
 //
-// CSS-only sphere (no image asset) — see .orb in globals.css.
-// All channels (x, y, scale, opacity, rotate) are scroll-coupled via
-// framer-motion useScroll + useTransform. The wrapper is position:fixed
-// with overflow:hidden so the orb can sit ~40% off-screen on the right
-// without inducing horizontal scroll. pointer-events:none means clicks
-// pass through to content below.
+// CSS-only sphere — see .orb in globals.css. All channels (x, y, scale,
+// opacity, rotate) are scroll-coupled. The wrapper is position:fixed
+// with overflow:hidden so the orb can sit ~40% off-screen without
+// inducing horizontal scroll. pointer-events:none → clicks pass through.
 
 import {
   motion,
@@ -31,13 +33,12 @@ export default function Orb() {
   const [vw, setVw] = useState(1024);
   const [vh, setVh] = useState(800);
 
-  // Scroll-Y breakpoints. Defaults keep the layout sane for first paint;
-  // measure() below replaces them with real section offsets.
+  // Defaults keep the layout sane for first paint; measure() below
+  // replaces them with real section offsets.
   const [bp, setBp] = useState({
     orbInStart: 600, // approaching sec 2 — still invisible
-    orbReveal: 900, // first appearance — small, centre
-    orbGrow: 1200, // growing to full size, still centre
-    orbSettle: 1500, // shifted right, at full pose
+    orbLeftPose: 900, // top-left settled pose
+    orbRightPose: 1500, // right-centre settled pose
     sec3Start: 2400,
     sec3End: 3500,
     sec4Start: 3700,
@@ -61,13 +62,11 @@ export default function Orb() {
       const sec4Top = sec4.getBoundingClientRect().top + window.scrollY;
 
       setBp({
-        // Three-phase reveal across Section 2: small-centre → full-centre
-        // → settled-right. Each phase consumes ~25vh of scroll so the
-        // user can watch each beat happen as they scroll through.
-        orbInStart: sec2Top - newVh * 0.2, // -20vh from sec 2
-        orbReveal: sec2Top + newVh * 0.1, // +10vh into sec 2
-        orbGrow: sec2Top + newVh * 0.35, // +35vh into sec 2
-        orbSettle: sec2Top + newVh * 0.6, // +60vh into sec 2
+        // Section 2: appear top-left at full size, then glide diagonally
+        // to right-centre over ~45vh of scroll.
+        orbInStart: sec2Top - newVh * 0.3, // -30vh from sec 2 (rise in)
+        orbLeftPose: sec2Top + newVh * 0.1, // +10vh into sec 2
+        orbRightPose: sec2Top + newVh * 0.55, // +55vh into sec 2
         sec3Start: sec3Top - newVh * 0.3,
         sec3End: sec3Top + (sec4Top - sec3Top) * 0.7,
         sec4Start: sec4Top - newVh * 0.3,
@@ -90,23 +89,24 @@ export default function Orb() {
   const xMax = isMobile ? vw * 0.3 : vw * 0.46;
   const scaleSec4 = isMobile ? 1.3 : 1.58;
   const yOffsetSec4 = vh * 0.25;
+  // The top-left pose lifts the orb ~18vh above viewport centre — mirrored
+  // around X, so it sits high-and-left as the user lands in Section 2.
+  const yLift = vh * 0.18;
 
-  // 9 stops. Index → meaning:
-  //   0  start
-  //   1  orbInStart  (still invisible)
-  //   2  orbReveal   (small, centre, partial opacity)
-  //   3  orbGrow     (full size, centre)
-  //   4  orbSettle   (shifted to right, full pose)
-  //   5  sec3Start
-  //   6  sec3End
-  //   7  sec4Start
-  //   8  sec4Mid
+  // 8 stops. Index → meaning:
+  //   0  page start
+  //   1  orbInStart   (still invisible)
+  //   2  orbLeftPose  (full size, top-left)
+  //   3  orbRightPose (full size, right-centre — the classic settled pose)
+  //   4  sec3Start
+  //   5  sec3End
+  //   6  sec4Start
+  //   7  sec4Mid
   const points = [
     0,
     bp.orbInStart,
-    bp.orbReveal,
-    bp.orbGrow,
-    bp.orbSettle,
+    bp.orbLeftPose,
+    bp.orbRightPose,
     bp.sec3Start,
     bp.sec3End,
     bp.sec4Start,
@@ -116,27 +116,27 @@ export default function Orb() {
   const opacity = useTransform(
     scrollY,
     points,
-    [0, 0, 0.5, 0.6, 0.65, 0.65, 0, 0, 0.6],
+    [0, 0, 0.65, 0.65, 0.65, 0, 0, 0.6],
   );
   const x = useTransform(
     scrollY,
     points,
-    [0, 0, 0, 0, xMax, xMax, xMax, 0, 0],
+    [0, 0, -xMax, xMax, xMax, xMax, 0, 0],
   );
   const y = useTransform(
     scrollY,
     points,
-    [0, 0, 0, 0, 0, 0, 0, 0, yOffsetSec4],
+    [0, 0, -yLift, 0, 0, 0, 0, yOffsetSec4],
   );
   const scale = useTransform(
     scrollY,
     points,
-    [0.5, 0.5, 0.5, 1, 1, 1, 0.8, 0.8, scaleSec4],
+    [0.6, 0.6, 1, 1, 1, 0.8, 0.8, scaleSec4],
   );
   const rotate = useTransform(
     scrollY,
     points,
-    [0, 0, 0, 0.5, 1, 1, 0, 0, -1.5],
+    [0, 0, -1, 1, 1, 0, 0, -1.5],
   );
 
   // prefers-reduced-motion: render only the Section 4 final pose, static.
