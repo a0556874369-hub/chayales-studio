@@ -104,10 +104,13 @@ export default function Orb() {
     points,
     [0, 0, 0.35, 0.22, 0, 0.35, 0.65],
   );
+  // Shifted right across the whole journey — the orb lives on the
+  // right half of the viewport, never centred. In sec 4 it sits over
+  // the right column of cards rather than dead-centre behind the CTA.
   const x = useTransform(
     scrollY,
     points,
-    [0, 0, vw * 0.15, vw * 0.1, vw * 0.05, 0, 0],
+    [0, 0, vw * 0.18, vw * 0.15, vw * 0.12, vw * 0.15, vw * 0.2],
   );
   // y stays at 0 (centre, ~40vh) through sections 2 and 3. At sec3End
   // the orb is opacity 0, so it can invisibly "fall" 20vh down — when it
