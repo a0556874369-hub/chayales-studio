@@ -3,6 +3,7 @@ import BeforeAfterSection from "@/components/sections/BeforeAfterSection";
 import WorksSection from "@/components/sections/WorksSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import WhyCleanCodeSection from "@/components/sections/WhyCleanCodeSection";
+import ProcessSection from "@/components/sections/ProcessSection";
 import DarkToLightWrap from "@/components/sections/DarkToLightWrap";
 import LightToDarkWrap from "@/components/sections/LightToDarkWrap";
 import Orb from "@/components/Orb";
@@ -20,6 +21,7 @@ export default function Home() {
       <LightToDarkWrap>
         <ServicesSection />
       </LightToDarkWrap>
+      <ProcessSection />
     </>
   );
 }

@@ -2690,3 +2690,329 @@ body {
     font-size: clamp(22px, 6vw, 30px);
   }
 }
+
+/* ============================================
+   SECTION 06 - PROCESS (תהליך עבודה)
+   horizontal scroll with pinning
+   ============================================ */
+
+.process-section {
+  position: relative;
+  width: 100%;
+  height: 400vh;
+  background: #0B0D0C;
+  color: #E8F4F6;
+  isolation: isolate;
+}
+
+.process-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(40px, 6vh, 70px);
+  padding: clamp(60px, 10vh, 100px) 0;
+  overflow: hidden;
+}
+
+.process-header {
+  position: relative;
+  z-index: 3;
+  max-width: 980px;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 64px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.process-headline {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-size: clamp(28px, 4.6vw, 52px);
+  color: #E8F4F6;
+  margin: 0;
+}
+
+.process-headline-accent {
+  font-weight: 900;
+  background: linear-gradient(135deg, #4DD8E5 0%, #B8E8ED 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.process-subhead {
+  font-family: var(--font-heebo), sans-serif;
+  font-size: clamp(15px, 1.6vw, 19px);
+  font-weight: 500;
+  color: rgba(232, 244, 246, 0.7);
+  margin: 8px 0 0;
+}
+
+/* קו timeline */
+.process-timeline-wrap {
+  position: relative;
+  width: clamp(280px, 70vw, 1100px);
+  height: 32px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.process-timeline-track {
+  position: absolute;
+  inset: 0 0 0 0;
+  top: 50%;
+  height: 2px;
+  background: rgba(77, 216, 229, 0.15);
+  border-radius: 1px;
+  transform: translateY(-50%);
+}
+
+.process-timeline-fill {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(to left, #4DD8E5 0%, #2D8896 100%);
+  border-radius: 1px;
+  transform: translateY(-50%);
+  box-shadow: 0 0 16px rgba(77, 216, 229, 0.5);
+}
+
+.process-timeline-dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.process-timeline-dot {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0B0D0C;
+  border: 2px solid rgba(77, 216, 229, 0.4);
+  transform: translate(50%, -50%);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* viewport ו-track */
+.process-cards-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.process-cards-track {
+  display: flex;
+  width: 400vw;
+  gap: 0;
+  will-change: transform;
+}
+
+/* כרטיס */
+.process-card {
+  position: relative;
+  width: 100vw;
+  flex-shrink: 0;
+  padding: 0 max(clamp(20px, 4vw, 60px), calc((100vw - 700px) / 2));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.process-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.process-card-halo {
+  position: absolute;
+  inset: 20px;
+  border-radius: 24px;
+  background: radial-gradient(
+    ellipse at 30% 30%,
+    rgba(77, 216, 229, 0.08) 0%,
+    rgba(77, 216, 229, 0) 70%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.process-card-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(77, 216, 229, 0.1) 0%, rgba(45, 136, 150, 0.05) 100%);
+  border: 1px solid rgba(77, 216, 229, 0.25);
+  margin-bottom: 8px;
+  box-shadow:
+    0 12px 32px -12px rgba(77, 216, 229, 0.2),
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.process-card-num {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #4DD8E5;
+  opacity: 0.85;
+}
+
+.process-card-title {
+  font-family: var(--font-heebo), sans-serif;
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: #E8F4F6;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.process-card-desc {
+  font-family: var(--font-heebo), sans-serif;
+  font-size: clamp(14px, 1.4vw, 16px);
+  font-weight: 500;
+  line-height: 1.65;
+  color: rgba(232, 244, 246, 0.7);
+  margin: 0;
+}
+
+.process-card-duration {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(77, 216, 229, 0.15);
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.process-card-duration-label {
+  font-family: var(--font-heebo), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(232, 244, 246, 0.5);
+}
+
+.process-card-duration-value {
+  font-family: var(--font-heebo), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #4DD8E5;
+  letter-spacing: -0.01em;
+}
+
+/* מובייל - stack אנכי */
+.process-mobile-stack {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .process-section {
+    height: auto;
+  }
+
+  .process-sticky {
+    display: none;
+  }
+
+  .process-mobile-stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(36px, 5vh, 56px);
+    padding: clamp(80px, 12vh, 120px) clamp(16px, 4vw, 32px);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .process-mobile-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .process-mobile-line {
+    display: none;
+  }
+
+  .process-mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vh, 36px);
+    position: relative;
+  }
+
+  .process-mobile-cards::before {
+    content: "";
+    position: absolute;
+    right: 46px;
+    top: 30px;
+    bottom: 30px;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      rgba(77, 216, 229, 0.4) 0%,
+      rgba(77, 216, 229, 0.15) 100%
+    );
+  }
+
+  .process-card-mobile {
+    width: 100%;
+    padding: 24px;
+    background: linear-gradient(145deg, rgba(20, 30, 32, 0.85) 0%, rgba(11, 13, 12, 0.92) 100%);
+    border: 1px solid rgba(77, 216, 229, 0.18);
+    border-radius: 18px;
+    align-items: stretch;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+      0 12px 32px -12px rgba(0, 0, 0, 0.4),
+      0 1px 0 0 rgba(77, 216, 229, 0.08) inset;
+  }
+
+  .process-card-mobile .process-card-icon-wrap {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 4px;
+  }
+
+  .process-card-mobile .process-card-halo {
+    inset: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .process-mobile-stack {
+    padding: clamp(60px, 10vh, 100px) 16px;
+  }
+
+  .process-card-mobile {
+    padding: 20px;
+  }
+
+  .process-card-mobile .process-card-icon-wrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .process-mobile-cards::before {
+    right: 36px;
+  }
+}
