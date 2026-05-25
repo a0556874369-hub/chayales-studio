@@ -10,7 +10,6 @@ export default function Orb() {
   const [vw, setVw] = useState(1024);
   const [vh, setVh] = useState(800);
 
-  // הסדר: BeforeAfter (כהה) → Works (בהיר) → WhyClean (בהיר) → Services (כהה) → Process (כהה)
   const [bp, setBp] = useState({
     sec2Start: 800,
     sec2Mid: 1500,
@@ -65,12 +64,11 @@ export default function Orb() {
         sec3End: sec3Bottom - newVh * 0.1,
         sec5Start: sec5Top + newVh * 0.05,
         sec5Mid: sec5Top + sec5Height * 0.5,
+        // ===== תיקון: sec5End זז קרוב יותר לסוף Services =====
+        // ככה הכדור מתחיל להתכווץ כבר באמצע Services
         sec5End: sec5Bottom - newVh * 0.05,
         sec4Start: sec4Top + newVh * 0.15,
         sec4End: sec4Bottom - newVh * 0.1,
-        // ===== Process (sec6) =====
-        // הכדור צריך להתכווץ לאט עד שכמעט נעלם
-        // כי הסקשן הזה דרמטי וצריך מסך נקי
         sec6Start: sec6Top + newVh * 0.05,
         sec6End: sec6Bottom - newVh * 0.5,
       });
@@ -100,35 +98,52 @@ export default function Orb() {
     bp.sec6End,
   ];
 
-  // opacity - בסקשן 6 דועך לכמעט אפס
+  // opacity
   const opacity = useTransform(scrollY, points, [
-    0, 0, 0.35, 0.22, 0.28, 0.35, 0.40, 0.32, 0.45, 0.65,
-    0.30, 0.05, // sec6: דועך לאפסי
+    0, 0, 0.35, 0.22, 0.28, 0.35, 0.40, 0.32,
+    0.45,
+    // ===== תיקון sec4End: יורד ל-0.35 (במקום 0.65) =====
+    // הכדור כבר מתחיל לדהות בסוף Services
+    0.35,
+    // ===== תיקון sec6Start: עדין יותר =====
+    0.18,
+    0.02, // sec6End: כמעט נעלם
   ]);
 
-  // x - בסקשן 6 ממשיך לימין-עליון (מחוץ למסך)
+  // x - מתחיל לזוז ימינה כבר בסוף Services
   const x = useTransform(scrollY, points, [
     0, 0, vw * 0.18, vw * 0.40, vw * 0.42, vw * 0.38, vw * 0.32,
-    vw * 0.28, vw * 0.22, vw * 0.18,
-    vw * 0.30, vw * 0.45, // sec6: זז ימינה אל מחוץ למסך
+    vw * 0.28, vw * 0.22,
+    // ===== תיקון sec4End: זז יותר ימינה כבר עכשיו =====
+    vw * 0.32,
+    vw * 0.42, // sec6Start: ממשיך ימינה
+    vw * 0.55, // sec6End: מחוץ למסך לחלוטין
   ]);
 
-  // y - בסקשן 6 עולה למעלה (יוצא מהמסך)
+  // y - מתחיל לעלות כבר בסוף Services
   const y = useTransform(scrollY, points, [
     0, 0, 0, 0, vh * 0.10, vh * 0.05, -vh * 0.02, -vh * 0.05,
-    vh * 0.10, vh * 0.20,
-    -vh * 0.20, -vh * 0.40, // sec6: זז למעלה
+    vh * 0.10,
+    // ===== תיקון sec4End: כבר מתחיל לעלות (לא יורד למטה) =====
+    -vh * 0.05,
+    -vh * 0.20, // sec6Start: למעלה
+    -vh * 0.50, // sec6End: מעל המסך
   ]);
 
-  // scale - בסקשן 6 מתכווץ דרמטית! מ-0.9 ל-0.2
+  // scale - **התיקון העיקרי**
   const scale = useTransform(scrollY, points, [
     0.5, 0.5, 0.6, 0.55, 0.5, 0.48, 0.52, 0.5,
-    0.65, 0.9,
-    0.5, 0.2, // sec6: מתכווץ מאוד
+    0.65,
+    // ===== תיקון sec4End: יורד ל-0.4 (במקום 0.9 הענקי) =====
+    // הכדור כבר התכווץ עד שהגענו לסוף Services
+    0.4,
+    // ===== תיקון sec6Start: קטן עוד יותר =====
+    0.25,
+    0.1, // sec6End: כמעט נעלם לגמרי
   ]);
 
   const rotate = useTransform(scrollY, points, [
-    0, 0, 0.5, 0, 0, -0.3, -0.5, -0.3, 0, 0.5, 0.8, 1,
+    0, 0, 0.5, 0, 0, -0.3, -0.5, -0.3, 0, 0.3, 0.6, 1,
   ]);
 
   if (prefersReducedMotion) {
