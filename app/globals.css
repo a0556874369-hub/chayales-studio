@@ -2266,18 +2266,19 @@ body {
    LIGHT-TO-DARK WRAP - עוטף את Services
    ============================================ */
 .light-to-dark-wrap {
-  --services-dark-start: 300px;
+  --services-content-top: 600px;
   position: relative;
   background-color: #0B0D0C;
   background-image: linear-gradient(
     to bottom,
     #EEF5F6 0,
-    #D7E8EA 60px,
-    #A9CDD1 130px,
-    #6C9DA3 200px,
-    #356A72 260px,
-    #14343A 320px,
-    #0B0D0C var(--services-dark-start),
+    #EEF5F6 calc(var(--services-content-top) - 430px),
+    #D7E8EA calc(var(--services-content-top) - 340px),
+    #A9CDD1 calc(var(--services-content-top) - 250px),
+    #6C9DA3 calc(var(--services-content-top) - 150px),
+    #356A72 calc(var(--services-content-top) - 40px),
+    #14343A calc(var(--services-content-top) + 120px),
+    #0B0D0C calc(var(--services-content-top) + 300px),
     #0B0D0C 100%
   );
 }

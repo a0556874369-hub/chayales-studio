@@ -7,9 +7,11 @@ interface Props {
 }
 
 /**
- * עוטף את סקשן Services (שאחרי why-clean-code) ויוצר מעבר light→dark.
- * הסקשן עצמו על רקע כהה אבל המעבר לקראתו מתחיל בהיר וגומר כהה.
- * כותב CSS var: --services-dark-start (המיקום שבו מתחיל הכהה הסופי)
+ * עוטף את Services ויוצר מעבר light→dark חלק וזורם.
+ * המעבר הוא מראה של DarkToLightWrap (סקשנים 2→3) - אותם 7 stops של צבעים
+ * אבל בכיוון הפוך.
+ *
+ * כותב CSS var: --services-content-top - איפה Services מתחיל (סוף המעבר)
  */
 export default function LightToDarkWrap({ children }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
@@ -23,9 +25,9 @@ export default function LightToDarkWrap({ children }: Props) {
     const update = () => {
       const wrapTop = wrap.getBoundingClientRect().top;
       const innerTop = inner.getBoundingClientRect().top - wrapTop;
-      // המעבר ל-dark מסתיים ב-15% מתחילת הסקשן (Services עצמו כהה מהר)
-      const darkStart = innerTop + 300;
-      wrap.style.setProperty("--services-dark-start", `${darkStart}px`);
+      // המעבר נגמר כשהתוכן של Services מתחיל
+      // ה-padding העליון של Services כבר כהה - לכן נשאיר 430px של מעבר לפני זה
+      wrap.style.setProperty("--services-content-top", `${innerTop}px`);
     };
 
     update();
