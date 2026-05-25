@@ -8,7 +8,6 @@ interface Props {
 
 /**
  * עוטף את סקשן 5 בגרדיאנט אנכי dark → light → dark
- * כותב 2 CSS vars: --sec5-light-start, --sec5-light-end
  */
 export default function LightWrap({ children }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);

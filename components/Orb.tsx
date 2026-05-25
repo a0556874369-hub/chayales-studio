@@ -52,7 +52,7 @@ export default function Orb() {
         sec4Start: sec4Top + newVh * 0.1,
         sec4End: sec4Top + newVh * 0.9,
         sec5Start: sec5Top - newVh * 0.2,
-        sec5Mid: sec5Top + sec5Height * 0.45,
+        sec5Mid: sec5Top + sec5Height * 0.5,
         sec5End: sec5Top + sec5Height + newVh * 0.1,
       });
     };
@@ -79,61 +79,28 @@ export default function Orb() {
     bp.sec5End,
   ];
 
-  // בסקשן 5: ה-Orb הופך לגיבור - אטום מלא (1.0), גודל סביר, ממורכז
+  // בסקשן 5: ה-Orb חוזר להיות אמביינטי - פינתי, מטושטש, לא מתחרה עם התוכן
   const opacity = useTransform(scrollY, points, [
-    0,    // top
-    0,    // sec2Start
-    0.35, // sec2Mid
-    0.22, // sec3Mid
-    0,    // sec3End
-    0.35, // sec4Start
-    0.65, // sec4End
-    0.5,  // sec5Start - גדל באופציטי
-    1.0,  // sec5Mid - אטום מלא, הגיבור
-    0.3,  // sec5End - דהיה
+    0, 0, 0.35, 0.22, 0, 0.35, 0.65,
+    0.22, 0.28, 0.18,  // sec5 - אמביינטי
   ]);
 
-  // x - בסקשן 5 ממורכז מושלם (0)
+  // x - בסקשן 5 בפינה ימנית עליונה (drift עדין)
   const x = useTransform(scrollY, points, [
-    0,
-    0,
-    vw * 0.18,
-    vw * 0.40,
-    vw * 0.42,
-    vw * 0.32,
-    vw * 0.20,
-    vw * 0.05, // sec5Start - מתקרב למרכז
-    0,         // sec5Mid - מרכז מושלם
-    0,         // sec5End
+    0, 0, vw * 0.18, vw * 0.40, vw * 0.42, vw * 0.32, vw * 0.20,
+    vw * 0.32, vw * 0.36, vw * 0.30,
   ]);
 
-  // y - בסקשן 5 ממורכז אנכית
+  // y - בסקשן 5 פינה עליונה
   const y = useTransform(scrollY, points, [
-    0,
-    0,
-    0,
-    0,
-    vh * 0.20,
-    vh * 0.20,
-    vh * 0.20,
-    vh * 0.05,
-    0,
-    0,
+    0, 0, 0, 0, vh * 0.20, vh * 0.20, vh * 0.20,
+    -vh * 0.15, -vh * 0.12, -vh * 0.08,
   ]);
 
-  // scale - חשוב! בסקשן 5 גודל יחסי קטן (לא ענק)
-  // ה-orb הבסיסי הוא בערך 400px. בscale 0.95 הוא יהיה ~380px = יפה וממוקם
+  // scale - בסקשן 5 קטן יחסית, אמביינטי
   const scale = useTransform(scrollY, points, [
-    0.5,
-    0.5,
-    0.6,
-    0.45,
-    0.3,
-    0.5,
-    0.9,
-    0.85, // sec5Start
-    0.95, // sec5Mid - הגודל היפה והמכובד
-    0.7,  // sec5End
+    0.5, 0.5, 0.6, 0.45, 0.3, 0.5, 0.9,
+    0.55, 0.65, 0.5,
   ]);
 
   const rotate = useTransform(scrollY, points, [

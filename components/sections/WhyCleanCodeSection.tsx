@@ -3,42 +3,130 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-// 5 היתרונות - לפי הסדר החדש: גמישות → מהירות → ייחודיות → SEO → אנימציות
+// ============================================
+// קומפוננטת הקוביות המתארגנות (לכרטיס הגיבור)
+// ============================================
+// 9 קוביות בגריד 3x3 שמתארגנות מחדש כל כמה שניות
+// יוצרת תחושת "המבנה זז ומתאים את עצמו" - הוכחה לגמישות
+
+interface CubeState {
+  id: number;
+  col: number; // 0..2
+  row: number; // 0..2
+  size: number; // יחס לגודל בסיס (0.6, 1.0, או 1.4)
+  rotation: number; // -8..8 deg
+  opacity: number; // 0.4..1.0
+}
+
+const BASE_CUBES: CubeState[] = Array.from({ length: 9 }, (_, i) => ({
+  id: i,
+  col: i % 3,
+  row: Math.floor(i / 3),
+  size: 1,
+  rotation: 0,
+  opacity: 0.85,
+}));
+
+// יוצר וריאציה חדשה - כל פעם 1-2 קוביות "זזות"
+function generateVariant(seed: number): CubeState[] {
+  // משתמשים ב-seed פשוט כדי לקבל וריאציה דטרמיניסטית
+  return BASE_CUBES.map((cube) => {
+    const offset = (cube.id + seed * 7) % 9;
+    const isHighlighted = offset < 3; // 3 קוביות "פעילות" כל פעם
+    return {
+      ...cube,
+      size: isHighlighted ? (offset === 0 ? 1.35 : offset === 1 ? 0.65 : 1.1) : 0.9,
+      rotation: isHighlighted ? (offset === 0 ? 6 : offset === 1 ? -7 : 3) : 0,
+      opacity: isHighlighted ? (offset === 0 ? 1 : offset === 1 ? 0.55 : 0.85) : 0.7,
+    };
+  });
+}
+
+function CubesGrid({ reduced }: { reduced: boolean }) {
+  const [seed, setSeed] = useState(0);
+
+  useEffect(() => {
+    if (reduced) return;
+    const interval = setInterval(() => {
+      setSeed((s) => s + 1);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [reduced]);
+
+  const cubes = generateVariant(seed);
+
+  return (
+    <div className="cubes-grid" aria-hidden>
+      {cubes.map((cube) => (
+        <motion.div
+          key={cube.id}
+          className="cube"
+          animate={
+            reduced
+              ? { opacity: 0.8, scale: 1, rotate: 0 }
+              : {
+                  opacity: cube.opacity,
+                  scale: cube.size,
+                  rotate: cube.rotation,
+                }
+          }
+          transition={{
+            duration: 1.6,
+            ease: [0.22, 1, 0.36, 1],
+            opacity: { duration: 1.2 },
+          }}
+          style={{
+            gridColumn: cube.col + 1,
+            gridRow: cube.row + 1,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ============================================
+// 5 היתרונות
+// ============================================
 interface Advantage {
-  num: string;       // 01, 02...
+  num: string;
   title: string;
   description: string;
 }
 
-const ADVANTAGES: Advantage[] = [
-  {
-    num: "01",
-    title: "גמישות מלאה",
-    description: "רוצים פיצ'ר חדש? אנחנו בונים אותו. בלי לחפש פלאגין שיעשה את זה במקום, בלי 'אי אפשר בתבנית'.",
-  },
+const HERO_ADVANTAGE: Advantage = {
+  num: "01",
+  title: "גמישות מלאה",
+  description:
+    "רוצים פיצ'ר חדש? אנחנו בונים אותו. בלי לחפש פלאגין שיעשה את זה במקום, בלי 'אי אפשר בתבנית', בלי פשרות.",
+};
+
+const SUPPORTING_ADVANTAGES: Advantage[] = [
   {
     num: "02",
     title: "מהירות",
-    description: "אתר בקוד נקי טוען פי 5 מאתר על תבנית גנרית. גוגל אוהב את זה. הלקוחות שלכם עוד יותר.",
+    description: "אתר בקוד נקי טוען פי 5 מתבנית גנרית. גוגל אוהב את זה. הלקוחות עוד יותר.",
   },
   {
     num: "03",
     title: "ייחודיות",
-    description: "אין עוד אתר בעולם שנראה כמוכם. כי בנינו אותו רק בשבילכם, מהפיקסל הראשון.",
+    description: "אין עוד אתר בעולם שנראה כמוכם. בנינו אותו רק בשבילכם, מהפיקסל הראשון.",
   },
   {
     num: "04",
     title: "SEO מובנה",
-    description: "קוד נקי בנוי ל-SEO מהיסוד. בלי תוספים, בלי קונפליקטים, בלי 'מה לא עובד היום?'.",
+    description: "בנוי ל-SEO מהיסוד. בלי תוספים, בלי קונפליקטים, בלי 'מה לא עובד היום?'.",
   },
   {
     num: "05",
-    title: "אנימציות מותאמות",
-    description: "כל מעבר, כל hover, כל גלילה - מתוכננים אישית. לא אופציה אקראית מתפריט תבניות.",
+    title: "אנימציות אישיות",
+    description: "כל מעבר, כל hover, כל גלילה - מתוכננים אישית. לא אופציה מתפריט.",
   },
 ];
 
-// ===== כותרת עם הדפסה תו-תו =====
+// ============================================
+// קומפוננטת הדפסה לכותרת
+// ============================================
 function TypewriterHeadline({
   text,
   startDelay,
@@ -99,55 +187,98 @@ function TypewriterHeadline({
   );
 }
 
-// ===== כרטיס יתרון יחיד =====
-function AdvantageCard({
+// ============================================
+// כרטיס גיבור (גמישות) - גדול, עם קוביות
+// ============================================
+function HeroCard({
   advantage,
-  index,
   inView,
   reduced,
-  position,
 }: {
   advantage: Advantage;
-  index: number;
   inView: boolean;
   reduced: boolean;
-  position: "top" | "bottom";
 }) {
-  const cardDelay = reduced ? 0 : 0.4 + index * 0.12;
-
   return (
     <motion.article
-      className={`why-card why-card-${position}`}
-      initial={reduced ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.96 }}
+      className="why-hero-card"
+      initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
       animate={
         inView
-          ? { opacity: 1, y: 0, scale: 1 }
+          ? { opacity: 1, y: 0 }
           : reduced
-          ? { opacity: 1, y: 0, scale: 1 }
-          : { opacity: 0, y: 30, scale: 0.96 }
+          ? { opacity: 1, y: 0 }
+          : { opacity: 0, y: 24 }
       }
-      transition={{
-        duration: 0.7,
-        delay: cardDelay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       aria-label={`יתרון ${advantage.num}: ${advantage.title}`}
     >
-      <div className="why-card-inner">
+      {/* רקע הקוביות - בצד אחד של הכרטיס */}
+      <div className="why-hero-visual">
+        <CubesGrid reduced={reduced} />
+        {/* תווית עדינה מתחת לקוביות */}
+        <span className="why-hero-visual-label" aria-hidden>
+          המבנה זז ומתאים את עצמו
+        </span>
+      </div>
+
+      {/* תוכן הכרטיס */}
+      <div className="why-hero-content">
         <span className="why-card-num" aria-hidden>
           {advantage.num}
         </span>
-        <h3 className="why-card-title">{advantage.title}</h3>
-        <p className="why-card-desc">{advantage.description}</p>
+        <h3 className="why-hero-title">{advantage.title}</h3>
+        <p className="why-hero-desc">{advantage.description}</p>
       </div>
     </motion.article>
   );
 }
 
-// ===== הסקשן הראשי =====
+// ============================================
+// כרטיס תומך (4 הקטנים)
+// ============================================
+function SupportingCard({
+  advantage,
+  index,
+  inView,
+  reduced,
+}: {
+  advantage: Advantage;
+  index: number;
+  inView: boolean;
+  reduced: boolean;
+}) {
+  const cardDelay = reduced ? 0 : 0.7 + index * 0.1;
+
+  return (
+    <motion.article
+      className="why-support-card"
+      initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      animate={
+        inView
+          ? { opacity: 1, y: 0 }
+          : reduced
+          ? { opacity: 1, y: 0 }
+          : { opacity: 0, y: 20 }
+      }
+      transition={{ duration: 0.6, delay: cardDelay, ease: [0.22, 1, 0.36, 1] }}
+      aria-label={`יתרון ${advantage.num}: ${advantage.title}`}
+    >
+      <span className="why-card-num" aria-hidden>
+        {advantage.num}
+      </span>
+      <h3 className="why-support-title">{advantage.title}</h3>
+      <p className="why-support-desc">{advantage.description}</p>
+    </motion.article>
+  );
+}
+
+// ============================================
+// הסקשן עצמו
+// ============================================
 export default function WhyCleanCodeSection() {
   const headerRef = useRef<HTMLDivElement | null>(null);
-  const arrangementRef = useRef<HTMLDivElement | null>(null);
+  const cardsRef = useRef<HTMLDivElement | null>(null);
   const closingRef = useRef<HTMLDivElement | null>(null);
 
   const reduced = useReducedMotion() ?? false;
@@ -155,7 +286,7 @@ export default function WhyCleanCodeSection() {
     once: true,
     margin: "-15% 0px -15% 0px",
   });
-  const arrangementInView = useInView(arrangementRef, {
+  const cardsInView = useInView(cardsRef, {
     once: true,
     margin: "-10% 0px -10% 0px",
   });
@@ -164,13 +295,11 @@ export default function WhyCleanCodeSection() {
     margin: "-20% 0px -20% 0px",
   });
 
-  // כותרות
   const headlinePart1 = "למה לא וורדפרס? למה לא ויקס?";
   const headlinePart2 = "כי הם לא מספיקים.";
   const subhead = "5 סיבות שאתר בקוד נקי הוא לא מותרות - הוא הכרח.";
   const closingLine = "אתר שמשרת אתכם. לא להפך.";
 
-  // טיימינג
   const headline1Duration = headlinePart1.length * 0.035;
   const headline2Start = 0.1 + headline1Duration + 0.2;
   const headline2Duration = headlinePart2.length * 0.045;
@@ -183,7 +312,7 @@ export default function WhyCleanCodeSection() {
       aria-label="למה קוד נקי"
       data-theme="light"
     >
-      {/* כותרת ראשית עם הדפסה */}
+      {/* כותרת */}
       <div className="why-header" ref={headerRef}>
         <TypewriterHeadline
           text={headlinePart1}
@@ -219,56 +348,24 @@ export default function WhyCleanCodeSection() {
         />
       </div>
 
-      {/* הסידור הקשתי - 3 למעלה, 2 למטה. במרכז ה-Orb הגלובלי גלוי דרך הרווח */}
-      <div className="why-arrangement" ref={arrangementRef}>
-        {/* קשת עליונה - 3 כרטיסים */}
-        <div className="why-arc why-arc-top">
-          <AdvantageCard
-            advantage={ADVANTAGES[1]}
-            index={1}
-            inView={arrangementInView}
-            reduced={reduced}
-            position="top"
-          />
-          <AdvantageCard
-            advantage={ADVANTAGES[0]}
-            index={0}
-            inView={arrangementInView}
-            reduced={reduced}
-            position="top"
-          />
-          <AdvantageCard
-            advantage={ADVANTAGES[2]}
-            index={2}
-            inView={arrangementInView}
-            reduced={reduced}
-            position="top"
-          />
-        </div>
+      {/* האזור המרכזי - hero card + 4 תומכים */}
+      <div className="why-cards-area" ref={cardsRef}>
+        <HeroCard advantage={HERO_ADVANTAGE} inView={cardsInView} reduced={reduced} />
 
-        {/* מרכז - מקום ל-Orb. ריק. */}
-        <div className="why-orb-space" aria-hidden />
-
-        {/* קשת תחתונה - 2 כרטיסים */}
-        <div className="why-arc why-arc-bottom">
-          <AdvantageCard
-            advantage={ADVANTAGES[3]}
-            index={3}
-            inView={arrangementInView}
-            reduced={reduced}
-            position="bottom"
-          />
-          <AdvantageCard
-            advantage={ADVANTAGES[4]}
-            index={4}
-            inView={arrangementInView}
-            reduced={reduced}
-            position="bottom"
-          />
+        <div className="why-support-grid">
+          {SUPPORTING_ADVANTAGES.map((adv, i) => (
+            <SupportingCard
+              key={adv.num}
+              advantage={adv}
+              index={i}
+              inView={cardsInView}
+              reduced={reduced}
+            />
+          ))}
         </div>
       </div>
 
-      {/* שורת סגירה - פאנץ' */}
+      {/* שורת סגירה */}
       <div className="why-closing" ref={closingRef}>
         <motion.div
           className="why-closing-divider"
