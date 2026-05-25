@@ -7,9 +7,11 @@ interface Props {
 }
 
 /**
- * עוטף את סקשן 5 בגרדיאנט אנכי dark → light → dark
+ * עוטף את סקשן Services (שאחרי why-clean-code) ויוצר מעבר light→dark.
+ * הסקשן עצמו על רקע כהה אבל המעבר לקראתו מתחיל בהיר וגומר כהה.
+ * כותב CSS var: --services-dark-start (המיקום שבו מתחיל הכהה הסופי)
  */
-export default function LightWrap({ children }: Props) {
+export default function LightToDarkWrap({ children }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
 
@@ -21,11 +23,9 @@ export default function LightWrap({ children }: Props) {
     const update = () => {
       const wrapTop = wrap.getBoundingClientRect().top;
       const innerTop = inner.getBoundingClientRect().top - wrapTop;
-      const innerHeight = inner.offsetHeight;
-      const lightStart = innerTop + innerHeight * 0.12;
-      const lightEnd = innerTop + innerHeight * 0.88;
-      wrap.style.setProperty("--sec5-light-start", `${lightStart}px`);
-      wrap.style.setProperty("--sec5-light-end", `${lightEnd}px`);
+      // המעבר ל-dark מסתיים ב-15% מתחילת הסקשן (Services עצמו כהה מהר)
+      const darkStart = innerTop + 300;
+      wrap.style.setProperty("--services-dark-start", `${darkStart}px`);
     };
 
     update();
@@ -39,7 +39,7 @@ export default function LightWrap({ children }: Props) {
   }, []);
 
   return (
-    <div className="light-wrap" ref={wrapRef}>
+    <div className="light-to-dark-wrap" ref={wrapRef}>
       <div ref={innerRef}>{children}</div>
     </div>
   );

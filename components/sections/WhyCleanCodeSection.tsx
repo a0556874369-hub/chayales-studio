@@ -4,18 +4,15 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 // ============================================
-// קומפוננטת הקוביות המתארגנות (לכרטיס הגיבור)
+// קוביות מתארגנות לכרטיס הגיבור
 // ============================================
-// 9 קוביות בגריד 3x3 שמתארגנות מחדש כל כמה שניות
-// יוצרת תחושת "המבנה זז ומתאים את עצמו" - הוכחה לגמישות
-
 interface CubeState {
   id: number;
-  col: number; // 0..2
-  row: number; // 0..2
-  size: number; // יחס לגודל בסיס (0.6, 1.0, או 1.4)
-  rotation: number; // -8..8 deg
-  opacity: number; // 0.4..1.0
+  col: number;
+  row: number;
+  size: number;
+  rotation: number;
+  opacity: number;
 }
 
 const BASE_CUBES: CubeState[] = Array.from({ length: 9 }, (_, i) => ({
@@ -27,12 +24,10 @@ const BASE_CUBES: CubeState[] = Array.from({ length: 9 }, (_, i) => ({
   opacity: 0.85,
 }));
 
-// יוצר וריאציה חדשה - כל פעם 1-2 קוביות "זזות"
 function generateVariant(seed: number): CubeState[] {
-  // משתמשים ב-seed פשוט כדי לקבל וריאציה דטרמיניסטית
   return BASE_CUBES.map((cube) => {
     const offset = (cube.id + seed * 7) % 9;
-    const isHighlighted = offset < 3; // 3 קוביות "פעילות" כל פעם
+    const isHighlighted = offset < 3;
     return {
       ...cube,
       size: isHighlighted ? (offset === 0 ? 1.35 : offset === 1 ? 0.65 : 1.1) : 0.9,
@@ -86,7 +81,7 @@ function CubesGrid({ reduced }: { reduced: boolean }) {
 }
 
 // ============================================
-// 5 היתרונות
+// היתרונות
 // ============================================
 interface Advantage {
   num: string;
@@ -125,7 +120,7 @@ const SUPPORTING_ADVANTAGES: Advantage[] = [
 ];
 
 // ============================================
-// קומפוננטת הדפסה לכותרת
+// כותרת עם הדפסה
 // ============================================
 function TypewriterHeadline({
   text,
@@ -188,7 +183,7 @@ function TypewriterHeadline({
 }
 
 // ============================================
-// כרטיס גיבור (גמישות) - גדול, עם קוביות
+// כרטיס Hero
 // ============================================
 function HeroCard({
   advantage,
@@ -213,16 +208,16 @@ function HeroCard({
       transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       aria-label={`יתרון ${advantage.num}: ${advantage.title}`}
     >
-      {/* רקע הקוביות - בצד אחד של הכרטיס */}
+      {/* halo טורקיז עדין מסביב לכרטיס - נוצר אפקט זכוכית גם על רקע בהיר */}
+      <div className="why-card-halo" aria-hidden />
+
       <div className="why-hero-visual">
         <CubesGrid reduced={reduced} />
-        {/* תווית עדינה מתחת לקוביות */}
         <span className="why-hero-visual-label" aria-hidden>
           המבנה זז ומתאים את עצמו
         </span>
       </div>
 
-      {/* תוכן הכרטיס */}
       <div className="why-hero-content">
         <span className="why-card-num" aria-hidden>
           {advantage.num}
@@ -235,7 +230,7 @@ function HeroCard({
 }
 
 // ============================================
-// כרטיס תומך (4 הקטנים)
+// כרטיס תומך
 // ============================================
 function SupportingCard({
   advantage,
@@ -264,6 +259,7 @@ function SupportingCard({
       transition={{ duration: 0.6, delay: cardDelay, ease: [0.22, 1, 0.36, 1] }}
       aria-label={`יתרון ${advantage.num}: ${advantage.title}`}
     >
+      <div className="why-card-halo" aria-hidden />
       <span className="why-card-num" aria-hidden>
         {advantage.num}
       </span>
@@ -274,7 +270,7 @@ function SupportingCard({
 }
 
 // ============================================
-// הסקשן עצמו
+// הסקשן
 // ============================================
 export default function WhyCleanCodeSection() {
   const headerRef = useRef<HTMLDivElement | null>(null);
@@ -312,7 +308,6 @@ export default function WhyCleanCodeSection() {
       aria-label="למה קוד נקי"
       data-theme="light"
     >
-      {/* כותרת */}
       <div className="why-header" ref={headerRef}>
         <TypewriterHeadline
           text={headlinePart1}
@@ -348,7 +343,6 @@ export default function WhyCleanCodeSection() {
         />
       </div>
 
-      {/* האזור המרכזי - hero card + 4 תומכים */}
       <div className="why-cards-area" ref={cardsRef}>
         <HeroCard advantage={HERO_ADVANTAGE} inView={cardsInView} reduced={reduced} />
 
@@ -365,7 +359,6 @@ export default function WhyCleanCodeSection() {
         </div>
       </div>
 
-      {/* שורת סגירה */}
       <div className="why-closing" ref={closingRef}>
         <motion.div
           className="why-closing-divider"

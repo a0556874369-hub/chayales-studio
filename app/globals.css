@@ -859,60 +859,27 @@ body {
   overflow: hidden; /* contain the absolutely-positioned .works-glow elements */
 }
 
-/* ============================================================
-   Dark-to-light wrapper: a single continuous gradient that spans
-   Sections 02 (dark), 03 (light) and 04 (dark). DarkToLightWrap
-   writes three CSS variables via ResizeObserver:
-     --s2h         (height of section 2 = top of section 3)
-     --sec3-bottom (bottom of section 3 = top of section 4)
-     --sec4-mid    (Y where section 4 has settled into dark)
-   The 2→3 and 3→4 transitions each run through the same teal-family
-   ramp so they read as identical, mirror-symmetric horizons. The
-   defaults below keep the layout sane until the JS has measured.
-   ============================================================ */
+/* ============================================
+   DARK-TO-LIGHT WRAP - גרדיאנט dark→teal→light בלבד
+   (הסקשנים: BeforeAfter כהה → Works בהיר → WhyClean בהיר)
+   v4: לא חוזר לכהה בסוף — Services יקבל wrapper נפרד.
+   ============================================ */
 .dark-to-light {
   --s2h: 900px;
-  --sec3-bottom: 2400px;
-  --sec4-mid: 3400px;
   position: relative;
   background-color: #EEF5F6;
   background-image: linear-gradient(
     to bottom,
-    /* Section 2 — solid dark */
     #0B0D0C 0,
     #0B0D0C calc(var(--s2h) - 300px),
-    /* 2 → 3 transition through teal */
     #14343A calc(var(--s2h) - 120px),
     #356A72 calc(var(--s2h) + 40px),
     #6C9DA3 calc(var(--s2h) + 150px),
     #A9CDD1 calc(var(--s2h) + 250px),
     #D7E8EA calc(var(--s2h) + 340px),
     #EEF5F6 calc(var(--s2h) + 430px),
-    /* Light middle through Section 3 */
-    #EEF5F6 calc(var(--sec3-bottom) - 430px),
-    /* 3 → 4 transition — mirror of the 2 → 3 ramp */
-    #D7E8EA calc(var(--sec3-bottom) - 340px),
-    #A9CDD1 calc(var(--sec3-bottom) - 250px),
-    #6C9DA3 calc(var(--sec3-bottom) - 150px),
-    #356A72 calc(var(--sec3-bottom) + 40px),
-    #14343A calc(var(--sec3-bottom) + 200px),
-    #0B0D0C calc(var(--sec3-bottom) + 380px),
-    /* Section 4 — solid dark */
-    #0B0D0C var(--sec4-mid),
-    #0B0D0C 100%
+    #EEF5F6 100%
   );
-}
-
-.dark-to-light::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
 }
 
 .dark-to-light > * {
@@ -2296,34 +2263,27 @@ body {
 }
 
 /* ============================================
-   LIGHT WRAP - עוטף סקשן 5 בגרדיאנט dark-light-dark
+   LIGHT-TO-DARK WRAP - עוטף את Services
    ============================================ */
-.light-wrap {
-  --sec5-light-start: 200px;
-  --sec5-light-end: 1200px;
+.light-to-dark-wrap {
+  --services-dark-start: 300px;
   position: relative;
   background-color: #0B0D0C;
   background-image: linear-gradient(
     to bottom,
-    #0B0D0C 0,
-    #14343A calc(var(--sec5-light-start) - 280px),
-    #356A72 calc(var(--sec5-light-start) - 180px),
-    #6C9DA3 calc(var(--sec5-light-start) - 100px),
-    #A9CDD1 calc(var(--sec5-light-start) - 40px),
-    #D7E8EA calc(var(--sec5-light-start) - 10px),
-    #EEF5F6 var(--sec5-light-start),
-    #EEF5F6 var(--sec5-light-end),
-    #D7E8EA calc(var(--sec5-light-end) + 30px),
-    #A9CDD1 calc(var(--sec5-light-end) + 100px),
-    #6C9DA3 calc(var(--sec5-light-end) + 180px),
-    #356A72 calc(var(--sec5-light-end) + 260px),
-    #14343A calc(var(--sec5-light-end) + 340px),
+    #EEF5F6 0,
+    #D7E8EA 60px,
+    #A9CDD1 130px,
+    #6C9DA3 200px,
+    #356A72 260px,
+    #14343A 320px,
+    #0B0D0C var(--services-dark-start),
     #0B0D0C 100%
   );
 }
 
 /* ============================================
-   SECTION 05 - WHY CLEAN CODE (v3)
+   SECTION 05 - WHY CLEAN CODE (v4)
    ============================================ */
 .why-section {
   position: relative;
@@ -2407,35 +2367,63 @@ body {
   gap: clamp(20px, 3vh, 32px);
 }
 
-/* ---- Hero Card ---- */
+/* HALO - אפקט זוהר מאחורי כל כרטיס */
+.why-card-halo {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(77, 216, 229, 0.0) 0%,
+    rgba(77, 216, 229, 0.18) 50%,
+    rgba(45, 136, 150, 0.12) 100%
+  );
+  opacity: 0.6;
+  z-index: -1;
+  filter: blur(8px);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* Hero card */
 .why-hero-card {
   position: relative;
   display: grid;
   grid-template-columns: 1.05fr 1fr;
   min-height: 280px;
   background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.82) 0%,
-    rgba(255, 255, 255, 0.66) 100%
+    135deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.78) 45%,
+    rgba(232, 244, 246, 0.7) 100%
   );
-  border: 1px solid rgba(45, 136, 150, 0.18);
+  border: 1px solid rgba(77, 216, 229, 0.35);
   border-radius: 28px;
   overflow: hidden;
   backdrop-filter: blur(18px) saturate(170%);
   -webkit-backdrop-filter: blur(18px) saturate(170%);
   box-shadow:
-    0 24px 56px -20px rgba(20, 52, 58, 0.22),
-    0 1px 0 0 rgba(255, 255, 255, 0.9) inset,
-    0 -1px 0 0 rgba(77, 216, 229, 0.1) inset;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    0 28px 64px -24px rgba(20, 52, 58, 0.28),
+    0 0 0 1px rgba(77, 216, 229, 0.12),
+    0 2px 0 0 rgba(255, 255, 255, 1) inset,
+    0 -1px 0 0 rgba(77, 216, 229, 0.18) inset;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
 }
 
 .why-hero-card:hover {
-  border-color: rgba(45, 136, 150, 0.32);
+  transform: translateY(-3px);
+  border-color: rgba(77, 216, 229, 0.55);
   box-shadow:
-    0 32px 72px -22px rgba(20, 52, 58, 0.3),
-    0 1px 0 0 rgba(255, 255, 255, 1) inset,
-    0 0 0 1px rgba(77, 216, 229, 0.15) inset;
+    0 38px 80px -26px rgba(20, 52, 58, 0.35),
+    0 0 0 1px rgba(77, 216, 229, 0.25),
+    0 2px 0 0 rgba(255, 255, 255, 1) inset,
+    0 -1px 0 0 rgba(77, 216, 229, 0.3) inset;
+}
+
+.why-hero-card:hover .why-card-halo {
+  opacity: 0.9;
+  filter: blur(12px);
 }
 
 .why-hero-visual {
@@ -2447,10 +2435,10 @@ body {
   padding: 36px 28px;
   background: linear-gradient(
     135deg,
-    rgba(77, 216, 229, 0.06) 0%,
-    rgba(45, 136, 150, 0.04) 100%
+    rgba(77, 216, 229, 0.08) 0%,
+    rgba(45, 136, 150, 0.05) 100%
   );
-  border-inline-start: 1px solid rgba(45, 136, 150, 0.1);
+  border-inline-start: 1px solid rgba(77, 216, 229, 0.18);
   gap: 20px;
 }
 
@@ -2460,7 +2448,7 @@ body {
   font-weight: 500;
   letter-spacing: 0.08em;
   color: #2D8896;
-  opacity: 0.6;
+  opacity: 0.65;
   text-align: center;
 }
 
@@ -2479,14 +2467,14 @@ body {
   height: 38px;
   background: linear-gradient(
     135deg,
-    rgba(77, 216, 229, 0.55) 0%,
-    rgba(45, 136, 150, 0.45) 100%
+    rgba(77, 216, 229, 0.6) 0%,
+    rgba(45, 136, 150, 0.5) 100%
   );
-  border: 1px solid rgba(77, 216, 229, 0.6);
+  border: 1px solid rgba(77, 216, 229, 0.7);
   border-radius: 8px;
   box-shadow:
-    0 4px 12px -2px rgba(45, 136, 150, 0.25),
-    0 1px 0 0 rgba(255, 255, 255, 0.4) inset;
+    0 4px 12px -2px rgba(45, 136, 150, 0.3),
+    0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
   transform-origin: center;
   will-change: transform, opacity;
 }
@@ -2505,7 +2493,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.12em;
   color: #2D8896;
-  opacity: 0.7;
+  opacity: 0.75;
   display: inline-block;
 }
 
@@ -2528,7 +2516,7 @@ body {
   margin: 0;
 }
 
-/* ---- Supporting cards ---- */
+/* Supporting cards */
 .why-support-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2538,19 +2526,22 @@ body {
 .why-support-card {
   position: relative;
   background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.75) 0%,
-    rgba(255, 255, 255, 0.6) 100%
+    135deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(232, 244, 246, 0.65) 100%
   );
-  border: 1px solid rgba(45, 136, 150, 0.14);
+  border: 1px solid rgba(77, 216, 229, 0.3);
   border-radius: 18px;
   padding: 22px 20px 20px;
   overflow: hidden;
   backdrop-filter: blur(14px) saturate(160%);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
   box-shadow:
-    0 12px 32px -14px rgba(20, 52, 58, 0.16),
-    0 1px 0 0 rgba(255, 255, 255, 0.85) inset;
+    0 14px 36px -16px rgba(20, 52, 58, 0.22),
+    0 0 0 1px rgba(77, 216, 229, 0.08),
+    0 2px 0 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 0 rgba(77, 216, 229, 0.12) inset;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2562,11 +2553,17 @@ body {
 
 .why-support-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(45, 136, 150, 0.28);
+  border-color: rgba(77, 216, 229, 0.5);
   box-shadow:
-    0 20px 44px -18px rgba(20, 52, 58, 0.24),
-    0 1px 0 0 rgba(255, 255, 255, 1) inset,
-    0 0 0 1px rgba(77, 216, 229, 0.12) inset;
+    0 22px 50px -20px rgba(20, 52, 58, 0.3),
+    0 0 0 1px rgba(77, 216, 229, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 1) inset,
+    0 -1px 0 0 rgba(77, 216, 229, 0.25) inset;
+}
+
+.why-support-card:hover .why-card-halo {
+  opacity: 1;
+  filter: blur(10px);
 }
 
 .why-support-title {
@@ -2588,7 +2585,7 @@ body {
   margin: 0;
 }
 
-/* ---- Closing line ---- */
+/* Closing */
 .why-closing {
   position: relative;
   z-index: 3;
@@ -2635,7 +2632,7 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* ---- Responsive ---- */
+/* Responsive */
 @media (max-width: 1024px) {
   .why-hero-card {
     grid-template-columns: 1fr;
@@ -2644,7 +2641,7 @@ body {
   .why-hero-visual {
     padding: 32px 20px 24px;
     border-inline-start: none;
-    border-bottom: 1px solid rgba(45, 136, 150, 0.1);
+    border-bottom: 1px solid rgba(77, 216, 229, 0.18);
   }
   .why-hero-content {
     padding: 28px 28px 32px;
