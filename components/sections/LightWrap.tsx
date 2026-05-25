@@ -7,13 +7,8 @@ interface Props {
 }
 
 /**
- * עוטף את סקשן 5 בגרדיאנט אנכי:
- * dark (התחלה, ממשיך מסוף סקשן 4)
- *   → light (אמצע הסקשן - האזור שבו הקוד גלוי)
- *     → dark (סוף - מוכן לסקשן 6)
- *
- * כותב 2 CSS vars לפי מדידת הסקשן עצמו:
- * --sec5-light-start, --sec5-light-end
+ * עוטף את סקשן 5 בגרדיאנט אנכי dark → light → dark
+ * כותב 2 CSS vars: --sec5-light-start, --sec5-light-end
  */
 export default function LightWrap({ children }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
@@ -28,7 +23,6 @@ export default function LightWrap({ children }: Props) {
       const wrapTop = wrap.getBoundingClientRect().top;
       const innerTop = inner.getBoundingClientRect().top - wrapTop;
       const innerHeight = inner.offsetHeight;
-      // האור הבהיר מתחיל ב-12% מתחילת הסקשן ונגמר ב-88%
       const lightStart = innerTop + innerHeight * 0.12;
       const lightEnd = innerTop + innerHeight * 0.88;
       wrap.style.setProperty("--sec5-light-start", `${lightStart}px`);

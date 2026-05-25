@@ -38,7 +38,6 @@ export default function Orb() {
       const sec3Top = sec3.getBoundingClientRect().top + window.scrollY;
       const sec4Top = sec4.getBoundingClientRect().top + window.scrollY;
 
-      // אם סקשן 5 עוד לא קיים - נשתמש בערכי ברירת מחדל אחרי סקשן 4
       const sec4Bottom = sec4Top + sec4.offsetHeight;
       const sec5Top = sec5
         ? sec5.getBoundingClientRect().top + window.scrollY
@@ -53,7 +52,7 @@ export default function Orb() {
         sec4Start: sec4Top + newVh * 0.1,
         sec4End: sec4Top + newVh * 0.9,
         sec5Start: sec5Top - newVh * 0.2,
-        sec5Mid: sec5Top + sec5Height * 0.5,
+        sec5Mid: sec5Top + sec5Height * 0.45,
         sec5End: sec5Top + sec5Height + newVh * 0.1,
       });
     };
@@ -80,7 +79,7 @@ export default function Orb() {
     bp.sec5End,
   ];
 
-  // opacity - בסקשן 5 הכדור נוכח יותר אבל לא דומיננטי (הטקסט הגיבור)
+  // בסקשן 5: ה-Orb הופך לגיבור - אטום מלא (1.0), גודל סביר, ממורכז
   const opacity = useTransform(scrollY, points, [
     0,    // top
     0,    // sec2Start
@@ -89,12 +88,12 @@ export default function Orb() {
     0,    // sec3End
     0.35, // sec4Start
     0.65, // sec4End
-    0.25, // sec5Start - מתחיל קטן
-    0.55, // sec5Mid - שיא הנוכחות
-    0.15, // sec5End - מתפוגג
+    0.5,  // sec5Start - גדל באופציטי
+    1.0,  // sec5Mid - אטום מלא, הגיבור
+    0.3,  // sec5End - דהיה
   ]);
 
-  // x - בסקשן 5 חוזר למרכז המסך (0)
+  // x - בסקשן 5 ממורכז מושלם (0)
   const x = useTransform(scrollY, points, [
     0,
     0,
@@ -103,12 +102,12 @@ export default function Orb() {
     vw * 0.42,
     vw * 0.32,
     vw * 0.20,
-    vw * 0.10, // sec5Start - מתחיל ימינה
-    0,          // sec5Mid - מרכז מושלם
-    0,          // sec5End - נשאר במרכז
+    vw * 0.05, // sec5Start - מתקרב למרכז
+    0,         // sec5Mid - מרכז מושלם
+    0,         // sec5End
   ]);
 
-  // y - בסקשן 5 ממורכז גם אנכית
+  // y - בסקשן 5 ממורכז אנכית
   const y = useTransform(scrollY, points, [
     0,
     0,
@@ -117,12 +116,13 @@ export default function Orb() {
     vh * 0.20,
     vh * 0.20,
     vh * 0.20,
-    vh * 0.10,
+    vh * 0.05,
     0,
     0,
   ]);
 
-  // scale - גדילה דרמטית! מ-0.9 ל-2.2 (כדי לכסות ~95vw)
+  // scale - חשוב! בסקשן 5 גודל יחסי קטן (לא ענק)
+  // ה-orb הבסיסי הוא בערך 400px. בscale 0.95 הוא יהיה ~380px = יפה וממוקם
   const scale = useTransform(scrollY, points, [
     0.5,
     0.5,
@@ -131,12 +131,11 @@ export default function Orb() {
     0.3,
     0.5,
     0.9,
-    1.1,   // sec5Start - גדל
-    2.2,   // sec5Mid - ענק במרכז
-    1.4,   // sec5End - מתחיל להתכווץ
+    0.85, // sec5Start
+    0.95, // sec5Mid - הגודל היפה והמכובד
+    0.7,  // sec5End
   ]);
 
-  // rotate
   const rotate = useTransform(scrollY, points, [
     0, 0, 0.5, 0, 0, -0.5, -1, -0.5, 0, 0.5,
   ]);
