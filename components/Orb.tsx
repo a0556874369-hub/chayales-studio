@@ -24,6 +24,8 @@ export default function Orb() {
     sec6End: 8500,
     sec8Start: 8700,
     sec8End: 9500,
+    sec9Start: 9700,
+    sec9End: 10500,
   });
 
   useEffect(() => {
@@ -38,6 +40,7 @@ export default function Orb() {
       const sec4 = document.getElementById("services");
       const sec6 = document.getElementById("process");
       const sec8 = document.getElementById("about");
+      const sec9 = document.getElementById("contact");
       if (!sec2 || !sec3) return;
 
       const sec2Top = sec2.getBoundingClientRect().top + window.scrollY;
@@ -65,6 +68,11 @@ export default function Orb() {
         : sec6Bottom + 100;
       const sec8Bottom = sec8Top + (sec8 ? sec8.offsetHeight : newVh);
 
+      const sec9Top = sec9
+        ? sec9.getBoundingClientRect().top + window.scrollY
+        : sec8Bottom + 100;
+      const sec9Bottom = sec9Top + (sec9 ? sec9.offsetHeight : newVh);
+
       setBp({
         sec2Start: sec2Top - newVh * 0.3,
         sec2Mid: sec2Top + (sec3Top - sec2Top) / 2,
@@ -79,6 +87,8 @@ export default function Orb() {
         sec6End: sec6Bottom - newVh * 0.5,
         sec8Start: sec8Top - newVh * 0.1,
         sec8End: sec8Bottom - newVh * 0.1,
+        sec9Start: sec9Top + newVh * 0.05,
+        sec9End: sec9Bottom - newVh * 0.1,
       });
     };
     measure();
@@ -106,45 +116,50 @@ export default function Orb() {
     bp.sec6End,
     bp.sec8Start,
     bp.sec8End,
+    bp.sec9Start,
+    bp.sec9End,
   ];
 
-  // opacity - בסקשן 8 (אודות) חוזר עדין כאמביינטי
+  // opacity - בסקשן 9 (Contact) אמביינטי על רקע כהה
   const opacity = useTransform(scrollY, points, [
     0, 0, 0.35, 0.22, 0.28, 0.35, 0.40, 0.32, 0.45, 0.35, 0.18, 0.02,
-    // sec8: חוזר עדין על רקע בהיר
-    0.18,
-    0.25,
+    0.18, 0.25,
+    // sec9: ambient על רקע כהה, דועך לאפס בסוף
+    0.30,
+    0.08,
   ]);
 
-  // x - בסקשן 8 ממוקם בפינה שמאלית עליונה (אמביינטי)
+  // x - בסקשן 9 ממוקם בצד שמאל ויזואלית (רחוק מהטופס שבימין)
   const x = useTransform(scrollY, points, [
     0, 0, vw * 0.18, vw * 0.40, vw * 0.42, vw * 0.38, vw * 0.32,
     vw * 0.28, vw * 0.22, vw * 0.32, vw * 0.42, vw * 0.55,
-    // sec8: עובר לצד ימני (בעברית RTL, x חיובי = ימינה ויזואלית)
-    // אבל אנחנו רוצים שיהיה רחוק מהטיפוגרפיה הענקית שמשמאל
-    // אז נשים אותו בצד ימני (קרוב לטקסט המקצועי)
-    -vw * 0.30, // לצד ימני
-    -vw * 0.35,
+    -vw * 0.30, -vw * 0.35,
+    // sec9: ממשיך משמאל
+    -vw * 0.40,
+    -vw * 0.45,
   ]);
 
-  // y - אמביינטי בגובה אמצע
+  // y - בסקשן 9 בגובה אמצע, ירידה עדינה לסוף
   const y = useTransform(scrollY, points, [
     0, 0, 0, 0, vh * 0.10, vh * 0.05, -vh * 0.02, -vh * 0.05,
     vh * 0.10, -vh * 0.05, -vh * 0.20, -vh * 0.50,
-    -vh * 0.10,
-    -vh * 0.05,
+    -vh * 0.10, -vh * 0.05,
+    // sec9: עולה מעט
+    -vh * 0.15,
+    -vh * 0.25,
   ]);
 
-  // scale - בסקשן 8 גודל בינוני, אמביינטי
+  // scale - בסקשן 9 בינוני-קטן, אמביינטי
   const scale = useTransform(scrollY, points, [
     0.5, 0.5, 0.6, 0.55, 0.5, 0.48, 0.52, 0.5, 0.65, 0.4, 0.25, 0.1,
-    // sec8: חוזר לגודל בינוני
-    0.45,
-    0.55,
+    0.45, 0.55,
+    // sec9: גודל בינוני
+    0.50,
+    0.35,
   ]);
 
   const rotate = useTransform(scrollY, points, [
-    0, 0, 0.5, 0, 0, -0.3, -0.5, -0.3, 0, 0.3, 0.6, 1, 1.2, 1.4,
+    0, 0, 0.5, 0, 0, -0.3, -0.5, -0.3, 0, 0.3, 0.6, 1, 1.2, 1.4, 1.6, 1.8,
   ]);
 
   if (prefersReducedMotion) {

@@ -5,9 +5,11 @@ import ServicesSection from "@/components/sections/ServicesSection";
 import WhyCleanCodeSection from "@/components/sections/WhyCleanCodeSection";
 import ProcessSection from "@/components/sections/ProcessSection";
 import AboutSection from "@/components/sections/AboutSection";
+import ContactSection from "@/components/sections/ContactSection";
 import DarkToLightWrap from "@/components/sections/DarkToLightWrap";
 import LightToDarkWrap from "@/components/sections/LightToDarkWrap";
 import DarkToLightAboutWrap from "@/components/sections/DarkToLightAboutWrap";
+import LightToDarkContactWrap from "@/components/sections/LightToDarkContactWrap";
 import Orb from "@/components/Orb";
 
 export default function Home() {
@@ -27,6 +29,9 @@ export default function Home() {
       <DarkToLightAboutWrap>
         <AboutSection />
       </DarkToLightAboutWrap>
+      <LightToDarkContactWrap>
+        <ContactSection />
+      </LightToDarkContactWrap>
     </>
   );
 }
