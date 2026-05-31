@@ -1976,16 +1976,17 @@ body {
   z-index: 1;
 }
 
-/* Same typography as Sections 02 & 03 headlines */
+/* Same typography family as Sections 02 & 03 headlines, scaled down
+   to keep the headline confident but not dominant. */
 .services-headline {
   font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
   font-weight: 900;
-  font-size: clamp(1.875rem, 4.5vw, 3.5rem);
-  line-height: 1.15;
+  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+  line-height: 1.2;
   letter-spacing: -0.02em;
   color: #FAFBFB;
   text-align: center;
-  max-width: 900px;
+  max-width: 780px;
   margin: 0 auto 16px;
 }
 
@@ -2233,33 +2234,33 @@ body {
 .services-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(140px);
   pointer-events: none;
   z-index: 0;
 }
 
 .services-glow-1 {
-  top: 12%;
-  left: 14%;
+  top: 4%;
+  left: -6%;
   width: clamp(360px, 34vw, 600px);
   height: clamp(360px, 34vw, 600px);
-  background: radial-gradient(circle, rgba(77, 216, 229, 0.10), transparent 65%);
+  background: radial-gradient(circle, rgba(77, 216, 229, 0.06), transparent 65%);
 }
 
 .services-glow-2 {
-  bottom: 14%;
-  right: 12%;
+  bottom: -8%;
+  right: -10%;
   width: clamp(340px, 32vw, 560px);
   height: clamp(340px, 32vw, 560px);
-  background: radial-gradient(circle, rgba(110, 191, 201, 0.08), transparent 65%);
+  background: radial-gradient(circle, rgba(110, 191, 201, 0.05), transparent 65%);
 }
 
 .services-glow-3 {
-  top: 42%;
-  left: 42%;
-  width: clamp(280px, 26vw, 460px);
-  height: clamp(280px, 26vw, 460px);
-  background: radial-gradient(circle, rgba(45, 136, 150, 0.07), transparent 65%);
+  top: 48%;
+  left: 46%;
+  width: clamp(260px, 22vw, 400px);
+  height: clamp(260px, 22vw, 400px);
+  background: radial-gradient(circle, rgba(45, 136, 150, 0.045), transparent 65%);
 }
 
 /* ============================================
