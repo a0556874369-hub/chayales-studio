@@ -158,7 +158,7 @@ export async function POST(request: Request) {
       text: string;
       replyTo?: string;
     } = {
-      from: "חיהLES Studio <onboarding@resend.dev>",
+      from: "חיהLES Studio <contact@chayales.com>",
       to: ["contact@chayales.com"],
       subject: `פנייה חדשה מהאתר - ${name}`,
       html: htmlBody,
