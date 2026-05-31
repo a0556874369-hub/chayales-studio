@@ -47,10 +47,10 @@ export default function WorksSection() {
       <span className="works-glow works-glow-3" aria-hidden />
 
       <div className="works-content">
-        <h2 className="works-headline">כל עבודה - שפה משלה, מותג שלם.</h2>
+        <h2 className="works-headline">כל עבודה - שפה משלה.</h2>
 
         <p className="works-subhead">
-          לא קולקציה של עבודות. גלריית מותגים שלא מדפדפים לידם.
+          לכל עסק בניתי שפה אחרת - לפי הקהל, המטרה, והרושם שהוא צריך להשאיר.
         </p>
 
         <div className="works-grid" dir="rtl">
@@ -72,7 +72,7 @@ export default function WorksSection() {
 
         <div className="works-cta-wrap">
           <a href="#contact" className="works-cta">
-            צרו איתי קשר לפרויקט שלכם <span aria-hidden>←</span>
+            רוצים שגם העסק שלכם ייראה ככה? בואו נדבר <span aria-hidden>←</span>
           </a>
         </div>
       </div>

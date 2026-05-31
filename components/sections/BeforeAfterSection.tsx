@@ -159,11 +159,11 @@ export default function BeforeAfterSection() {
       {/* Scroll-coupled teal sweep traveling through the section. */}
       <div className="ba-content">
         <h2 className="ba-headline">
-          רוב העסקים <span style={{ color: "#6EBFC9" }}>מסתתרים</span> מאחורי
-          תבנית גנרית. אנחנו מוציאים אותם{" "}
-          <span style={{ color: "#4DD8E5" }}>לאור</span>.
+          אותו עסק. <span style={{ color: "#4DD8E5" }}>רושם אחר לגמרי</span>.
         </h2>
-        <p className="ba-subhead">גררו את הסליידר וראו את ההבדל</p>
+        <p className="ba-subhead">
+          גררו את הסליידר ותראו איך עיצוב נכון משנה את הרושם שאתם משאירים בשנייה הראשונה.
+        </p>
 
         <div ref={containerRef} className="ba-container">
           {/* "Before" — fills the container as the bottom layer. */}

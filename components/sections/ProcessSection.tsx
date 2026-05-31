@@ -21,29 +21,30 @@ const STAGES: Stage[] = [
   {
     num: "01",
     Icon: ChatCircleDots,
-    title: "שיחת היכרות",
+    title: "מבינים את העסק",
     description:
-      "שיחה של 30 דקות. אני שומעת את הסיפור שלכם, את החלום, את הכאב. בלי התחייבות.",
+      "שיחה של עד 30 דקות, בלי התחייבות. אני שומעת מה אתם מוכרים, למי, מה כבר ניסיתם, מה לא עובד, ומה אתם רוצים שיחשבו עליכם מהרגע הראשון.",
   },
   {
     num: "02",
     Icon: PaintBrush,
-    title: "מיתוג ושפה",
+    title: "מחדדים את המסר",
     description:
-      "לוגו, צבעים, טיפוגרפיה, מצב רוח. הכל לפני שגוגלים שורת קוד אחת.",
+      "לפני צבעים ופונטים, מנסחים את הדבר הכי חשוב: למה שיבחרו בכם, ומה הלקוח צריך להבין בשנייה הראשונה.",
   },
   {
     num: "03",
     Icon: Code,
-    title: "פיתוח ועיצוב",
+    title: "בונים את השפה",
     description:
-      "אתר, מודעות, או חבילה מלאה. כל אלמנט מתוכנן אישית, נבדק, מותאם.",
+      "לוגו, צבעים, טיפוגרפיה, סגנון ויזואלי, קופי ותנועה. הכל מתחבר לשפה אחת ברורה.",
   },
   {
     num: "04",
     Icon: RocketLaunch,
-    title: "עלייה לאוויר",
-    description: "בודקים, משחררים, חוגגים. וגם אחרי - אני כאן בשבילכם.",
+    title: "מוציאים לעולם",
+    description:
+      "אתר, מודעה או חבילה מלאה. כל פרט עובר ליטוש, בדיקה והתאמה עד שזה מרגיש נכון, נראה מקצועי, ועובד. וגם אחרי - אני כאן.",
   },
 ];
 
@@ -97,10 +98,10 @@ export default function ProcessSection() {
       <div className="process-sticky">
         <div className="process-header">
           <h2 className="process-headline">
-            4 שלבים מהרעיון <span className="process-headline-accent">למותג חי.</span>
+            איך הופכים עסק טוב <span className="process-headline-accent">לנראות שעובדת.</span>
           </h2>
           <p className="process-subhead">
-            תהליך מסודר, בלי הפתעות, עם הרבה אהבה לפרטים.
+            בלי לקפוץ ישר לעיצוב. קודם מבינים מה צריך לקרות בראש של הלקוח שלכם.
           </p>
         </div>
 
@@ -137,10 +138,10 @@ export default function ProcessSection() {
       <div className="process-mobile-stack" aria-hidden="false">
         <div className="process-mobile-header">
           <h2 className="process-headline">
-            4 שלבים מהרעיון <span className="process-headline-accent">למותג חי.</span>
+            איך הופכים עסק טוב <span className="process-headline-accent">לנראות שעובדת.</span>
           </h2>
           <p className="process-subhead">
-            תהליך מסודר, בלי הפתעות, עם הרבה אהבה לפרטים.
+            בלי לקפוץ ישר לעיצוב. קודם מבינים מה צריך לקרות בראש של הלקוח שלכם.
           </p>
         </div>
         <div className="process-mobile-cards">

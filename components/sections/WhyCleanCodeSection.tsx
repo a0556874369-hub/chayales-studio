@@ -93,29 +93,29 @@ const HERO_ADVANTAGE: Advantage = {
   num: "01",
   title: "גמישות מלאה",
   description:
-    "רוצים פיצ'ר חדש? אנחנו בונים אותו. בלי לחפש פלאגין שיעשה את זה במקום, בלי 'אי אפשר בתבנית', בלי פשרות.",
+    "רוצים פיצ'ר מיוחד? בונים אותו. בלי לחפש פלאגין, בלי להיתקע בתבנית, בלי לשמוע \"אי אפשר\".",
 };
 
 const SUPPORTING_ADVANTAGES: Advantage[] = [
   {
     num: "02",
-    title: "מהירות",
-    description: "אתר בקוד נקי טוען פי 5 מתבנית גנרית. גוגל אוהב את זה. הלקוחות עוד יותר.",
+    title: "מהירות וניקיון",
+    description: "קוד נקי מאפשר אתר מהיר, חד ומדויק יותר, בלי שכבות מיותרות שמכבידות על החוויה.",
   },
   {
     num: "03",
-    title: "ייחודיות",
-    description: "אין עוד אתר בעולם שנראה כמוכם. בנינו אותו רק בשבילכם, מהפיקסל הראשון.",
+    title: "נראות שלא משוכפלת",
+    description: "האתר לא מתחיל מתבנית של מישהו אחר. הוא נבנה סביב העסק שלכם, מהפיקסל הראשון.",
   },
   {
     num: "04",
-    title: "SEO מובנה",
-    description: "בנוי ל-SEO מהיסוד. בלי תוספים, בלי קונפליקטים, בלי 'מה לא עובד היום?'.",
+    title: "SEO מהבסיס",
+    description: "מבנה נכון, היררכיה נכונה, טעינה נקייה ותוכן מסודר. בלי לריב עם תוספים ובלי קונפליקטים מיותרים.",
   },
   {
     num: "05",
-    title: "אנימציות אישיות",
-    description: "כל מעבר, כל hover, כל גלילה - מתוכננים אישית. לא אופציה מתפריט.",
+    title: "תנועה שמשרתת מסר",
+    description: "כל מעבר, hover וגלילה מתוכננים כדי להוביל את העין, לא כדי להרשים סתם.",
   },
 ];
 
@@ -213,9 +213,6 @@ function HeroCard({
 
       <div className="why-hero-visual">
         <CubesGrid reduced={reduced} />
-        <span className="why-hero-visual-label" aria-hidden>
-          המבנה זז ומתאים את עצמו
-        </span>
       </div>
 
       <div className="why-hero-content">
@@ -293,8 +290,8 @@ export default function WhyCleanCodeSection() {
 
   const headlinePart1 = "למה לא וורדפרס? למה לא ויקס?";
   const headlinePart2 = "כי הם לא מספיקים.";
-  const subhead = "5 סיבות שאתר בקוד נקי הוא לא מותרות - הוא הכרח.";
-  const closingLine = "אתר שמשרת אתכם. לא להפך.";
+  const subhead = "כשאתר צריך להיראות אחרת, לזוז אחרת ולעבוד אחרת - בונים אותו בקוד נקי.";
+  const closingLine = "אתר שאפשר לבנות סביבכם. לא אתר שאתם צריכים להתכופף אליו.";
 
   const headline1Duration = headlinePart1.length * 0.035;
   const headline2Start = 0.1 + headline1Duration + 0.2;

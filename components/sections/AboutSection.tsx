@@ -12,27 +12,6 @@ const DECLARATION_LINES = [
   { text: "כל הארבע.", accent: true }, // הפאנץ' - בטורקיז
 ];
 
-// ===== 3 העקרונות =====
-interface Principle {
-  num: string;
-  text: string;
-}
-
-const PRINCIPLES: Principle[] = [
-  {
-    num: "01",
-    text: "עיצוב טוב = עיצוב יפה שעובד.",
-  },
-  {
-    num: "02",
-    text: "לכל מותג שפה ויזואלית משלו. לא תבנית של מישהו אחר.",
-  },
-  {
-    num: "03",
-    text: "כל מותג ראוי לוואריאציה הכי מושלמת שלו.",
-  },
-];
-
 // ===== הפסקאות =====
 interface Paragraph {
   label: string;
@@ -42,15 +21,19 @@ interface Paragraph {
 const PARAGRAPHS: Paragraph[] = [
   {
     label: "מי אני",
-    text: "אני מעצבת. אני מפתחת. אני כותבת קופי. אני מומחית שיווק. השילוב הזה הוא נדיר - ובדיוק בגללו עסקים בוחרים לעבוד איתי במקום לרדוף אחרי 5 ספקים שונים שאף אחד מהם לא באמת מבין לעומק את העסק שלהם.",
+    text: "מעצבת. מפתחת. כותבת קופי. מומחית שיווק. השילוב הזה נדיר - ובדיוק בגללו בעלי עסקים ונותני שירותים בוחרים בי במקום לרדוף אחרי כמה ספקים שכל אחד רואה רק חתיכה אחת מהתמונה.",
   },
   {
     label: "מה אני עושה אחרת",
-    text: "האתרים שאני בונה הם לא תבניות מותאמות - הם בקוד נקי אמיתי, עם אפשרויות פונקציונליות של אפליקציות. המודעות שאני מעצבת עוצרות גלילה בדיגיטל ודפדוף בפרינט. המיתוג שאני בונה לא נראה כמו עוד לוגו - הוא נראה כמו עצמכם בוואריאציה הכי מדהימה שלו.",
+    text: "האתרים שלי הם לא תבניות, קוד נקי אמיתי עם חוויה ופונקציונליות אמיתית. המודעות שלי עוצרות גלילה בדיגיטל ודפדוף בפרינט. והמיתוג שלי לא נראה כמו עוד לוגו - הוא נראה כמו העסק שלכם, בגרסה הכי טובה שלו.",
+  },
+  {
+    label: "למה זה משנה",
+    text: "כי עיצוב טוב הוא לא קישוט. הוא ההבדל בין עסק שמתעלמים ממנו לעסק שבוחרים בו.",
   },
   {
     label: "למי זה מתאים",
-    text: "אם אתם עסק שמבין שעיצוב, אתר, ומיתוג הם הזדמנות (ראשונה ואחרונה) להגיד 'אנחנו רציניים' - הסטודיו הזה בנוי בשבילכם. אם אתם רוצים לדבר עם בן אדם אחד שמבין את הכל ומבצע את הכל - בדיוק בשביל זה הקמתי אותו.",
+    text: "לעסקים ונותני שירות שמבינים שהנראות שלהם היא לא משהו שמטפלים בו \"אחר כך\". היא ההזדמנות הראשונה להגיד: אנחנו רציניים, מקצועיים, ושווים את הבחירה.",
   },
 ];
 
@@ -60,7 +43,6 @@ export default function AboutSection() {
 
   const declarationRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const principlesRef = useRef<HTMLDivElement | null>(null);
 
   const declarationInView = useInView(declarationRef, {
     once: true,
@@ -69,10 +51,6 @@ export default function AboutSection() {
   const contentInView = useInView(contentRef, {
     once: true,
     margin: "-15% 0px -15% 0px",
-  });
-  const principlesInView = useInView(principlesRef, {
-    once: true,
-    margin: "-10% 0px -10% 0px",
   });
 
   return (
@@ -98,9 +76,10 @@ export default function AboutSection() {
             }
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            אני חיה. ואני בונה{" "}
-            <span className="about-headline-accent">מותגים שלמים</span>{" "}
-            מההתחלה - לבד.
+            היי, אני חיה.
+            <br />
+            ואני בונה לעסקים נראות, אתר ומסר שעובדים יחד -{" "}
+            <span className="about-headline-accent">לבד</span>.
           </motion.h2>
 
           <div className="about-paragraphs">
@@ -164,37 +143,6 @@ export default function AboutSection() {
         </div>
       </div>
 
-      {/* 3 העקרונות - חוצים את כל הסקשן */}
-      <div className="about-principles-wrap" ref={principlesRef}>
-        <div className="about-principles-divider" aria-hidden />
-        <div className="about-principles-grid">
-          {PRINCIPLES.map((p, i) => (
-            <motion.article
-              key={p.num}
-              className="about-principle"
-              initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-              animate={
-                principlesInView
-                  ? { opacity: 1, y: 0 }
-                  : reduced
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 24 }
-              }
-              transition={{
-                duration: 0.7,
-                delay: reduced ? 0 : 0.2 + i * 0.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <div className="about-principle-halo" aria-hidden />
-              <span className="about-principle-num" aria-hidden>
-                {p.num}
-              </span>
-              <p className="about-principle-text">{p.text}</p>
-            </motion.article>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }

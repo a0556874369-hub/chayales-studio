@@ -24,7 +24,7 @@ const SERVICE_OPTIONS = [
 const CONTACT_DETAILS = {
   phone: "055-687-4369",
   phoneClean: "972556874369", // ללא 0 מקדים, עם 972 ל-WhatsApp
-  email: "chayales123@gmail.com",
+  email: "contact@chayales.com",
 };
 
 interface FormData {
@@ -173,7 +173,7 @@ export default function ContactSection() {
           <span className="contact-headline-accent">הבחירה הנכונה?</span>
         </h2>
         <p className="contact-subhead">
-          ספרו לי בכמה מילים מה אתם צריכים - ואני אחזור אליכם עם כיוון ברור.
+          ספרו לי איפה אתם עומדים עכשיו - ונראה מה נכון לבנות: מיתוג, אתר, מודעה או הכל יחד.
         </p>
       </motion.div>
 
@@ -297,7 +297,7 @@ export default function ContactSection() {
               disabled={isSubmitting}
             >
               <span className="contact-submit-text">
-                {isSubmitting ? "שולחת..." : "שלחו פרטים"}
+                {isSubmitting ? "שולחת..." : "בואו נתחיל"}
               </span>
               {!isSubmitting && (
                 <ArrowLeft
@@ -326,7 +326,7 @@ export default function ContactSection() {
         transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
         <span className="contact-direct-label" aria-hidden>
-          או פנו אליי ישירות
+          או פנו אליי ישירות:
         </span>
         <div className="contact-direct-grid">
           <a
