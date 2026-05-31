@@ -20,15 +20,14 @@ function escapeHtml(str: string): string {
 
 // תרגום ערכי הדרופדאון לתצוגה
 const SERVICE_LABELS: Record<string, string> = {
-  website: "אתר חדש",
-  branding: "מיתוג מלא",
-  ad: "מודעה / חומר שיווקי",
-  "full-package": "חבילה מלאה - מיתוג + אתר",
-  other: "אחר / לא בטוחה עדיין",
+  branding: "מיתוג",
+  website: "אתר",
+  ad: "מודעה",
+  "full-package": "חבילה מלאה",
+  "not-sure": "עדיין לא בטוחים",
 };
 
 export async function POST(request: Request) {
-  // בדיקה שה-API key מוגדר
   if (!process.env.RESEND_API_KEY) {
     console.error("RESEND_API_KEY is not configured");
     return NextResponse.json(
@@ -41,30 +40,32 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       name = "",
-      email = "",
-      phone = "",
+      contact = "",
+      contactType = "",
       service = "",
       message = "",
     } = body;
 
     // ולידציה בצד השרת
     if (!name || typeof name !== "string" || !name.trim()) {
+      return NextResponse.json({ error: "שם הוא שדה חובה" }, { status: 400 });
+    }
+
+    if (!contact || typeof contact !== "string" || !contact.trim()) {
       return NextResponse.json(
-        { error: "שם הוא שדה חובה" },
+        { error: "טלפון או מייל הם שדה חובה" },
         { status: 400 }
       );
     }
 
-    if (!email || typeof email !== "string" || !email.trim()) {
-      return NextResponse.json(
-        { error: "מייל הוא שדה חובה" },
-        { status: 400 }
-      );
-    }
+    // ולידציה של מייל או טלפון
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.trim());
+    const digitCount = contact.replace(/\D/g, "").length;
+    const isPhone = digitCount >= 8 && /^[\d\s+\-()]+$/.test(contact.trim());
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!isEmail && !isPhone) {
       return NextResponse.json(
-        { error: "כתובת מייל לא תקינה" },
+        { error: "טלפון או מייל לא תקינים" },
         { status: 400 }
       );
     }
@@ -72,8 +73,7 @@ export async function POST(request: Request) {
     // הגנה מפני קלט ארוך מדי (spam protection)
     if (
       name.length > 200 ||
-      email.length > 200 ||
-      phone.length > 50 ||
+      contact.length > 200 ||
       message.length > 5000
     ) {
       return NextResponse.json(
@@ -84,10 +84,15 @@ export async function POST(request: Request) {
 
     // הכנת תוכן המייל - escape של כל הקלט
     const safeName = escapeHtml(name.trim());
-    const safeEmail = escapeHtml(email.trim());
-    const safePhone = phone ? escapeHtml(phone.trim()) : "";
+    const safeContact = escapeHtml(contact.trim());
+    const contactLabel = isEmail ? "מייל" : "טלפון";
     const safeService = service ? SERVICE_LABELS[service] || escapeHtml(service) : "";
     const safeMessage = message ? escapeHtml(message.trim()) : "";
+
+    // קישור ישיר ב-HTML של המייל - תלוי אם זה מייל או טלפון
+    const contactLink = isEmail
+      ? `<a href="mailto:${safeContact}" style="color: #2D8896; text-decoration: none;" dir="ltr">${safeContact}</a>`
+      : `<a href="tel:${safeContact.replace(/[^0-9+]/g, "")}" style="color: #2D8896; text-decoration: none;" dir="ltr">${safeContact}</a>`;
 
     const htmlBody = `
 <!DOCTYPE html>
@@ -108,23 +113,18 @@ export async function POST(request: Request) {
           <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #111;">${safeName}</td>
         </tr>
         <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-weight: 600; vertical-align: top;">מייל:</td>
-          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #111;"><a href="mailto:${safeEmail}" style="color: #2D8896; text-decoration: none;" dir="ltr">${safeEmail}</a></td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-weight: 600; vertical-align: top;">${contactLabel}:</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #111;">${contactLink}</td>
         </tr>
-        ${safePhone ? `
-        <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-weight: 600; vertical-align: top;">טלפון:</td>
-          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #111;"><a href="tel:${safePhone.replace(/[^0-9+]/g, "")}" style="color: #2D8896; text-decoration: none;" dir="ltr">${safePhone}</a></td>
-        </tr>` : ""}
         ${safeService ? `
         <tr>
-          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-weight: 600; vertical-align: top;">סוג שירות:</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666; font-weight: 600; vertical-align: top;">צריכים:</td>
           <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #111;">${safeService}</td>
         </tr>` : ""}
       </table>
       ${safeMessage ? `
       <div style="margin-top: 24px;">
-        <h3 style="font-size: 14px; color: #666; margin: 0 0 8px;">הודעה:</h3>
+        <h3 style="font-size: 14px; color: #666; margin: 0 0 8px;">על העסק:</h3>
         <div style="background: #f9fafb; border-radius: 12px; padding: 16px; color: #111; line-height: 1.6; white-space: pre-wrap;">${safeMessage}</div>
       </div>` : ""}
     </div>
@@ -135,30 +135,43 @@ export async function POST(request: Request) {
 </body>
 </html>`.trim();
 
-    // טקסט פלאט (לקליינטים שלא תומכים ב-HTML)
+    // טקסט פלאט
     const textBody = [
       `פנייה חדשה מהאתר - חיהLES Studio`,
       ``,
       `שם: ${name}`,
-      `מייל: ${email}`,
-      phone ? `טלפון: ${phone}` : "",
-      service ? `סוג שירות: ${SERVICE_LABELS[service] || service}` : "",
+      `${contactLabel}: ${contact}`,
+      service ? `צריכים: ${SERVICE_LABELS[service] || service}` : "",
       ``,
-      message ? `הודעה:\n${message}` : "",
+      message ? `על העסק:\n${message}` : "",
     ]
       .filter(Boolean)
       .join("\n");
 
-    // שליחה דרך Resend - אתחול lazy רק כשבאמת צריך
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send({
+    // שליחה דרך Resend
+    // אם זה מייל - מגדירים replyTo כדי שתוכלי לענות ישירות
+    const emailOptions: {
+      from: string;
+      to: string[];
+      subject: string;
+      html: string;
+      text: string;
+      replyTo?: string;
+    } = {
       from: "חיהLES Studio <onboarding@resend.dev>",
       to: ["chayales123@gmail.com"],
-      replyTo: email,
       subject: `פנייה חדשה מהאתר - ${name}`,
       html: htmlBody,
       text: textBody,
-    });
+    };
+
+    if (isEmail) {
+      emailOptions.replyTo = contact;
+    }
+
+    // אתחול lazy של Resend - רק כשבאמת צריך לשלוח
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { data, error } = await resend.emails.send(emailOptions);
 
     if (error) {
       console.error("Resend error:", error);

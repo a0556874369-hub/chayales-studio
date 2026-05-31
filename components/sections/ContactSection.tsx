@@ -1,30 +1,35 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { Phone, Envelope, ArrowLeft, CheckCircle } from "@phosphor-icons/react";
+import {
+  Phone,
+  Envelope,
+  WhatsappLogo,
+  ArrowLeft,
+  CheckCircle,
+} from "@phosphor-icons/react";
 import { useRef, useState, type FormEvent } from "react";
-import GlassSculpture from "@/components/ui/GlassSculpture";
 
-// סוגי שירות לטופס
+// מה אתם צריכים? - דרופדאון
 const SERVICE_OPTIONS = [
-  { value: "", label: "בחרי סוג שירות" },
-  { value: "website", label: "אתר חדש" },
-  { value: "branding", label: "מיתוג מלא" },
-  { value: "ad", label: "מודעה / חומר שיווקי" },
-  { value: "full-package", label: "חבילה מלאה - מיתוג + אתר" },
-  { value: "other", label: "אחר / לא בטוחה עדיין" },
+  { value: "", label: "מה אתם צריכים?" },
+  { value: "branding", label: "מיתוג" },
+  { value: "website", label: "אתר" },
+  { value: "ad", label: "מודעה" },
+  { value: "full-package", label: "חבילה מלאה" },
+  { value: "not-sure", label: "עדיין לא בטוחים" },
 ];
 
-// פרטי קשר ישירים - עדכני את הטלפון!
+// פרטי קשר ישירים - ⚠️ עדכני את הטלפון!
 const CONTACT_DETAILS = {
-  phone: "055-687-4369", // ⚠️ עדכני למספר הנכון שלך
+  phone: "055-687-4369",
+  phoneClean: "972556874369", // ללא 0 מקדים, עם 972 ל-WhatsApp
   email: "chayales123@gmail.com",
 };
 
 interface FormData {
   name: string;
-  email: string;
-  phone: string;
+  contact: string; // טלפון או מייל - שדה אחד
   service: string;
   message: string;
 }
@@ -37,7 +42,7 @@ export default function ContactSection() {
 
   const headerRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLDivElement | null>(null);
-  const visualRef = useRef<HTMLDivElement | null>(null);
+  const directRef = useRef<HTMLDivElement | null>(null);
 
   const headerInView = useInView(headerRef, {
     once: true,
@@ -47,16 +52,14 @@ export default function ContactSection() {
     once: true,
     margin: "-10% 0px -10% 0px",
   });
-  const visualInView = useInView(visualRef, {
+  const directInView = useInView(directRef, {
     once: true,
     margin: "-10% 0px -10% 0px",
   });
 
-  // ===== State הטופס =====
   const [formData, setFormData] = useState<FormData>({
     name: "",
-    email: "",
-    phone: "",
+    contact: "",
     service: "",
     message: "",
   });
@@ -64,7 +67,6 @@ export default function ContactSection() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // ===== עדכון שדות =====
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -75,21 +77,34 @@ export default function ContactSection() {
     if (errorMessage) setErrorMessage("");
   };
 
-  // ===== שליחת הטופס =====
+  // זיהוי האם הקלט הוא מייל או טלפון
+  const detectContactType = (
+    value: string
+  ): "email" | "phone" | "invalid" => {
+    const trimmed = value.trim();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return "email";
+    // טלפון - לפחות 8 ספרות (יכול לכלול -, +, רווחים, סוגריים)
+    const digitCount = trimmed.replace(/\D/g, "").length;
+    if (digitCount >= 8 && /^[\d\s+\-()]+$/.test(trimmed)) return "phone";
+    return "invalid";
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // ולידציה בצד הלקוח
+    // ולידציה
     if (!formData.name.trim()) {
       setErrorMessage("שם הוא שדה חובה");
       return;
     }
-    if (!formData.email.trim()) {
-      setErrorMessage("מייל הוא שדה חובה");
+    if (!formData.contact.trim()) {
+      setErrorMessage("טלפון או מייל - אחד מהם חובה");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setErrorMessage("כתובת מייל לא תקינה");
+
+    const contactType = detectContactType(formData.contact);
+    if (contactType === "invalid") {
+      setErrorMessage("אנא הזיני טלפון תקין (לפחות 8 ספרות) או כתובת מייל");
       return;
     }
 
@@ -100,7 +115,10 @@ export default function ContactSection() {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          contactType, // שולח לשרת גם את הסוג
+        }),
       });
 
       if (!response.ok) {
@@ -121,6 +139,12 @@ export default function ContactSection() {
 
   const isSubmitting = status === "sending";
   const isSuccess = status === "success";
+
+  // הודעת WhatsApp מוכנה מראש
+  const whatsappMessage = encodeURIComponent(
+    "היי חיה, ראיתי את האתר שלך ומתעניינ/ת בשירותים."
+  );
+  const whatsappUrl = `https://wa.me/${CONTACT_DETAILS.phoneClean}?text=${whatsappMessage}`;
 
   return (
     <section
@@ -145,212 +169,194 @@ export default function ContactSection() {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <h2 className="contact-headline">
-          מוכנים לבנות מותג{" "}
-          <span className="contact-headline-accent">שלא מדפדפים לידו?</span>
+          רוצים שהעסק שלכם ייראה כמו{" "}
+          <span className="contact-headline-accent">הבחירה הנכונה?</span>
         </h2>
         <p className="contact-subhead">
-          שיחת היכרות של 30 דקות. בלי התחייבות. רק כדי לראות אם אנחנו מתאימים.
+          ספרו לי בכמה מילים מה אתם צריכים - ואני אחזור אליכם עם כיוון ברור.
         </p>
       </motion.div>
 
-      {/* גריד ראשי */}
-      <div className="contact-main-grid">
-        {/* צד ימני (בעברית = ראשון) - הטופס */}
-        <motion.div
-          className="contact-form-wrap"
-          ref={formRef}
-          initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          animate={
-            formInView
-              ? { opacity: 1, y: 0 }
-              : reduced
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 30 }
-          }
-          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {isSuccess ? (
-            // ===== מצב הצלחה =====
-            <div className="contact-success" role="status">
-              <CheckCircle
-                size={64}
-                weight="thin"
-                color="#4DD8E5"
-                className="contact-success-icon"
-              />
-              <h3 className="contact-success-title">תודה!</h3>
-              <p className="contact-success-text">
-                קיבלתי את הפנייה שלך.
-                <br />
-                אחזור אלייך תוך 24 שעות.
-              </p>
-            </div>
-          ) : (
-            // ===== הטופס =====
-            <form
-              className="contact-form"
-              onSubmit={handleSubmit}
-              noValidate
-              aria-label="טופס יצירת קשר"
-            >
-              <div className="contact-field">
-                <label htmlFor="contact-name" className="contact-label">
-                  שם <span className="contact-required">*</span>
-                </label>
-                <input
-                  id="contact-name"
-                  name="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="contact-input"
-                  placeholder="השם שלך"
-                  autoComplete="name"
-                />
-              </div>
-
-              <div className="contact-field">
-                <label htmlFor="contact-email" className="contact-label">
-                  מייל <span className="contact-required">*</span>
-                </label>
-                <input
-                  id="contact-email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="contact-input"
-                  placeholder="your@email.com"
-                  dir="ltr"
-                  autoComplete="email"
-                />
-              </div>
-
-              <div className="contact-field">
-                <label htmlFor="contact-phone" className="contact-label">
-                  טלפון
-                </label>
-                <input
-                  id="contact-phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="contact-input"
-                  placeholder="050-1234567"
-                  dir="ltr"
-                  autoComplete="tel"
-                />
-              </div>
-
-              <div className="contact-field">
-                <label htmlFor="contact-service" className="contact-label">
-                  סוג שירות
-                </label>
-                <select
-                  id="contact-service"
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="contact-input contact-select"
-                >
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="contact-field">
-                <label htmlFor="contact-message" className="contact-label">
-                  ספרי לי על העסק
-                </label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  rows={4}
-                  value={formData.message}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="contact-input contact-textarea"
-                  placeholder="במה את עוסקת? מה הצורך?"
-                />
-              </div>
-
-              {errorMessage && (
-                <div className="contact-error" role="alert">
-                  {errorMessage}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="contact-submit"
+      {/* טופס במרכז */}
+      <motion.div
+        className="contact-form-wrap"
+        ref={formRef}
+        initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        animate={
+          formInView
+            ? { opacity: 1, y: 0 }
+            : reduced
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 30 }
+        }
+        transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {isSuccess ? (
+          <div className="contact-success" role="status">
+            <CheckCircle
+              size={64}
+              weight="thin"
+              color="#4DD8E5"
+              className="contact-success-icon"
+            />
+            <h3 className="contact-success-title">תודה!</h3>
+            <p className="contact-success-text">
+              קיבלתי את הפנייה שלך.
+              <br />
+              אחזור אלייך תוך 24 שעות.
+            </p>
+          </div>
+        ) : (
+          <form
+            className="contact-form"
+            onSubmit={handleSubmit}
+            noValidate
+            aria-label="טופס יצירת קשר"
+          >
+            <div className="contact-field">
+              <label htmlFor="contact-name" className="contact-label">
+                שם <span className="contact-required">*</span>
+              </label>
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleChange}
                 disabled={isSubmitting}
+                className="contact-input"
+                placeholder="השם שלך"
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="contact-field">
+              <label htmlFor="contact-contact" className="contact-label">
+                טלפון או מייל <span className="contact-required">*</span>
+              </label>
+              <input
+                id="contact-contact"
+                name="contact"
+                type="text"
+                required
+                value={formData.contact}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                className="contact-input"
+                placeholder="איך הכי נוח לכם שאחזור"
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="contact-field">
+              <label htmlFor="contact-service" className="contact-label">
+                מה אתם צריכים?
+              </label>
+              <select
+                id="contact-service"
+                name="service"
+                value={formData.service}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                className="contact-input contact-select"
               >
-                <span className="contact-submit-text">
-                  {isSubmitting ? "שולחת..." : "בואו נדבר"}
-                </span>
-                {!isSubmitting && (
-                  <ArrowLeft
-                    size={20}
-                    weight="bold"
-                    className="contact-submit-arrow"
-                  />
-                )}
-              </button>
-            </form>
-          )}
-        </motion.div>
+                {SERVICE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* צד שמאלי (בעברית = שני) - הוויזואל ופרטי קשר */}
-        <motion.div
-          className="contact-visual-wrap"
-          ref={visualRef}
-          initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          animate={
-            visualInView
-              ? { opacity: 1, y: 0 }
-              : reduced
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 30 }
-          }
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="contact-sculpture">
-            <GlassSculpture />
-          </div>
+            <div className="contact-field">
+              <label htmlFor="contact-message" className="contact-label">
+                ספרו לי בקצרה על העסק
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                rows={3}
+                value={formData.message}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                className="contact-input contact-textarea"
+                placeholder="במה אתם עוסקים? מה הצורך?"
+              />
+            </div>
 
-          <div className="contact-direct">
-            <span className="contact-direct-label" aria-hidden>
-              או ישירות
-            </span>
-            <a
-              href={`tel:${CONTACT_DETAILS.phone.replace(/-/g, "")}`}
-              className="contact-direct-item"
-              aria-label={`התקשרי ל-${CONTACT_DETAILS.phone}`}
+            {errorMessage && (
+              <div className="contact-error" role="alert">
+                {errorMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="contact-submit"
+              disabled={isSubmitting}
             >
-              <Phone size={20} weight="thin" color="#4DD8E5" />
-              <span dir="ltr">{CONTACT_DETAILS.phone}</span>
-            </a>
-            <a
-              href={`mailto:${CONTACT_DETAILS.email}`}
-              className="contact-direct-item"
-              aria-label={`שלחי מייל ל-${CONTACT_DETAILS.email}`}
-            >
-              <Envelope size={20} weight="thin" color="#4DD8E5" />
-              <span dir="ltr">{CONTACT_DETAILS.email}</span>
-            </a>
-          </div>
-        </motion.div>
-      </div>
+              <span className="contact-submit-text">
+                {isSubmitting ? "שולחת..." : "שלחו פרטים"}
+              </span>
+              {!isSubmitting && (
+                <ArrowLeft
+                  size={20}
+                  weight="bold"
+                  className="contact-submit-arrow"
+                />
+              )}
+            </button>
+          </form>
+        )}
+      </motion.div>
+
+      {/* פרטי קשר ישירים מתחת */}
+      <motion.div
+        className="contact-direct-wrap"
+        ref={directRef}
+        initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        animate={
+          directInView
+            ? { opacity: 1, y: 0 }
+            : reduced
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 20 }
+        }
+        transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <span className="contact-direct-label" aria-hidden>
+          או פנו אליי ישירות
+        </span>
+        <div className="contact-direct-grid">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-direct-item contact-direct-whatsapp"
+            aria-label="שלחו וואטסאפ"
+          >
+            <WhatsappLogo size={22} weight="thin" />
+            <span>וואטסאפ</span>
+          </a>
+          <a
+            href={`tel:${CONTACT_DETAILS.phone.replace(/-/g, "")}`}
+            className="contact-direct-item"
+            aria-label={`התקשרו ל-${CONTACT_DETAILS.phone}`}
+          >
+            <Phone size={22} weight="thin" />
+            <span dir="ltr">{CONTACT_DETAILS.phone}</span>
+          </a>
+          <a
+            href={`mailto:${CONTACT_DETAILS.email}`}
+            className="contact-direct-item"
+            aria-label={`שלחו מייל ל-${CONTACT_DETAILS.email}`}
+          >
+            <Envelope size={22} weight="thin" />
+            <span dir="ltr">{CONTACT_DETAILS.email}</span>
+          </a>
+        </div>
+      </motion.div>
     </section>
   );
 }

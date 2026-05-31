@@ -3307,8 +3307,10 @@ body {
   );
 }
 
+
 /* ============================================
    SECTION 09 - CONTACT
+   טופס במרכז + פרטי קשר ישירים מתחת
    ============================================ */
 .contact-section {
   position: relative;
@@ -3317,7 +3319,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(56px, 8vh, 88px);
+  gap: clamp(40px, 6vh, 64px);
   color: #E8F4F6;
   isolation: isolate;
 }
@@ -3325,7 +3327,7 @@ body {
 .contact-header {
   position: relative;
   z-index: 3;
-  max-width: 900px;
+  max-width: 760px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -3334,7 +3336,7 @@ body {
 
 .contact-headline {
   font-family: var(--font-heebo), sans-serif;
-  font-size: clamp(28px, 4.6vw, 56px);
+  font-size: clamp(28px, 4.6vw, 52px);
   font-weight: 900;
   letter-spacing: -0.025em;
   line-height: 1.15;
@@ -3358,24 +3360,18 @@ body {
   margin: 0;
 }
 
-.contact-main-grid {
+/* טופס במרכז */
+.contact-form-wrap {
   position: relative;
   z-index: 3;
   width: 100%;
-  max-width: 1200px;
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: clamp(36px, 5vw, 72px);
-  align-items: start;
+  max-width: 600px;
 }
-
-/* טופס */
-.contact-form-wrap { position: relative; }
 
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: clamp(18px, 2.4vh, 24px);
+  gap: clamp(16px, 2.2vh, 22px);
   background: linear-gradient(145deg, rgba(20, 30, 32, 0.7) 0%, rgba(11, 13, 12, 0.6) 100%);
   border: 1px solid rgba(77, 216, 229, 0.18);
   border-radius: 20px;
@@ -3388,11 +3384,7 @@ body {
     0 1px 0 0 rgba(77, 216, 229, 0.08) inset;
 }
 
-.contact-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.contact-field { display: flex; flex-direction: column; gap: 8px; }
 
 .contact-label {
   font-family: var(--font-heebo), sans-serif;
@@ -3402,10 +3394,7 @@ body {
   color: rgba(232, 244, 246, 0.75);
 }
 
-.contact-required {
-  color: #4DD8E5;
-  font-weight: 700;
-}
+.contact-required { color: #4DD8E5; font-weight: 700; }
 
 .contact-input {
   font-family: var(--font-heebo), sans-serif;
@@ -3429,14 +3418,16 @@ body {
 .contact-input:focus {
   border-color: rgba(77, 216, 229, 0.6);
   background: rgba(20, 30, 32, 0.7);
-  box-shadow: 0 0 0 3px rgba(77, 216, 229, 0.12), 0 0 18px -4px rgba(77, 216, 229, 0.3);
+  box-shadow:
+    0 0 0 3px rgba(77, 216, 229, 0.12),
+    0 0 18px -4px rgba(77, 216, 229, 0.3);
 }
 
 .contact-input:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .contact-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 90px;
   line-height: 1.5;
   font-family: var(--font-heebo), sans-serif;
 }
@@ -3479,12 +3470,16 @@ body {
   cursor: pointer;
   margin-top: 8px;
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, background 0.25s ease;
-  box-shadow: 0 8px 24px -8px rgba(77, 216, 229, 0.45), 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+  box-shadow:
+    0 8px 24px -8px rgba(77, 216, 229, 0.45),
+    0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
 }
 
 .contact-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px -10px rgba(77, 216, 229, 0.6), 0 1px 0 0 rgba(255, 255, 255, 0.6) inset;
+  box-shadow:
+    0 14px 32px -10px rgba(77, 216, 229, 0.6),
+    0 1px 0 0 rgba(255, 255, 255, 0.6) inset;
 }
 
 .contact-submit:active:not(:disabled) { transform: translateY(0); }
@@ -3511,8 +3506,11 @@ body {
   border-radius: 20px;
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
-  min-height: 320px;
-  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(77, 216, 229, 0.1), 0 1px 0 0 rgba(77, 216, 229, 0.15) inset;
+  min-height: 280px;
+  box-shadow:
+    0 24px 60px -20px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(77, 216, 229, 0.1),
+    0 1px 0 0 rgba(77, 216, 229, 0.15) inset;
 }
 
 .contact-success-icon { filter: drop-shadow(0 0 24px rgba(77, 216, 229, 0.4)); }
@@ -3538,32 +3536,16 @@ body {
   margin: 0;
 }
 
-/* ויזואל + פרטי קשר */
-.contact-visual-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(28px, 4vh, 40px);
-  padding-top: clamp(0px, 2vh, 20px);
-}
-
-.contact-sculpture {
+/* פרטי קשר ישירים - 3 כפתורים בשורה */
+.contact-direct-wrap {
   position: relative;
+  z-index: 3;
   width: 100%;
-  max-width: 360px;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.contact-direct {
+  max-width: 700px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 360px;
+  gap: 18px;
 }
 
 .contact-direct-label {
@@ -3573,53 +3555,87 @@ body {
   letter-spacing: 0.2em;
   color: rgba(77, 216, 229, 0.7);
   text-transform: uppercase;
-  margin-bottom: 4px;
+}
+
+.contact-direct-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
 }
 
 .contact-direct-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 10px;
   font-family: var(--font-heebo), sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #E8F4F6;
   text-decoration: none;
-  padding: 12px 18px;
+  padding: 14px 16px;
   background: rgba(20, 30, 32, 0.4);
-  border: 1px solid rgba(77, 216, 229, 0.15);
-  border-radius: 12px;
-  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  width: 100%;
-  justify-content: center;
+  border: 1px solid rgba(77, 216, 229, 0.18);
+  border-radius: 14px;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.25s ease;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.contact-direct-item svg {
+  color: #4DD8E5;
+  flex-shrink: 0;
+  transition: color 0.25s ease;
 }
 
 .contact-direct-item:hover {
-  border-color: rgba(77, 216, 229, 0.4);
-  background: rgba(20, 30, 32, 0.6);
-  transform: translateY(-2px);
+  border-color: rgba(77, 216, 229, 0.5);
+  background: rgba(20, 30, 32, 0.65);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -12px rgba(77, 216, 229, 0.3);
+}
+
+/* WhatsApp - הילייט מיוחד עם ירוק עדין */
+.contact-direct-whatsapp {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 211, 102, 0.08) 0%,
+    rgba(20, 30, 32, 0.4) 100%
+  );
+  border-color: rgba(37, 211, 102, 0.25);
+}
+
+.contact-direct-whatsapp svg { color: #25D366; }
+
+.contact-direct-whatsapp:hover {
+  border-color: rgba(37, 211, 102, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(37, 211, 102, 0.15) 0%,
+    rgba(20, 30, 32, 0.6) 100%
+  );
+  box-shadow: 0 12px 28px -12px rgba(37, 211, 102, 0.35);
 }
 
 /* רספונסיביות */
-@media (max-width: 1024px) {
-  .contact-main-grid {
+@media (max-width: 768px) {
+  .contact-direct-grid {
     grid-template-columns: 1fr;
-    gap: clamp(40px, 6vh, 60px);
-    max-width: 600px;
+    gap: 10px;
   }
-  .contact-form-wrap { order: 1; }
-  .contact-visual-wrap { order: 2; }
-  .contact-sculpture { max-width: 280px; }
 }
 
 @media (max-width: 600px) {
   .contact-section {
     padding: clamp(70px, 11vh, 100px) 16px clamp(70px, 11vh, 100px);
-    gap: clamp(40px, 6vh, 56px);
+    gap: clamp(32px, 5vh, 48px);
   }
   .contact-form { padding: 24px 20px; }
   .contact-input { font-size: 16px; }
-  .contact-sculpture { max-width: 240px; }
 }
