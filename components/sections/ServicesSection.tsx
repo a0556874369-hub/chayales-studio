@@ -91,7 +91,7 @@ export default function ServicesSection() {
 
       <div className="services-content">
         <h2 className="services-headline">
-          כל מה שעסק צריך כדי להיראות רציני ולהישאר זכיר.
+          כל מה שעסק צריך כדי לבלוט, להיזכר ולהיבחר.
         </h2>
 
         <p className="services-subhead">
