@@ -1998,6 +1998,7 @@ body {
   text-align: center;
   margin: 0 auto clamp(40px, 6vh, 64px);
   max-width: 720px;
+  text-wrap: balance;
 }
 
 /* ---------- 2x2 grid (md+) / 1 column on mobile ---------- */
