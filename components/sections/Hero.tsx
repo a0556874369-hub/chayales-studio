@@ -168,13 +168,12 @@ export default function Hero() {
           {/* Static h1 with the original inline color spans + forced line
               breaks preserved exactly. */}
           <h1 className="hero-headline">
-            <span className="block whitespace-nowrap">העסק שלכם <span style={{ color: "#6EBFC9" }}>טוב מדי</span></span>
-            <span className="block whitespace-nowrap">כדי להיראות</span>
+            <span className="block whitespace-nowrap">הלקוח <span style={{ color: "#6EBFC9" }}>הבא</span> שלכם</span>
+            <span className="block whitespace-nowrap">מחפש אתכם ברשת</span>
             <span
               className="block whitespace-nowrap hero-headline-emphasis"
               style={{ textShadow: "0 0 60px rgba(77, 216, 229, 0.2)" }}
             >
-              כמו{" "}
               <span
                 style={{
                   color: "#4DD8E5",
@@ -182,14 +181,14 @@ export default function Hero() {
                   textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
                 }}
               >
-                כולם
+                עכשיו
               </span>
               .
             </span>
           </h1>
 
           <p className="hero-subhead mx-auto md:mx-0">
-            מיתוג, אתר ופרסום בסטודיו אחד - כדי שיעצרו עליכם, יבטחו בכם, ויבחרו בכם.
+            הוא מוצא אתכם, או את המתחרה? אני בונה מיתוג, אתר ומודעות שגורמים לבחור דווקא בכם.
           </p>
 
           <div className="w-full sm:w-auto self-center md:self-start">
