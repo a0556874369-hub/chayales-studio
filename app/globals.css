@@ -848,19 +848,30 @@ body {
    .dark-to-light wrapper. Background is owned by the wrapper —
    the section itself is transparent and stays in the dark band
    (--s2h covers BeforeAfter + PAS together).
+   Pinned scroll mechanism mirrors Section 06 (Process), adapted
+   to 3 cards: 300vh section, 300vw track, 66.667% push.
    ============================================================ */
 
 .pas-section {
   position: relative;
   width: 100%;
-  padding: clamp(80px, 12vh, 130px) clamp(16px, 4vw, 64px);
+  height: 300vh;
   background: transparent;
   color: #E8F4F6;
+  isolation: isolate;
+}
+
+.pas-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(40px, 6vh, 64px);
-  isolation: isolate;
+  justify-content: center;
+  gap: clamp(40px, 6vh, 70px);
+  padding: clamp(60px, 10vh, 100px) 0;
+  overflow: hidden;
 }
 
 .pas-header {
@@ -868,6 +879,8 @@ body {
   z-index: 3;
   max-width: 980px;
   text-align: center;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 64px);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -901,14 +914,79 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.pas-grid {
+/* ציר הזמן — אותם ערכים כמו process-timeline-*, 3 נקודות */
+.pas-timeline-wrap {
   position: relative;
-  z-index: 3;
+  width: clamp(280px, 70vw, 1100px);
+  height: 32px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.pas-timeline-track {
+  position: absolute;
+  inset: 0 0 0 0;
+  top: 50%;
+  height: 2px;
+  background: rgba(77, 216, 229, 0.15);
+  border-radius: 1px;
+  transform: translateY(-50%);
+}
+
+.pas-timeline-fill {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(to left, #4DD8E5 0%, #2D8896 100%);
+  border-radius: 1px;
+  transform: translateY(-50%);
+  box-shadow: 0 0 16px rgba(77, 216, 229, 0.5);
+}
+
+.pas-timeline-dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pas-timeline-dot {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0B0D0C;
+  border: 2px solid rgba(77, 216, 229, 0.4);
+  transform: translate(50%, -50%);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* viewport וטראק אופקי — כמו process-cards-*, מותאם ל-3 כרטיסים */
+.pas-cards-viewport {
+  position: relative;
   width: 100%;
-  max-width: 1100px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(14px, 2vw, 24px);
+  overflow: hidden;
+}
+
+.pas-cards-track {
+  display: flex;
+  width: 300vw;
+  gap: 0;
+  will-change: transform;
+}
+
+.pas-slide {
+  width: 100vw;
+  flex-shrink: 0;
+  padding: 0 max(clamp(20px, 4vw, 60px), calc((100vw - 700px) / 2));
+  box-sizing: border-box;
+  display: flex;
+}
+
+.pas-slide .pas-card {
+  width: 100%;
 }
 
 .pas-card {
@@ -985,18 +1063,39 @@ body {
   margin: 0;
 }
 
-@media (max-width: 900px) {
-  .pas-grid {
-    grid-template-columns: 1fr;
+/* מובייל - stack אנכי בלי pinning, כמו ב-Process */
+.pas-mobile-stack {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .pas-section {
+    height: auto;
+  }
+
+  .pas-sticky {
+    display: none;
+  }
+
+  .pas-mobile-stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(36px, 5vh, 56px);
+    padding: clamp(80px, 12vh, 120px) clamp(16px, 4vw, 32px);
     max-width: 600px;
-    gap: 14px;
+    margin: 0 auto;
+  }
+
+  .pas-mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vh, 36px);
   }
 }
 
 @media (max-width: 600px) {
-  .pas-section {
+  .pas-mobile-stack {
     padding: clamp(60px, 10vh, 100px) 16px;
-    gap: clamp(32px, 5vh, 48px);
   }
   .pas-card {
     padding: 20px 18px;

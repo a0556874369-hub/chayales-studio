@@ -1,11 +1,13 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 // ============================================
 // Section 02b — PAS (הבעיה → ההחרפה → הפתרון)
 // כהה, יושב בין לפני/אחרי לעבודות בתוך DarkToLightWrap.
+// מנגנון נעוץ כמו ב-Process: הסקשן 300vh, התוכן sticky,
+// ציר הזמן מתמלא והטראק האופקי זז לפי הגלילה.
 // ============================================
 interface PasStep {
   num: string;
@@ -34,86 +36,103 @@ const STEPS: PasStep[] = [
   },
 ];
 
-export default function PasSection() {
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const cardsRef = useRef<HTMLDivElement | null>(null);
+function PasHeader() {
+  return (
+    <div className="pas-header">
+      <span className="pas-kicker">המצב בשטח</span>
+      <h2 className="pas-headline">
+        ככה מאבדים לקוח -{" "}
+        <span className="pas-headline-accent">בלי בכלל לדעת.</span>
+      </h2>
+    </div>
+  );
+}
 
+function StepCard({ step }: { step: PasStep }) {
+  return (
+    <article className="pas-card" aria-label={`${step.num}: ${step.title}`}>
+      <div className="pas-card-halo" aria-hidden />
+      <span className="pas-card-num" aria-hidden>
+        {step.num}
+      </span>
+      <h3 className="pas-card-title">{step.title}</h3>
+      <p className="pas-card-desc">{step.description}</p>
+    </article>
+  );
+}
+
+export default function PasSection() {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const reduced = useReducedMotion() ?? false;
-  const headerInView = useInView(headerRef, {
-    once: true,
-    margin: "-15% 0px -15% 0px",
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
   });
-  const cardsInView = useInView(cardsRef, {
-    once: true,
-    margin: "-10% 0px -10% 0px",
-  });
+
+  // אותה גישת RTL כמו ב-Process: הטראק יורש כיוון מ-html, הכרטיסים
+  // 01,02,03 מסתדרים מימין לשמאל, ו-translateX חיובי דוחף את הטראק
+  // ימינה וחושף את הכרטיסים שמשמאל.
+  // הטראק 300vw, כרטיס אחד 100vw. כדי לראות את כרטיס 3 צריך לדחוף
+  // את הטראק ימינה ב-200vw = 66.667% מרוחב הטראק.
+  const trackX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduced ? ["0%", "0%"] : ["0%", "66.667%"]
+  );
+
+  const timelineFill = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduced ? ["100%", "100%"] : ["0%", "100%"]
+  );
 
   return (
     <section
       id="pas"
+      ref={sectionRef}
       className="pas-section"
       aria-label="ככה מאבדים לקוח"
     >
-      <div className="pas-header" ref={headerRef}>
-        <motion.span
-          className="pas-kicker"
-          initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          animate={
-            headerInView
-              ? { opacity: 1, y: 0 }
-              : reduced
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 16 }
-          }
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          המצב בשטח
-        </motion.span>
-        <motion.h2
-          className="pas-headline"
-          initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          animate={
-            headerInView
-              ? { opacity: 1, y: 0 }
-              : reduced
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 20 }
-          }
-          transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        >
-          ככה מאבדים לקוח -{" "}
-          <span className="pas-headline-accent">בלי בכלל לדעת.</span>
-        </motion.h2>
+      <div className="pas-sticky">
+        <PasHeader />
+
+        <div className="pas-timeline-wrap" aria-hidden>
+          <div className="pas-timeline-track" />
+          <motion.div
+            className="pas-timeline-fill"
+            style={{ width: timelineFill }}
+          />
+          <div className="pas-timeline-dots">
+            {STEPS.map((_, i) => (
+              <div
+                key={i}
+                className="pas-timeline-dot"
+                style={{ right: `${(i / 2) * 100}%` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="pas-cards-viewport">
+          <motion.div className="pas-cards-track" style={{ x: trackX }}>
+            {STEPS.map((step) => (
+              <div key={step.num} className="pas-slide">
+                <StepCard step={step} />
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
-      <div className="pas-grid" ref={cardsRef}>
-        {STEPS.map((step, i) => (
-          <motion.article
-            key={step.num}
-            className="pas-card"
-            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            animate={
-              cardsInView
-                ? { opacity: 1, y: 0 }
-                : reduced
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 20 }
-            }
-            transition={{
-              duration: 0.6,
-              delay: reduced ? 0 : 0.3 + i * 0.15,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            aria-label={`${step.num}: ${step.title}`}
-          >
-            <div className="pas-card-halo" aria-hidden />
-            <span className="pas-card-num" aria-hidden>
-              {step.num}
-            </span>
-            <h3 className="pas-card-title">{step.title}</h3>
-            <p className="pas-card-desc">{step.description}</p>
-          </motion.article>
-        ))}
+      {/* מובייל - stack אנכי בלי pinning */}
+      <div className="pas-mobile-stack" aria-hidden="false">
+        <PasHeader />
+        <div className="pas-mobile-cards">
+          {STEPS.map((step) => (
+            <StepCard key={step.num} step={step} />
+          ))}
+        </div>
       </div>
     </section>
   );
