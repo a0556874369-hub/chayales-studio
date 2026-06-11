@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { type RefObject, useEffect, useRef, useState } from "react";
 
 const MOBILE_QUERY = "(max-width: 767px)";
@@ -47,6 +48,7 @@ function useVideoLoopPause(
 export default function Hero() {
   const [reduceMotion, setReduceMotion] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const reduced = useReducedMotion() ?? false;
 
   const desktopVideoRef = useRef<HTMLVideoElement | null>(null);
   const mobileRef = useRef<HTMLVideoElement | null>(null);
@@ -67,7 +69,13 @@ export default function Hero() {
   useVideoLoopPause(desktopVideoRef, !reduceMotion && !isMobile);
   useVideoLoopPause(mobileRef, !reduceMotion && isMobile);
 
-  // Static heading + subhead + CTA — no entrance animations.
+  // כניסה חד-פעמית: הטקסט הלבן מתייצב שכבה-שכבה, וביט אחרי ההתייצבות
+  // "ברשת" ו"עכשיו" נדלקות בטורקיז. ב-reduced-motion הכל במצב הסופי מיד.
+  const igniteTransition = {
+    duration: 0.6,
+    delay: reduced ? 0 : 1.0,
+    ease: "easeOut" as const,
+  };
 
   return (
     <section className="relative min-h-screen overflow-hidden md:bg-black">
@@ -165,31 +173,82 @@ export default function Hero() {
           Top padding clears the fixed site header. */}
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-[65fr_35fr] items-end md:items-center min-h-screen max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-[8vh] md:pt-24 md:pb-20">
         <div className="flex flex-col gap-8 md:gap-10 text-center md:text-right items-center md:items-stretch max-w-2xl md:max-w-none mx-auto md:mx-0 md:ms-0 md:me-auto">
-          {/* Static h1 with the original inline color spans + forced line
-              breaks preserved exactly. */}
-          <h1 className="hero-headline">
-            <span className="block whitespace-nowrap">הלקוח <span style={{ color: "#6EBFC9" }}>הבא</span> שלכם</span>
-            <span className="block whitespace-nowrap">מחפש אתכם ברשת</span>
-            <span
-              className="block whitespace-nowrap hero-headline-emphasis"
-              style={{ textShadow: "0 0 60px rgba(77, 216, 229, 0.2)" }}
+          {/* שלוש שכבות: הצהרה (h1) → שאלה (הוו, כמעט-לבן) → הצעה
+              (תת-כותרת מעומעמת). ההיררכיה נבנית בהרמת בהירות כלפי לבן. */}
+          <div>
+            <motion.h1
+              className="hero-headline"
+              initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span
-                style={{
-                  color: "#4DD8E5",
-                  fontWeight: 900,
-                  textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
-                }}
-              >
-                עכשיו
+              <span className="block whitespace-nowrap">הלקוח הבא שלכם</span>
+              <span className="block whitespace-nowrap">
+                מחפש אתכם{" "}
+                <motion.span
+                  initial={{ color: reduced ? "#4DD8E5" : "#FFFFFF" }}
+                  animate={{ color: "#4DD8E5" }}
+                  transition={igniteTransition}
+                >
+                  ברשת
+                </motion.span>
               </span>
-              .
-            </span>
-          </h1>
+              <span
+                className="block whitespace-nowrap hero-headline-emphasis"
+                style={{ textShadow: "0 0 60px rgba(77, 216, 229, 0.2)" }}
+              >
+                <motion.span
+                  style={{ fontWeight: 900 }}
+                  initial={
+                    reduced
+                      ? {
+                          color: "#4DD8E5",
+                          textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
+                        }
+                      : {
+                          color: "#FFFFFF",
+                          textShadow: "0 0 35px rgba(77, 216, 229, 0)",
+                        }
+                  }
+                  animate={{
+                    color: "#4DD8E5",
+                    textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
+                  }}
+                  transition={igniteTransition}
+                >
+                  עכשיו
+                </motion.span>
+                .
+              </span>
+            </motion.h1>
 
-          <p className="hero-subhead mx-auto md:mx-0">
-            הוא מוצא אתכם, או את המתחרה? אני בונה מיתוג, אתר ומודעות שגורמים לבחור דווקא בכם.
-          </p>
+            <motion.p
+              className="hero-question"
+              initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                delay: reduced ? 0 : 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              הוא מוצא אתכם, או את המתחרה?
+            </motion.p>
+          </div>
+
+          <motion.p
+            className="hero-subhead mx-auto md:mx-0"
+            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              delay: reduced ? 0 : 0.35,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            אני בונה מיתוג, אתר ומודעות שגורמים לבחור{" "}
+            <span className="hero-subhead-emphasis">דווקא בכם</span>.
+          </motion.p>
 
           <div className="w-full sm:w-auto self-center md:self-start">
             <a href="#works" className="btn-glass btn-glass-primary">

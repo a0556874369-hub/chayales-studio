@@ -508,10 +508,22 @@ body {
 .hero-headline {
   font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
   font-weight: 800;
-  font-size: clamp(2.25rem, 5vw, 4.5rem);
+  /* הוקטן מעט (היה clamp(2.25rem, 5vw, 4.5rem)) - הכותרת אכלה את המסך */
+  font-size: clamp(2rem, 4.4vw, 4rem);
   line-height: 1.1;
   letter-spacing: -0.03em;
   color: white;
+}
+
+/* שכבת השאלה - הוו. כמעט-לבן, בולטת, צמודה לכותרת */
+.hero-question {
+  font-family: var(--font-heebo), "Heebo", Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.25rem, 2.1vw, 1.75rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.96);
+  margin: clamp(12px, 2vh, 20px) 0 0;
 }
 
 .hero-subhead {
@@ -523,16 +535,22 @@ body {
   max-width: 600px;
 }
 
+/* "דווקא בכם" - הרמה בבהירות בלבד, לא בצבע */
+.hero-subhead-emphasis {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
 @media (min-width: 768px) {
   .hero-headline {
-    /* Lines 1 & 2: -25% from the previous desktop bump (clamp 3 / 6.6vw / 6rem). */
-    font-size: clamp(2.25rem, 4.95vw, 4.5rem);
+    /* הוקטן מעט (היה clamp(2.25rem, 4.95vw, 4.5rem)) */
+    font-size: clamp(2rem, 4.35vw, 4rem);
     line-height: 1;
   }
 
   .hero-headline-emphasis {
-    /* Line 3 — 1.8× the size of lines 1 & 2 for typographic hierarchy. */
-    font-size: clamp(4.05rem, 8.91vw, 8.1rem);
+    /* Line 3 — הוקטן מ-1.8× ל-~1.55× מהשורות הרגילות (היה clamp(4.05rem, 8.91vw, 8.1rem)) */
+    font-size: clamp(3.4rem, 7.5vw, 6.6rem);
     line-height: 1;
   }
 
