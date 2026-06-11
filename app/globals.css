@@ -856,12 +856,12 @@ body {
 
 /* ============================================================
    Section 02b — PAS (ככה מאבדים לקוח)
-   Dark, sits between BeforeAfter and Works inside the
-   .dark-to-light wrapper. Background is owned by the wrapper —
-   the section itself is transparent and stays in the dark band
-   (--s2h covers BeforeAfter + PAS together).
-   Pinned scroll mechanism mirrors Section 06 (Process), adapted
-   to 3 cards: 300vh section, 300vw track, 66.667% push.
+   Dark, first section inside the .dark-to-light wrapper (right
+   after the Hero). Background is owned by the wrapper — the
+   section itself is transparent and sits in the first dark band
+   (which ends at --d1).
+   Pinned scroll mechanism mirrors the old Process section,
+   adapted to 3 cards: 300vh section, 300vw track, 66.667% push.
    ============================================================ */
 
 .pas-section {
@@ -1132,24 +1132,51 @@ body {
 }
 
 /* ============================================
-   DARK-TO-LIGHT WRAP - גרדיאנט dark→teal→light בלבד
-   (הסקשנים: BeforeAfter כהה → Works בהיר → WhyClean בהיר)
-   v4: לא חוזר לכהה בסוף — Services יקבל wrapper נפרד.
+   DARK-TO-LIGHT WRAP - גרדיאנט רציף אחד עם 4 פאזות
+   (הסקשנים: PAS כהה → Works בהיר → BeforeAfter כהה → WhyClean בהיר)
+   v5: BeforeAfter עבר לשבת כאי כהה בין Works ל-WhyClean.
+   הגבולות --d1/--c1/--d2 נכתבים ע"י DarkToLightWrap לפי גבהי
+   הסקשנים. כל מעבר משתמש באותם 7 stops של 430px+300px כמו
+   בשאר ה-wrappers באתר. הסיום בהיר - Services ממשיך עם
+   LightToDarkWrap משלו.
    ============================================ */
 .dark-to-light {
-  --s2h: 900px;
+  /* ברירות מחדל לפני-hydration בלבד - הקומפוננטה מודדת וכותבת
+     ערכים אמיתיים. PAS נעוץ הוא בדיוק 300vh בדסקטופ; Works ~1450px;
+     BeforeAfter ~100vh. */
+  --d1: 300vh;
+  --c1: calc(300vh + 1450px);
+  --d2: calc(400vh + 1450px);
   position: relative;
   background-color: #EEF5F6;
   background-image: linear-gradient(
     to bottom,
+    /* פאזה 1: כהה (PAS) → בהיר */
     #0B0D0C 0,
-    #0B0D0C calc(var(--s2h) - 300px),
-    #14343A calc(var(--s2h) - 120px),
-    #356A72 calc(var(--s2h) + 40px),
-    #6C9DA3 calc(var(--s2h) + 150px),
-    #A9CDD1 calc(var(--s2h) + 250px),
-    #D7E8EA calc(var(--s2h) + 340px),
-    #EEF5F6 calc(var(--s2h) + 430px),
+    #0B0D0C calc(var(--d1) - 300px),
+    #14343A calc(var(--d1) - 120px),
+    #356A72 calc(var(--d1) + 40px),
+    #6C9DA3 calc(var(--d1) + 150px),
+    #A9CDD1 calc(var(--d1) + 250px),
+    #D7E8EA calc(var(--d1) + 340px),
+    #EEF5F6 calc(var(--d1) + 430px),
+    /* פאזה 2: בהיר (Works) → כהה לקראת BeforeAfter */
+    #EEF5F6 calc(var(--c1) - 430px),
+    #D7E8EA calc(var(--c1) - 340px),
+    #A9CDD1 calc(var(--c1) - 250px),
+    #6C9DA3 calc(var(--c1) - 150px),
+    #356A72 calc(var(--c1) - 40px),
+    #14343A calc(var(--c1) + 120px),
+    #0B0D0C calc(var(--c1) + 300px),
+    /* פאזה 3: כהה (BeforeAfter) → בהיר */
+    #0B0D0C calc(var(--d2) - 300px),
+    #14343A calc(var(--d2) - 120px),
+    #356A72 calc(var(--d2) + 40px),
+    #6C9DA3 calc(var(--d2) + 150px),
+    #A9CDD1 calc(var(--d2) + 250px),
+    #D7E8EA calc(var(--d2) + 340px),
+    #EEF5F6 calc(var(--d2) + 430px),
+    /* פאזה 4: בהיר (WhyClean) עד הסוף */
     #EEF5F6 100%
   );
 }
@@ -2207,10 +2234,10 @@ body {
    The orb lives in main's stacking context at z:2. We DO NOT want
    to give .dark-to-light itself a stacking context — that would
    bury the orb beneath the wrapper's opaque gradient. Instead, the
-   three direct children of the wrapper (the s2/s3/s4 ref divs) get
-   z:3 each. The wrapper stays at z-auto, its gradient paints at the
-   z-auto layer of main (below orb), and the three child divs paint
-   on top of the orb. Section content, being inside those child divs,
+   four direct children of the wrapper (the pas/works/ba/why ref
+   divs) get z:3 each. The wrapper stays at z-auto, its gradient
+   paints at the z-auto layer of main (below orb), and the child
+   divs paint on top of the orb. Section content, being inside them,
    is also above orb — except where pixels are transparent, where the
    orb shows through. That's exactly the desired effect.
    ============================================================ */

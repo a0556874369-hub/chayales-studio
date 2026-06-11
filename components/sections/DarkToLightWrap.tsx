@@ -3,47 +3,58 @@
 import { useEffect, useRef, type ReactNode } from "react";
 
 interface Props {
-  s2: ReactNode;  // BeforeAfter (כהה)
-  s2b: ReactNode; // PAS (כהה) - חדש, בין לפני/אחרי לעבודות
-  s3: ReactNode;  // Works (בהיר)
-  s5: ReactNode;  // WhyCleanCode (בהיר) - חדש, מחליף את s4 הישן
+  pas: ReactNode;         // כהה - ממשיך את הרצועה הכהה של ההירו
+  works: ReactNode;       // בהיר
+  beforeAfter: ReactNode; // כהה - אי כהה בתוך האזור הבהיר
+  whyClean: ReactNode;    // בהיר
 }
 
 /**
- * עוטף את הסקשנים האמצעיים ויוצר גרדיאנט רציף:
- * dark (BeforeAfter + PAS) → teal → light (Works + WhyClean)
+ * עוטף את הסקשנים האמצעיים ויוצר גרדיאנט רציף אחד עם 4 פאזות:
+ * dark (PAS) → light (Works) → dark (BeforeAfter) → light (WhyClean)
  *
- * שינוי מהגרסה הקודמת: עכשיו הוא לא חוזר לכהה בסוף.
- * הסיום בהיר כי אחריו Services (שיש לו LightToDarkWrap משלו) ממשיך מבהיר לכהה.
+ * הסיום בהיר כי אחריו Services (שיש לו LightToDarkWrap משלו) ממשיך
+ * מבהיר לכהה.
  *
- * כותב CSS vars: --s2h (גובה האזור הכהה: BeforeAfter + PAS),
- * --bright-start (איפה מתחיל הבהיר)
+ * כותב 3 CSS vars - גבולות הפאזות (מצטברים מראש ה-wrapper):
+ * --d1: סוף האזור הכהה הראשון (תחתית PAS) - מעבר dark→light
+ * --c1: תחילת האזור הכהה השני (ראש BeforeAfter) - מעבר light→dark
+ * --d2: סוף האזור הכהה השני (תחתית BeforeAfter) - מעבר dark→light
  */
-export default function DarkToLightWrap({ s2, s2b, s3, s5 }: Props) {
+export default function DarkToLightWrap({
+  pas,
+  works,
+  beforeAfter,
+  whyClean,
+}: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
-  const s2Ref = useRef<HTMLDivElement | null>(null);
-  const s2bRef = useRef<HTMLDivElement | null>(null);
-  const s3Ref = useRef<HTMLDivElement | null>(null);
-  const s5Ref = useRef<HTMLDivElement | null>(null);
+  const pasRef = useRef<HTMLDivElement | null>(null);
+  const worksRef = useRef<HTMLDivElement | null>(null);
+  const baRef = useRef<HTMLDivElement | null>(null);
+  const whyRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const wrap = wrapRef.current;
-    const s2el = s2Ref.current;
-    const s2bel = s2bRef.current;
-    const s3el = s3Ref.current;
-    const s5el = s5Ref.current;
-    if (!wrap || !s2el || !s2bel || !s3el || !s5el) return;
+    const pasEl = pasRef.current;
+    const worksEl = worksRef.current;
+    const baEl = baRef.current;
+    const whyEl = whyRef.current;
+    if (!wrap || !pasEl || !worksEl || !baEl || !whyEl) return;
 
     const update = () => {
-      const s2h = s2el.offsetHeight + s2bel.offsetHeight;
-      wrap.style.setProperty("--s2h", `${s2h}px`);
+      const d1 = pasEl.offsetHeight;
+      const c1 = d1 + worksEl.offsetHeight;
+      const d2 = c1 + baEl.offsetHeight;
+      wrap.style.setProperty("--d1", `${d1}px`);
+      wrap.style.setProperty("--c1", `${c1}px`);
+      wrap.style.setProperty("--d2", `${d2}px`);
     };
     update();
     const ro = new ResizeObserver(update);
-    ro.observe(s2el);
-    ro.observe(s2bel);
-    ro.observe(s3el);
-    ro.observe(s5el);
+    ro.observe(pasEl);
+    ro.observe(worksEl);
+    ro.observe(baEl);
+    ro.observe(whyEl);
     window.addEventListener("resize", update);
     return () => {
       ro.disconnect();
@@ -53,10 +64,10 @@ export default function DarkToLightWrap({ s2, s2b, s3, s5 }: Props) {
 
   return (
     <div className="dark-to-light" ref={wrapRef}>
-      <div ref={s2Ref}>{s2}</div>
-      <div ref={s2bRef}>{s2b}</div>
-      <div ref={s3Ref}>{s3}</div>
-      <div ref={s5Ref}>{s5}</div>
+      <div ref={pasRef}>{pas}</div>
+      <div ref={worksRef}>{works}</div>
+      <div ref={baRef}>{beforeAfter}</div>
+      <div ref={whyRef}>{whyClean}</div>
     </div>
   );
 }

@@ -32,7 +32,10 @@ export default function Orb() {
       const newVh = window.innerHeight;
       setVh(newVh);
 
-      const sec2 = document.getElementById("before-after");
+      // sec2 = הסקשן הראשון אחרי ההירו. אחרי שינוי הסדר זה PAS
+      // (before-after עבר לשבת בין works ל-why-clean-code, והאורב
+      // פשוט מאנטרפל מעליו בין sec3End ל-sec5Start - בלי נקודות משלו).
+      const sec2 = document.getElementById("pas");
       const sec3 = document.getElementById("works");
       const sec5 = document.getElementById("why-clean-code");
       const sec4 = document.getElementById("services");

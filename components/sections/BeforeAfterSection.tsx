@@ -137,26 +137,12 @@ export default function BeforeAfterSection() {
 
   return (
     <section id="before-after" className="ba-section">
-      {/* Top fade — continues the dark band from the Hero, then dissolves
-          downward to reveal the global LightRays beneath this section. */}
-      <div
-        aria-hidden
-        className="absolute top-0 left-0 right-0 pointer-events-none"
-        style={{
-          height: "150px",
-          background:
-            "linear-gradient(to bottom, #0B0D0C 0%, transparent 100%)",
-          zIndex: 5,
-        }}
-      />
+      {/* No top/bottom fade overlays. The section now sits as a dark island
+          between Works and WhyClean — the .dark-to-light wrapper paints the
+          light→dark transition above it (ending at --c1+300px) and the
+          dark→light transition below it (starting at --d2-300px). The
+          section itself stays transparent over the wrapper's gradient. */}
 
-      {/* Bottom fade removed. Previously this lived as an overlay at z-5
-          which encroached on the slider visual. Section 03 now owns the
-          dark→light transition inside its own background gradient — same
-          architecture as the section 03 light→dark transition at the bottom
-          (which reads smoothly). Sections meet at solid #0B0D0C. */}
-
-      {/* Scroll-coupled teal sweep traveling through the section. */}
       <div className="ba-content">
         <h2 className="ba-headline">
           אותו עסק. <span style={{ color: "#4DD8E5" }}>רושם אחר לגמרי</span>.

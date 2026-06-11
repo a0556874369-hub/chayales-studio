@@ -18,10 +18,10 @@ export default function Home() {
       <Orb />
       <Hero />
       <DarkToLightWrap
-        s2={<BeforeAfterSection />}
-        s2b={<PasSection />}
-        s3={<WorksSection />}
-        s5={<WhyCleanCodeSection />}
+        pas={<PasSection />}
+        works={<WorksSection />}
+        beforeAfter={<BeforeAfterSection />}
+        whyClean={<WhyCleanCodeSection />}
       />
       <LightToDarkWrap>
         <ServicesSection />
