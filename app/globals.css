@@ -972,15 +972,15 @@ body {
 
 .pas-cards-track {
   display: flex;
-  width: 300vw;
+  width: 225vw; /* 3 סליידים של 75vw */
   gap: 0;
   will-change: transform;
 }
 
 .pas-slide {
-  width: 100vw;
+  width: 75vw;
   flex-shrink: 0;
-  padding: 0 max(clamp(20px, 4vw, 60px), calc((100vw - 700px) / 2));
+  padding: 0 max(clamp(20px, 4vw, 60px), calc((75vw - 700px) / 2));
   box-sizing: border-box;
   display: flex;
 }
