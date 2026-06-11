@@ -1,5 +1,6 @@
 import Hero from "@/components/sections/Hero";
 import BeforeAfterSection from "@/components/sections/BeforeAfterSection";
+import PasSection from "@/components/sections/PasSection";
 import WorksSection from "@/components/sections/WorksSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import WhyCleanCodeSection from "@/components/sections/WhyCleanCodeSection";
@@ -19,6 +20,7 @@ export default function Home() {
       <Hero />
       <DarkToLightWrap
         s2={<BeforeAfterSection />}
+        s2b={<PasSection />}
         s3={<WorksSection />}
         s5={<WhyCleanCodeSection />}
       />
