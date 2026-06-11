@@ -175,6 +175,9 @@ export default function ContactSection() {
         <p className="contact-subhead">
           ספרו לי איפה אתם עומדים עכשיו - ונראה מה נכון לבנות: מיתוג, אתר, מודעה או הכל יחד.
         </p>
+        <p className="contact-note">
+          שיחה ראשונה של עד 30 דקות, בלי שום התחייבות.
+        </p>
       </motion.div>
 
       {/* טופס במרכז */}

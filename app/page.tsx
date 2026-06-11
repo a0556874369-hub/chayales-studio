@@ -4,7 +4,6 @@ import PasSection from "@/components/sections/PasSection";
 import WorksSection from "@/components/sections/WorksSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import WhyCleanCodeSection from "@/components/sections/WhyCleanCodeSection";
-import ProcessSection from "@/components/sections/ProcessSection";
 import AboutSection from "@/components/sections/AboutSection";
 import ContactSection from "@/components/sections/ContactSection";
 import DarkToLightWrap from "@/components/sections/DarkToLightWrap";
@@ -27,7 +26,6 @@ export default function Home() {
       <LightToDarkWrap>
         <ServicesSection />
       </LightToDarkWrap>
-      <ProcessSection />
       <DarkToLightAboutWrap>
         <AboutSection />
       </DarkToLightAboutWrap>

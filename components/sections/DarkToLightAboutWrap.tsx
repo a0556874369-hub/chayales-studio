@@ -8,7 +8,7 @@ interface Props {
 
 /**
  * עוטף את סקשן About ויוצר מעבר חלק dark→light לפניו.
- * (Process כהה → About בהיר)
+ * (Services כהה → About בהיר)
  * המעבר מאוחד עם הסגנון של DarkToLightWrap המקורי: 7 stops על 430px.
  *
  * כותב CSS var: --about-content-top (איפה About מתחיל = סוף המעבר)

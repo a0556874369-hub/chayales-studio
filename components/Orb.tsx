@@ -20,12 +20,10 @@ export default function Orb() {
     sec5End: 5200,
     sec4Start: 5400,
     sec4End: 6300,
-    sec6Start: 6500,
-    sec6End: 8500,
-    sec8Start: 8700,
-    sec8End: 9500,
-    sec9Start: 9700,
-    sec9End: 10500,
+    sec8Start: 6500,
+    sec8End: 7300,
+    sec9Start: 7500,
+    sec9End: 8300,
   });
 
   useEffect(() => {
@@ -38,7 +36,6 @@ export default function Orb() {
       const sec3 = document.getElementById("works");
       const sec5 = document.getElementById("why-clean-code");
       const sec4 = document.getElementById("services");
-      const sec6 = document.getElementById("process");
       const sec8 = document.getElementById("about");
       const sec9 = document.getElementById("contact");
       if (!sec2 || !sec3) return;
@@ -58,14 +55,9 @@ export default function Orb() {
         : sec5Bottom + 100;
       const sec4Bottom = sec4Top + (sec4 ? sec4.offsetHeight : newVh);
 
-      const sec6Top = sec6
-        ? sec6.getBoundingClientRect().top + window.scrollY
-        : sec4Bottom + 100;
-      const sec6Bottom = sec6Top + (sec6 ? sec6.offsetHeight : newVh * 4);
-
       const sec8Top = sec8
         ? sec8.getBoundingClientRect().top + window.scrollY
-        : sec6Bottom + 100;
+        : sec4Bottom + 100;
       const sec8Bottom = sec8Top + (sec8 ? sec8.offsetHeight : newVh);
 
       const sec9Top = sec9
@@ -83,8 +75,6 @@ export default function Orb() {
         sec5End: sec5Bottom - newVh * 0.05,
         sec4Start: sec4Top + newVh * 0.15,
         sec4End: sec4Bottom - newVh * 0.1,
-        sec6Start: sec6Top + newVh * 0.05,
-        sec6End: sec6Bottom - newVh * 0.5,
         sec8Start: sec8Top - newVh * 0.1,
         sec8End: sec8Bottom - newVh * 0.1,
         sec9Start: sec9Top + newVh * 0.05,
@@ -112,8 +102,6 @@ export default function Orb() {
     bp.sec5End,
     bp.sec4Start,
     bp.sec4End,
-    bp.sec6Start,
-    bp.sec6End,
     bp.sec8Start,
     bp.sec8End,
     bp.sec9Start,
@@ -123,7 +111,7 @@ export default function Orb() {
   // opacity - בסקשן 9 (Contact) אמביינטי על רקע כהה
   // sec4 (Services): רוכך כדי לא לשבת על הטקסט של הכרטיסים
   const opacity = useTransform(scrollY, points, [
-    0, 0, 0.35, 0.22, 0.28, 0.35, 0.40, 0.32, 0.22, 0.18, 0.18, 0.02,
+    0, 0, 0.35, 0.22, 0.28, 0.35, 0.40, 0.32, 0.22, 0.18,
     0.18, 0.25,
     // sec9: ambient על רקע כהה, דועך לאפס בסוף
     0.30,
@@ -134,7 +122,7 @@ export default function Orb() {
   // sec4: נדחף הרבה יותר ימינה כדי לצאת מאחורי הכרטיס הימני ולשמש זוהר היקפי
   const x = useTransform(scrollY, points, [
     0, 0, vw * 0.18, vw * 0.40, vw * 0.42, vw * 0.38, vw * 0.32,
-    vw * 0.28, vw * 0.42, vw * 0.50, vw * 0.42, vw * 0.55,
+    vw * 0.28, vw * 0.42, vw * 0.50,
     -vw * 0.30, -vw * 0.35,
     // sec9: ממשיך משמאל
     -vw * 0.40,
@@ -144,7 +132,7 @@ export default function Orb() {
   // y - בסקשן 9 בגובה אמצע, ירידה עדינה לסוף
   const y = useTransform(scrollY, points, [
     0, 0, 0, 0, vh * 0.10, vh * 0.05, -vh * 0.02, -vh * 0.05,
-    vh * 0.10, -vh * 0.05, -vh * 0.20, -vh * 0.50,
+    vh * 0.10, -vh * 0.05,
     -vh * 0.10, -vh * 0.05,
     // sec9: עולה מעט
     -vh * 0.15,
@@ -154,7 +142,7 @@ export default function Orb() {
   // scale - בסקשן 9 בינוני-קטן, אמביינטי
   // sec4: מוקטן משמעותית - לא דומיננטי, רק נוכחות עדינה
   const scale = useTransform(scrollY, points, [
-    0.5, 0.5, 0.6, 0.55, 0.5, 0.48, 0.52, 0.5, 0.35, 0.28, 0.25, 0.1,
+    0.5, 0.5, 0.6, 0.55, 0.5, 0.48, 0.52, 0.5, 0.35, 0.28,
     0.45, 0.55,
     // sec9: גודל בינוני
     0.50,
@@ -162,7 +150,7 @@ export default function Orb() {
   ]);
 
   const rotate = useTransform(scrollY, points, [
-    0, 0, 0.5, 0, 0, -0.3, -0.5, -0.3, 0, 0.3, 0.6, 1, 1.2, 1.4, 1.6, 1.8,
+    0, 0, 0.5, 0, 0, -0.3, -0.5, -0.3, 0, 0.3, 1.2, 1.4, 1.6, 1.8,
   ]);
 
   if (prefersReducedMotion) {
