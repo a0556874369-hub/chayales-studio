@@ -548,12 +548,6 @@ body {
     line-height: 1;
   }
 
-  .hero-headline-emphasis {
-    /* Line 3 — הוקטן מ-1.8× ל-~1.55× מהשורות הרגילות (היה clamp(4.05rem, 8.91vw, 8.1rem)) */
-    font-size: clamp(3.4rem, 7.5vw, 6.6rem);
-    line-height: 1;
-  }
-
   .hero-subhead {
     /* +10% over previous desktop bump */
     font-size: clamp(1.2rem, 1.8vw, 1.5rem);

@@ -70,7 +70,7 @@ export default function Hero() {
   useVideoLoopPause(mobileRef, !reduceMotion && isMobile);
 
   // כניסה חד-פעמית: הטקסט הלבן מתייצב שכבה-שכבה, וביט אחרי ההתייצבות
-  // "ברשת" ו"עכשיו" נדלקות בטורקיז. ב-reduced-motion הכל במצב הסופי מיד.
+  // "מחפש אתכם" נדלקת בטורקיז. ב-reduced-motion הכל במצב הסופי מיד.
   const igniteTransition = {
     duration: 0.6,
     delay: reduced ? 0 : 1.0,
@@ -184,42 +184,16 @@ export default function Hero() {
             >
               <span className="block whitespace-nowrap">הלקוח הבא שלכם</span>
               <span className="block whitespace-nowrap">
-                מחפש אתכם{" "}
                 <motion.span
                   initial={{ color: reduced ? "#4DD8E5" : "#FFFFFF" }}
                   animate={{ color: "#4DD8E5" }}
                   transition={igniteTransition}
                 >
-                  ברשת
-                </motion.span>
+                  מחפש אתכם
+                </motion.span>{" "}
+                ברשת
               </span>
-              <span
-                className="block whitespace-nowrap hero-headline-emphasis"
-                style={{ textShadow: "0 0 60px rgba(77, 216, 229, 0.2)" }}
-              >
-                <motion.span
-                  style={{ fontWeight: 900 }}
-                  initial={
-                    reduced
-                      ? {
-                          color: "#4DD8E5",
-                          textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
-                        }
-                      : {
-                          color: "#FFFFFF",
-                          textShadow: "0 0 35px rgba(77, 216, 229, 0)",
-                        }
-                  }
-                  animate={{
-                    color: "#4DD8E5",
-                    textShadow: "0 0 35px rgba(77, 216, 229, 0.7)",
-                  }}
-                  transition={igniteTransition}
-                >
-                  עכשיו
-                </motion.span>
-                .
-              </span>
+              <span className="block whitespace-nowrap">עכשיו.</span>
             </motion.h1>
 
             <motion.p
