@@ -39,26 +39,6 @@ export interface Work {
 
 export const works: Work[] = [
   {
-    slug: "krauss",
-    clientName: "קרויס",
-    shortDescription: "מותג כובעים פרימיום מעל 60 שנה - 4 קמפיינים",
-    // 1414 × 2000 → tall portrait
-    aspectRatio: "1414 / 2000",
-    gridImage: {
-      src: "/portfolio/krauss/01-main.png",
-      alt: "מודעת קרויס - וילון זהב על רקע כהה",
-    },
-    modalImages: [
-      {
-        src: "/portfolio/krauss/01-main.png",
-        alt: "מודעת קרויס ראשית - וילון זהב",
-      },
-      { src: "/portfolio/krauss/02.png", alt: "וריאציית מודעה - קרויס" },
-      { src: "/portfolio/krauss/03.png", alt: "וריאציית מודעה - קרויס" },
-      { src: "/portfolio/krauss/04.png", alt: "וריאציית מודעה - קרויס" },
-    ],
-  },
-  {
     slug: "bait-beklik",
     clientName: "בית בקליק",
     shortDescription: "פלטפורמה חכמה ונגישה ללא תיווך, מאפס בקוד נקי",
@@ -96,24 +76,6 @@ export const works: Work[] = [
     ],
   },
   {
-    slug: "dental",
-    clientName: "דנטל",
-    shortDescription: "חנות הלבשה משפחתית - 25 שנה של איכות",
-    // 1410 × 2000 → tall portrait
-    aspectRatio: "1410 / 2000",
-    gridImage: {
-      src: "/portfolio/dental/01-main.png",
-      alt: "דנטל - מותג ויזואלי",
-    },
-    modalImages: [{ src: "/portfolio/dental/01-main.png", alt: "דנטל - מותג ויזואלי" }],
-    logoComparison: {
-      beforeSrc: "/portfolio/dental/logo-old.png",
-      afterSrc: "/portfolio/dental/logo-new.png",
-      beforeAlt: "דנטל - לוגו ישן",
-      afterAlt: "דנטל - לוגו חדש",
-    },
-  },
-  {
     slug: "olam-hatinok",
     clientName: "עולם התינוק",
     shortDescription: "סדרת קמפיינים לחנות תינוקות - 6 קמפיינים",
@@ -135,6 +97,44 @@ export const works: Work[] = [
       { src: "/portfolio/olam-hatinok/06.png", alt: "עולם התינוק - וריאציה" },
     ],
     modalNote: "קמפיין Bugaboo - שפה אחידה לסדרה של שש מודעות עוקבות.",
+  },
+  {
+    slug: "krauss",
+    clientName: "קרויס",
+    shortDescription: "מותג כובעים פרימיום מעל 60 שנה - 4 קמפיינים",
+    // 1414 × 2000 → tall portrait
+    aspectRatio: "1414 / 2000",
+    gridImage: {
+      src: "/portfolio/krauss/01-main.png",
+      alt: "מודעת קרויס - וילון זהב על רקע כהה",
+    },
+    modalImages: [
+      {
+        src: "/portfolio/krauss/01-main.png",
+        alt: "מודעת קרויס ראשית - וילון זהב",
+      },
+      { src: "/portfolio/krauss/02.png", alt: "וריאציית מודעה - קרויס" },
+      { src: "/portfolio/krauss/03.png", alt: "וריאציית מודעה - קרויס" },
+      { src: "/portfolio/krauss/04.png", alt: "וריאציית מודעה - קרויס" },
+    ],
+  },
+  {
+    slug: "dental",
+    clientName: "דנטל",
+    shortDescription: "חנות הלבשה משפחתית - 25 שנה של איכות",
+    // 1410 × 2000 → tall portrait
+    aspectRatio: "1410 / 2000",
+    gridImage: {
+      src: "/portfolio/dental/01-main.png",
+      alt: "דנטל - מותג ויזואלי",
+    },
+    modalImages: [{ src: "/portfolio/dental/01-main.png", alt: "דנטל - מותג ויזואלי" }],
+    logoComparison: {
+      beforeSrc: "/portfolio/dental/logo-old.png",
+      afterSrc: "/portfolio/dental/logo-new.png",
+      beforeAlt: "דנטל - לוגו ישן",
+      afterAlt: "דנטל - לוגו חדש",
+    },
   },
   {
     slug: "kinor",

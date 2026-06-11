@@ -11,15 +11,50 @@ const WorkModal = dynamic(() => import("@/components/works/WorkModal"), {
   ssr: false,
 });
 
-// Bento positions per slug. RTL is set on the grid container; column 1 is
-// the right-most column in RTL flow.
-const BENTO_POSITIONS: Record<string, { col: string; row: string }> = {
-  krauss: { col: "1 / 3", row: "1 / 4" },
-  "bait-beklik": { col: "3 / 5", row: "1 / 3" },
-  icansit: { col: "3 / 5", row: "3 / 5" },
-  "olam-hatinok": { col: "1 / 3", row: "4 / 9" },
-  dental: { col: "3 / 4", row: "5 / 9" },
-  kinor: { col: "4 / 5", row: "5 / 9" },
+// Bento positions per slug on a 6-column grid. RTL is set on the grid
+// container; column 1 is the right-most column in RTL flow.
+// Hierarchy: bait-beklik and icansit (the two websites, wide/landscape)
+// are the dominant cells; olam-hatinok is next - taller, crossing the
+// band seam; krauss/dental (portrait) and kinor (squarish) close the
+// composition. Cell shapes track image orientation (object-contain).
+// Reading order (RTL, right-to-left top-to-bottom):
+// bait-beklik, icansit, olam-hatinok, krauss, dental, kinor.
+// `sizes` matches each cell's rendered width so the dominant cells get
+// sharp srcset candidates.
+const BENTO_POSITIONS: Record<
+  string,
+  { col: string; row: string; sizes: string }
+> = {
+  "bait-beklik": {
+    col: "1 / 7",
+    row: "1 / 6",
+    sizes: "(min-width: 768px) 96vw, 100vw",
+  },
+  icansit: {
+    col: "1 / 5",
+    row: "6 / 9",
+    sizes: "(min-width: 768px) 64vw, 100vw",
+  },
+  "olam-hatinok": {
+    col: "5 / 7",
+    row: "6 / 11",
+    sizes: "(min-width: 768px) 32vw, 100vw",
+  },
+  krauss: {
+    col: "1 / 3",
+    row: "9 / 14",
+    sizes: "(min-width: 768px) 32vw, 100vw",
+  },
+  dental: {
+    col: "3 / 5",
+    row: "9 / 13",
+    sizes: "(min-width: 768px) 32vw, 100vw",
+  },
+  kinor: {
+    col: "5 / 7",
+    row: "11 / 14",
+    sizes: "(min-width: 768px) 32vw, 100vw",
+  },
 };
 
 export default function WorksSection() {
@@ -64,7 +99,7 @@ export default function WorksSection() {
               : undefined;
             return (
               <div key={work.slug} className="work-card-wrap" style={style}>
-                <WorkCard work={work} onOpen={openWork} />
+                <WorkCard work={work} onOpen={openWork} sizes={area?.sizes} />
               </div>
             );
           })}

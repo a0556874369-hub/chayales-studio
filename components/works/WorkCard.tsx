@@ -8,13 +8,16 @@ import SafeImage from "./SafeImage";
 interface WorkCardProps {
   work: Work;
   onOpen: (slug: string) => void;
+  // srcset sizes matching the card's grid cell width (set per-slug by
+  // WorksSection); falls back to the generic value.
+  sizes?: string;
 }
 
 // Glass card with a framed image inside (passe-partout look). The image is
 // always shown in full (object-contain). Counter badge in the top-left
 // shows the total images in the project. Always-visible label.
 // Fully static — no entrance animation, no tilt, no shine.
-export default function WorkCard({ work, onOpen }: WorkCardProps) {
+export default function WorkCard({ work, onOpen, sizes }: WorkCardProps) {
   const count = countImages(work);
 
   const style: CSSProperties = {
@@ -36,7 +39,7 @@ export default function WorkCard({ work, onOpen }: WorkCardProps) {
             src={work.gridImage.src}
             alt={work.gridImage.alt}
             fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            sizes={sizes ?? "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
             quality={80}
             className="work-card-image"
           />

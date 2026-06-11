@@ -1234,7 +1234,9 @@ body {
 
 @media (min-width: 768px) {
   .works-grid {
-    grid-template-columns: repeat(4, 1fr);
+    /* 6 עמודות (היה 4) - גריד עדין יותר שמאפשר היררכיה אסימטרית:
+       שני תאי האתרים הרחבים דומיננטיים, השאר נשזרים סביבם. */
+    grid-template-columns: repeat(6, 1fr);
     grid-auto-rows: clamp(72px, 9vw, 116px);
     gap: clamp(12px, 1.4vw, 20px);
   }
