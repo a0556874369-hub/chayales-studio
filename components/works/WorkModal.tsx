@@ -223,7 +223,10 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
                 <h3 id="work-modal-title" className="work-modal-title">
                   {work.clientName}
                 </h3>
-                <p className="work-modal-desc">{work.shortDescription}</p>
+                <p className="work-modal-desc">{work.caseStudy.intro}</p>
+                {work.caseStudy.roleLine && (
+                  <p className="work-modal-role">{work.caseStudy.roleLine}</p>
+                )}
               </header>
 
               {/* Stage */}
@@ -324,13 +327,61 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
                 </div>
               )}
 
+              {/* Case-study text blocks — driven by caseStudy.kind:
+                  websites get a bullet list + live link, ads a single line. */}
+              <div className="work-modal-blocks">
+                <div className="work-modal-block">
+                  <h4 className="work-modal-block-title">
+                    {work.caseStudy.challengeTitle}
+                  </h4>
+                  <p className="work-modal-block-text">
+                    {work.caseStudy.challenge}
+                  </p>
+                </div>
+
+                <div className="work-modal-block">
+                  <h4 className="work-modal-block-title">
+                    {work.caseStudy.middleTitle}
+                  </h4>
+                  {work.caseStudy.bullets ? (
+                    <ul className="work-modal-bullets">
+                      {work.caseStudy.bullets.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="work-modal-block-text">
+                      {work.caseStudy.middleText}
+                    </p>
+                  )}
+                </div>
+
+                <div className="work-modal-block">
+                  <h4 className="work-modal-block-title">למה זה עובד</h4>
+                  <p className="work-modal-block-text">
+                    {work.caseStudy.whyItWorks}
+                  </p>
+                </div>
+
+                {work.caseStudy.liveUrl && (
+                  <a
+                    href={work.caseStudy.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="work-modal-live"
+                  >
+                    לאתר החי <span aria-hidden>↗</span>
+                  </a>
+                )}
+              </div>
+
               <div className="work-modal-cta-wrap">
                 <a
                   href="#contact"
                   className="work-modal-cta"
                   onClick={onClose}
                 >
-                  רוצים מותג כזה? בואו נדבר <span aria-hidden>←</span>
+                  רוצים שגם העסק שלכם ייראה ככה? בואו נדבר <span aria-hidden>←</span>
                 </a>
               </div>
             </motion.div>

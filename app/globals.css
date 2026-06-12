@@ -1430,6 +1430,24 @@ body {
   min-height: 1.6em;
 }
 
+.work-card-label-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+/* קטגוריה - תווית מונוספייס קטנה בשפת המספרים/קיקרים של האתר */
+.work-card-category {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #2D8896;
+  opacity: 0.85;
+  line-height: 1;
+}
+
 .work-card-name {
   font-family: var(--font-heebo), sans-serif;
   font-weight: 800;
@@ -1437,6 +1455,18 @@ body {
   color: #0F1817;
   letter-spacing: -0.005em;
   line-height: 1.2;
+}
+
+/* תת-כותרת קצרה מתחת לשורת השם */
+.work-card-subtitle {
+  margin: 6px 0 0;
+  padding: 0 4px;
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: rgba(20, 40, 45, 0.68);
+  text-align: right;
 }
 
 .work-card-cta {
@@ -1644,6 +1674,84 @@ body {
   color: rgba(20, 40, 45, 0.72);
   margin: 0;
   line-height: 1.5;
+}
+
+/* שורת תפקיד אופציונלית מתחת לפתיח (iCanSit) */
+.work-modal-role {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: rgba(20, 40, 45, 0.6);
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+/* ---------- Case-study text blocks ---------- */
+
+.work-modal-blocks {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: right;
+}
+
+.work-modal-block-title {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.005em;
+  color: #0F1817;
+  margin: 0 0 6px;
+}
+
+.work-modal-block-text {
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: rgba(20, 40, 45, 0.78);
+  margin: 0;
+  line-height: 1.65;
+}
+
+.work-modal-bullets {
+  margin: 0;
+  padding-inline-start: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  color: rgba(20, 40, 45, 0.78);
+  line-height: 1.6;
+}
+
+.work-modal-bullets li::marker {
+  color: #2D8896;
+}
+
+/* קישור חי - אתרים בלבד */
+.work-modal-live {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #2D8896;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(45, 136, 150, 0.35);
+  transition: color 220ms ease, border-color 220ms ease;
+}
+
+.work-modal-live:hover,
+.work-modal-live:focus-visible {
+  color: #14343A;
+  border-color: #2D8896;
+  outline: none;
 }
 
 /* ---------- Stage ---------- */

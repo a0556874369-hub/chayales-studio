@@ -19,6 +19,8 @@ interface WorkCardProps {
 // Fully static — no entrance animation, no tilt, no shine.
 export default function WorkCard({ work, onOpen, sizes }: WorkCardProps) {
   const count = countImages(work);
+  const cardCta =
+    work.caseStudy.kind === "website" ? "לראות מה נבנה" : "לראות מה עיצבתי";
 
   const style: CSSProperties = {
     ["--work-aspect" as string]: work.aspectRatio,
@@ -65,11 +67,15 @@ export default function WorkCard({ work, onOpen, sizes }: WorkCardProps) {
       </div>
 
       <div className="work-card-label">
-        <span className="work-card-name">{work.clientName}</span>
+        <span className="work-card-label-main">
+          <span className="work-card-category">{work.caseStudy.category}</span>
+          <span className="work-card-name">{work.clientName}</span>
+        </span>
         <span className="work-card-cta" aria-hidden>
-          צפו בפרויקט <span className="work-card-arrow">←</span>
+          {cardCta} <span className="work-card-arrow">←</span>
         </span>
       </div>
+      <p className="work-card-subtitle">{work.caseStudy.cardSubtitle}</p>
     </button>
   );
 }

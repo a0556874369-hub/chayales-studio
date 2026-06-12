@@ -18,10 +18,40 @@ export interface LogoComparison {
   afterAlt: string;
 }
 
+// Case-study content driving the modal blocks and the card labels/CTA.
+// kind "website" → rich modal: challenge block, bullet deliverables and a
+// live link. kind "ad" → short modal: goal, one-line deliverable, no link.
+// The card CTA text is derived from kind in WorkCard.
+export type WorkKind = "website" | "ad";
+
+export interface CaseStudy {
+  kind: WorkKind;
+  // Small category label on the grid card.
+  category: string;
+  // One-liner under the client name on the grid card.
+  cardSubtitle: string;
+  // Opening paragraph at the top of the modal.
+  intro: string;
+  // Optional role line rendered right under the intro (used by icansit).
+  roleLine?: string;
+  // "האתגר" (websites) / "המטרה" (ads) + its body text.
+  challengeTitle: string;
+  challenge: string;
+  // Middle block: "מה בניתי" / "מה הובלתי" / "מה עיצבתי".
+  middleTitle: string;
+  // websites use a bullet list; ads use a single line.
+  bullets?: string[];
+  middleText?: string;
+  whyItWorks: string;
+  // websites only — opens in a new tab.
+  liveUrl?: string;
+}
+
 export interface Work {
   slug: string;
   clientName: string;
   shortDescription: string;
+  caseStudy: CaseStudy;
   // Aspect ratio of gridImage as "w/h" (e.g. "16/10"). Used by CSS aspect-ratio.
   aspectRatio: string;
   // Image shown in the grid card.
@@ -42,6 +72,29 @@ export const works: Work[] = [
     slug: "bait-beklik",
     clientName: "בית בקליק",
     shortDescription: "פלטפורמה חכמה ונגישה ללא תיווך, מאפס בקוד נקי",
+    caseStudy: {
+      kind: "website",
+      category: "פלטפורמה בקוד נקי",
+      cardSubtitle:
+        "פלטפורמת נדל״ן שנבנתה מאפס כדי להפוך חיפוש ופרסום נכסים לברורים, נגישים וללא תיווך.",
+      intro:
+        "בית בקליק - פלטפורמת נדל״ן שנבנתה מאפס כדי לחבר בין מפרסמי נכסים למחפשים - בצורה פשוטה, ברורה ונגישה.",
+      challengeTitle: "האתגר",
+      challenge:
+        "לבנות פלטפורמת נדל״ן שלא מרגישה מסובכת: מקום שבו אפשר לחפש נכסים, לפרסם נכס, וליצור קשר ישיר - בלי עומס, בלי בלבול ובלי תיווך.",
+      middleTitle: "מה בניתי",
+      bullets: [
+        "דף בית",
+        "חיפוש נכסים לפי עיר, מחיר וחדרים",
+        "טופס פרסום נכס",
+        "יצירת קשר בוואטסאפ",
+        "פאנל ניהול למפרסם",
+        "פאנל ניהול אדמין",
+      ],
+      whyItWorks:
+        "המערכת עושה סדר בתהליך שמטבעו יכול להיות עמוס: המחפש מבין מהר איך למצוא נכס רלוונטי, והמפרסם מקבל דרך ברורה להעלות ולנהל מודעה. זה לא רק אתר יפה - זו פלטפורמה שנבנתה סביב שימוש אמיתי.",
+      liveUrl: "https://www.baitbclick.co.il/",
+    },
     // 1912 × 870 → ultra-wide hero
     aspectRatio: "1912 / 870",
     gridImage: {
@@ -63,6 +116,29 @@ export const works: Work[] = [
     slug: "icansit",
     clientName: "iCanSit",
     shortDescription: "כרית אורתופדית למותג בינלאומי - אתר, מיתוג וניהול דיגיטלי מלא",
+    caseStudy: {
+      kind: "website",
+      category: "שיווק ופרונט-אנד מותאם",
+      cardSubtitle:
+        "נראות דיגיטלית למותג אורתופדי שפועל בישראל ובארה״ב - עם קופי, קריאייטיב וחוויית קנייה ברורה.",
+      intro:
+        "iCanSit - מותג אורתופדי שפועל בישראל ובארה״ב, עם נוכחות דיגיטלית שמחברת בין כאב אמיתי, אמון מקצועי וחוויית קנייה ברורה.",
+      roleLine:
+        "במסגרת העבודה שלי עם iCanSit אני מובילה את הנראות, הקופי, הקריאייטיב, הפרונט-אנד והדיגיטל של המותג.",
+      challengeTitle: "האתגר",
+      challenge:
+        "לגרום למוצר אורתופדי להרגיש מקצועי ואמין, בלי להפוך אותו לקר או רפואי מדי - ובלי לאבד כוח מכירתי.",
+      middleTitle: "מה הובלתי",
+      bullets: [
+        "קופי שיווקי ודפי מכירה",
+        "פרונט-אנד מותאם בעמודי האתר",
+        "מודעות, באנרים וקריאייטיבים",
+        "חוויית קנייה ברורה סביב כאב, פתרון והנעה לפעולה",
+      ],
+      whyItWorks:
+        "העיצוב והקופי עוזרים ללקוח להבין מהר למה המוצר רלוונטי אליו, למה אפשר לסמוך עליו, ואיך להתקדם לרכישה.",
+      liveUrl: "https://icansit.co.il/",
+    },
     // 1900 × 850 → ultra-wide hero
     aspectRatio: "1900 / 850",
     gridImage: {
@@ -79,6 +155,18 @@ export const works: Work[] = [
     slug: "olam-hatinok",
     clientName: "עולם התינוק",
     shortDescription: "סדרת קמפיינים לחנות תינוקות - 6 קמפיינים",
+    caseStudy: {
+      kind: "ad",
+      category: "עיצוב וקריאייטיב",
+      cardSubtitle: "שפה רכה ומזמינה לחנות מוצרי תינוקות.",
+      intro: "עולם התינוק - שפה רכה ומזמינה לחנות מוצרי תינוקות.",
+      challengeTitle: "המטרה",
+      challenge: "לשדר חום, איכות ותחושת התחדשות עונתית.",
+      middleTitle: "מה עיצבתי",
+      middleText: "סדרת מודעות קמפיין בפלטה פסטלית רכה וקריאייטיב מזמין.",
+      whyItWorks:
+        "הרוך והניקיון גורמים למותג להרגיש איכותי וחם, בדיוק לקהל של הורים צעירים.",
+    },
     // 1318 × 2000 → tall portrait
     aspectRatio: "1318 / 2000",
     gridImage: {
@@ -102,6 +190,17 @@ export const works: Work[] = [
     slug: "krauss",
     clientName: "קרויס",
     shortDescription: "מותג כובעים פרימיום מעל 60 שנה - 4 קמפיינים",
+    caseStudy: {
+      kind: "ad",
+      category: "עיצוב וקריאייטיב",
+      cardSubtitle: "שפה יוקרתית למותג כובעים ותיק.",
+      intro: "קרויס - שפה יוקרתית למותג כובעים ותיק.",
+      challengeTitle: "המטרה",
+      challenge: "לשדר פרימיום, מסורת ונוכחות.",
+      middleTitle: "מה עיצבתי",
+      middleText: "סדרת מודעות כהות, אלגנטיות וזכירות.",
+      whyItWorks: "העיצוב נותן למותג תחושת עומק ויוקרה כבר במבט הראשון.",
+    },
     // 1414 × 2000 → tall portrait
     aspectRatio: "1414 / 2000",
     gridImage: {
@@ -122,6 +221,19 @@ export const works: Work[] = [
     slug: "dental",
     clientName: "דנטל",
     shortDescription: "חנות הלבשה משפחתית - 25 שנה של איכות",
+    caseStudy: {
+      kind: "ad",
+      category: "עיצוב וקריאייטיב",
+      cardSubtitle: "שפה מסודרת ומזמינה לחנות הלבשה משפחתית עם 25 שנות ותק.",
+      intro: "דנטל - שפה מסודרת ומזמינה לחנות הלבשה משפחתית עם 25 שנות ותק.",
+      challengeTitle: "המטרה",
+      challenge: "להפוך מגוון רחב לכל המשפחה לתחושה רגועה ונגישה, לא עמוסה.",
+      middleTitle: "מה עיצבתי",
+      middleText:
+        "מודעה בנויה כמו ארון מסודר, עם היררכיה צבעונית שמחלקת בין קהלי החנות.",
+      whyItWorks:
+        "הסדר הוויזואלי הופך \"הרבה\" ל\"קל לקלוט\" - בדיוק מה שחנות הלבשה משפחתית ותיקה רוצה לשדר.",
+    },
     // 1410 × 2000 → tall portrait
     aspectRatio: "1410 / 2000",
     gridImage: {
@@ -140,6 +252,18 @@ export const works: Work[] = [
     slug: "kinor",
     clientName: "כינור",
     shortDescription: "מותג אישי - מורה לכינור",
+    caseStudy: {
+      kind: "ad",
+      category: "עיצוב וקריאייטיב",
+      cardSubtitle: "שפה רגשית ואמנותית למורה פרטית לכינור.",
+      intro: "כינור - שפה רגשית ואמנותית למורה פרטית לכינור.",
+      challengeTitle: "המטרה",
+      challenge: "לחבר רגש, אמנות ומקצועיות שמזמינה הורים.",
+      middleTitle: "מה עיצבתי",
+      middleText: "מודעה חמה עם נגיעות זהב ותחושת מוזיקה.",
+      whyItWorks:
+        "הטון הרגשי-אמנותי מדבר בדיוק לקהל שמחפש יותר משיעור טכני.",
+    },
     // 1712 × 1299 → landscape
     aspectRatio: "1712 / 1299",
     gridImage: {
