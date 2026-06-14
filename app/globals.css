@@ -1457,18 +1457,6 @@ body {
   line-height: 1.2;
 }
 
-/* תת-כותרת קצרה מתחת לשורת השם */
-.work-card-subtitle {
-  margin: 6px 0 0;
-  padding: 0 4px;
-  font-family: var(--font-heebo), sans-serif;
-  font-weight: 500;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  color: rgba(20, 40, 45, 0.68);
-  text-align: right;
-}
-
 .work-card-cta {
   font-family: var(--font-heebo), sans-serif;
   font-weight: 600;

@@ -28,8 +28,6 @@ export interface CaseStudy {
   kind: WorkKind;
   // Small category label on the grid card.
   category: string;
-  // One-liner under the client name on the grid card.
-  cardSubtitle: string;
   // Opening paragraph at the top of the modal.
   intro: string;
   // Optional role line rendered right under the intro (used by icansit).
@@ -75,8 +73,6 @@ export const works: Work[] = [
     caseStudy: {
       kind: "website",
       category: "פלטפורמה בקוד נקי",
-      cardSubtitle:
-        "פלטפורמת נדל״ן שנבנתה מאפס כדי להפוך חיפוש ופרסום נכסים לברורים, נגישים וללא תיווך.",
       intro:
         "בית בקליק - פלטפורמת נדל״ן שנבנתה מאפס כדי לחבר בין מפרסמי נכסים למחפשים - בצורה פשוטה, ברורה ונגישה.",
       challengeTitle: "האתגר",
@@ -119,8 +115,6 @@ export const works: Work[] = [
     caseStudy: {
       kind: "website",
       category: "שיווק ופרונט-אנד מותאם",
-      cardSubtitle:
-        "נראות דיגיטלית למותג אורתופדי שפועל בישראל ובארה״ב - עם קופי, קריאייטיב וחוויית קנייה ברורה.",
       intro:
         "iCanSit - מותג אורתופדי שפועל בישראל ובארה״ב, עם נוכחות דיגיטלית שמחברת בין כאב אמיתי, אמון מקצועי וחוויית קנייה ברורה.",
       roleLine:
@@ -158,7 +152,6 @@ export const works: Work[] = [
     caseStudy: {
       kind: "ad",
       category: "עיצוב וקריאייטיב",
-      cardSubtitle: "שפה רכה ומזמינה לחנות מוצרי תינוקות.",
       intro: "עולם התינוק - שפה רכה ומזמינה לחנות מוצרי תינוקות.",
       challengeTitle: "המטרה",
       challenge: "לשדר חום, איכות ותחושת התחדשות עונתית.",
@@ -193,7 +186,6 @@ export const works: Work[] = [
     caseStudy: {
       kind: "ad",
       category: "עיצוב וקריאייטיב",
-      cardSubtitle: "שפה יוקרתית למותג כובעים ותיק.",
       intro: "קרויס - שפה יוקרתית למותג כובעים ותיק.",
       challengeTitle: "המטרה",
       challenge: "לשדר פרימיום, מסורת ונוכחות.",
@@ -224,7 +216,6 @@ export const works: Work[] = [
     caseStudy: {
       kind: "ad",
       category: "עיצוב וקריאייטיב",
-      cardSubtitle: "שפה מסודרת ומזמינה לחנות הלבשה משפחתית עם 25 שנות ותק.",
       intro: "דנטל - שפה מסודרת ומזמינה לחנות הלבשה משפחתית עם 25 שנות ותק.",
       challengeTitle: "המטרה",
       challenge: "להפוך מגוון רחב לכל המשפחה לתחושה רגועה ונגישה, לא עמוסה.",
@@ -255,7 +246,6 @@ export const works: Work[] = [
     caseStudy: {
       kind: "ad",
       category: "עיצוב וקריאייטיב",
-      cardSubtitle: "שפה רגשית ואמנותית למורה פרטית לכינור.",
       intro: "כינור - שפה רגשית ואמנותית למורה פרטית לכינור.",
       challengeTitle: "המטרה",
       challenge: "לחבר רגש, אמנות ומקצועיות שמזמינה הורים.",

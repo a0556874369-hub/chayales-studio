@@ -75,7 +75,6 @@ export default function WorkCard({ work, onOpen, sizes }: WorkCardProps) {
           {cardCta} <span className="work-card-arrow">←</span>
         </span>
       </div>
-      <p className="work-card-subtitle">{work.caseStudy.cardSubtitle}</p>
     </button>
   );
 }
