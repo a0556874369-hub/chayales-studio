@@ -899,13 +899,20 @@ body {
 }
 
 .pas-kicker {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
   font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: #4DD8E5;
   opacity: 1;
   display: inline-block;
+}
+
+.pas-kicker::before {
+  content: "// ";
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-weight: 600;
+  opacity: 0.7;
 }
 
 .pas-headline {
@@ -1048,12 +1055,12 @@ body {
 }
 
 .pas-card-num {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
   font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   color: #4DD8E5;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .pas-card-title {
@@ -1772,8 +1779,9 @@ body {
   flex: 1 1 auto;
   width: 100%;
   /* הוקטן מ-62vh כדי שתחילת בלוקי הטקסט שמתחת תציץ מעל הקיפול -
-     רמז מיידי שהמודאל נגלל ויש עוד תוכן. */
-  height: clamp(260px, 44vh, 440px);
+     רמז מיידי שהמודאל נגלל ויש עוד תוכן (יחד עם אינדיקטור הגלילה
+     וה-gradient fade שמעל פס ה-CTA). */
+  height: clamp(240px, 40vh, 400px);
   border-radius: 14px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.30));
@@ -2102,6 +2110,60 @@ body {
   inset: 0;
 }
 
+/* ---------- Modal scroll cue ---------- */
+
+/* "גלול לפרטים" pill — floats just above the CTA bar, centered, while the
+   panel is at the top. Toggled out (React state) once the user scrolls. */
+.work-modal-scroll-cue {
+  position: sticky;
+  bottom: 96px;
+  z-index: 5;
+  align-self: center;
+  margin: 0 auto;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: rgba(15, 24, 23, 0.82);
+  border: 1px solid rgba(77, 216, 229, 0.35);
+  box-shadow:
+    0 8px 22px rgba(20, 40, 45, 0.28),
+    var(--glow-teal-soft);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-family: var(--font-heebo), sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  color: #E8F4F6;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+.work-modal-scroll-cue.is-hidden {
+  opacity: 0;
+}
+
+.work-modal-scroll-cue-arrow {
+  color: #4DD8E5;
+  font-size: 1rem;
+  line-height: 1;
+  animation: workScrollCueBounce 1.4s ease-in-out infinite;
+}
+
+@keyframes workScrollCueBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-modal-scroll-cue-arrow {
+    animation: none;
+  }
+}
+
 /* ---------- Modal CTA ---------- */
 
 /* Sticky CTA at the bottom of the modal panel — stays visible no matter
@@ -2126,6 +2188,25 @@ body {
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
   z-index: 4;
+}
+
+/* Gradient mask directly above the bar — fades the scrolling content into
+   the CTA so it reads as a floating layer with more content beneath it,
+   not as the end of the modal. */
+.work-modal-cta-wrap::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 64px;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(247, 252, 252, 0.94) 0%,
+    rgba(247, 252, 252, 0.6) 45%,
+    transparent 100%
+  );
 }
 
 .work-modal-cta {
@@ -2866,8 +2947,9 @@ body {
   gap: 20px;
 }
 
+/* לא בשימוש כרגע (אין רכיב שמרנדר אותו) - הומר ל-Heebo לעקביות. */
 .why-hero-visual-label {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -2912,12 +2994,12 @@ body {
 }
 
 .why-card-num {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   color: #2D8896;
-  opacity: 0.75;
+  opacity: 0.85;
   display: inline-block;
 }
 
@@ -3199,13 +3281,19 @@ body {
 }
 
 .about-paragraph-label {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: #2D8896;
+  opacity: 0.9;
+}
+
+.about-paragraph-label::before {
+  content: "// ";
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-weight: 600;
   opacity: 0.7;
-  text-transform: uppercase;
 }
 
 .about-paragraph-text {
@@ -3334,8 +3422,9 @@ body {
   pointer-events: none;
 }
 
+/* לא בשימוש כרגע (אין רכיב שמרנדר אותו) - הומר ל-Heebo לעקביות. */
 .about-principle-num {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
   font-size: 28px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -3680,12 +3769,18 @@ body {
 }
 
 .contact-direct-label {
+  font-family: var(--font-heebo), "Heebo", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: rgba(77, 216, 229, 0.85);
+}
+
+.contact-direct-label::before {
+  content: "// ";
   font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
-  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.2em;
-  color: rgba(77, 216, 229, 0.7);
-  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 .contact-direct-grid {

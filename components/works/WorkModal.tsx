@@ -37,6 +37,10 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 prev, +1 next, 0 init
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  // Scroll-cue state: show a "scroll for details" hint while the panel is at
+  // the top AND there is actually more content below the fold.
+  const [showScrollCue, setShowScrollCue] = useState(true);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   // Build the lightbox carousel — every unique image in this work, in slide
   // order. logoCompare contributes 2 items (after, before — matching the
@@ -62,13 +66,36 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
     return items;
   }, [work, slides]);
 
-  // Reset index whenever the work changes.
+  // Reset index + scroll cue whenever the work changes.
   useEffect(() => {
     setIndex(0);
     setDirection(0);
+    setShowScrollCue(true);
   }, [work?.slug]);
 
   const open = work !== null;
+
+  // Measure whether the panel actually overflows (so the cue only shows when
+  // there's real content below the fold). Re-check after open and on resize.
+  useEffect(() => {
+    if (!open) return;
+    const measure = () => {
+      const el = panelRef.current;
+      if (!el) return;
+      setIsScrollable(el.scrollHeight - el.clientHeight > 24);
+    };
+    const t = window.setTimeout(measure, 120);
+    window.addEventListener("resize", measure);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("resize", measure);
+    };
+  }, [open, work?.slug]);
+
+  // Hide the cue once the user scrolls past the top of the panel.
+  const onPanelScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    setShowScrollCue(e.currentTarget.scrollTop < 24);
+  }, []);
   const slide = slides[index];
 
   const go = useCallback(
@@ -196,6 +223,7 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
               ref={panelRef}
               className="work-modal-panel"
               onClick={(e) => e.stopPropagation()}
+              onScroll={onPanelScroll}
               initial={
                 reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.97 }
               }
@@ -374,6 +402,22 @@ export default function WorkModal({ work, onClose }: WorkModalProps) {
                   </a>
                 )}
               </div>
+
+              {/* Scroll cue — visible only at the top, and only when there's
+                  real overflow. Sits just above the floating CTA bar.
+                  Visibility is CSS-driven (class toggle) so it never depends
+                  on a JS animation frame to be shown. */}
+              {isScrollable && (
+                <div
+                  className={`work-modal-scroll-cue ${
+                    showScrollCue ? "" : "is-hidden"
+                  }`}
+                  aria-hidden
+                >
+                  <span className="work-modal-scroll-cue-text">גלול לפרטים</span>
+                  <span className="work-modal-scroll-cue-arrow">↓</span>
+                </div>
+              )}
 
               <div className="work-modal-cta-wrap">
                 <a
