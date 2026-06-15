@@ -1438,14 +1438,25 @@ body {
 }
 
 /* קטגוריה - תווית מונוספייס קטנה בשפת המספרים/קיקרים של האתר */
+/* הטקסט העברי ב-Heebo לקריאות מלאה; רמז "קוד" קליל ע"י סמן //
+   במונוספייס (תווים לטיניים בלבד, מתרנדרים נקי). */
 .work-card-category {
-  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: #2D8896;
-  opacity: 0.85;
+  font-family: var(--font-heebo), "Heebo", sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  color: #1F7A87;
+  opacity: 1;
   line-height: 1;
+}
+
+.work-card-category::before {
+  content: "// ";
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", monospace;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #2D8896;
+  opacity: 0.7;
 }
 
 .work-card-name {
@@ -1682,6 +1693,9 @@ body {
   flex-direction: column;
   gap: 18px;
   text-align: right;
+  /* מרווח שמבטיח שהבלוק האחרון (כולל הקישור החי) לא נחתך
+     מאחורי פס ה-CTA הדביק. */
+  padding-bottom: 16px;
 }
 
 .work-modal-block-title {
@@ -1757,7 +1771,9 @@ body {
   position: relative;
   flex: 1 1 auto;
   width: 100%;
-  height: clamp(320px, 62vh, 620px);
+  /* הוקטן מ-62vh כדי שתחילת בלוקי הטקסט שמתחת תציץ מעל הקיפול -
+     רמז מיידי שהמודאל נגלל ויש עוד תוכן. */
+  height: clamp(260px, 44vh, 440px);
   border-radius: 14px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.30));
@@ -2095,21 +2111,20 @@ body {
 .work-modal-cta-wrap {
   position: sticky;
   bottom: 0;
-  margin-top: 22px;
+  margin-top: 28px;
   margin-left: calc(-1 * clamp(20px, 3.5vw, 36px));
   margin-right: calc(-1 * clamp(20px, 3.5vw, 36px));
   margin-bottom: calc(-1 * clamp(20px, 3.5vw, 36px));
-  padding: 18px clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 36px);
+  padding: 16px clamp(20px, 3.5vw, 36px) clamp(20px, 3.5vw, 36px);
   display: flex;
   justify-content: center;
-  background: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 0.85) 0%,
-    rgba(255, 255, 255, 0.85) 55%,
-    transparent 100%
-  );
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* פס נקי ומופרד: רקע אטום שלא מבליח טקסט מאחוריו, hairline עליון
+     וצל רך כלפי מעלה שמפרידים אותו מהתוכן במקום לרחף ולחתוך. */
+  background: rgba(247, 252, 252, 0.94);
+  border-top: 1px solid rgba(20, 40, 45, 0.10);
+  box-shadow: 0 -10px 26px -14px rgba(20, 40, 45, 0.22);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
   z-index: 4;
 }
 
