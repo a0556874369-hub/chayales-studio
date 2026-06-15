@@ -3,39 +3,53 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
-// ===== הצהרת הזהות (טיפוגרפיה ענקית בצד שמאל) =====
-const DECLARATION_LINES = [
-  { text: "לא מעצבת.", accent: false },
-  { text: "לא מפתחת.", accent: false },
-  { text: "לא קופירייטרית.", accent: false },
-  { text: "לא מומחית שיווק.", accent: false },
-  { text: "כל הארבע.", accent: true }, // הפאנץ' - בטורקיז
+// ===== צד ההכרזה (הגיבור) =====
+const STRIKE_LINES = [
+  "לא מעצבת.",
+  "לא מפתחת.",
+  "לא קופירייטרית.",
+  "לא מומחית שיווק.",
 ];
+const PUNCH = "כל הארבע.";
+const DECLARATION_SUBLINE =
+  "ארבעה מקצועות נכנסים לכל פרויקט. כשכולם אצל אדם אחד - שום שלב לא נופל בין הכיסאות.";
 
-// ===== הפסקאות =====
-interface Paragraph {
-  label: string;
-  text: string;
+// ===== צד התוכן (תומך) =====
+interface Point {
+  title: string;
+  desc: string;
 }
 
-const PARAGRAPHS: Paragraph[] = [
+const POINTS: Point[] = [
   {
-    label: "מי אני",
-    text: "מעצבת. מפתחת. כותבת קופי. מומחית שיווק. השילוב הזה נדיר - ובדיוק בגללו בעלי עסקים ונותני שירותים בוחרים בי במקום לרדוף אחרי כמה ספקים שכל אחד רואה רק חתיכה אחת מהתמונה.",
+    title: "אסטרטגיה לפני צבעים.",
+    desc: "קודם למה שיבחרו בכם, ואז איך זה ייראה.",
   },
   {
-    label: "מה אני עושה אחרת",
-    text: "אני מתחילה מהאסטרטגיה, לא מהצבעים - קודם למה שיבחרו בכם, ורק אז איך זה ייראה. האתרים שלי הם לא תבניות, קוד נקי אמיתי עם חוויה ופונקציונליות אמיתית. המודעות שלי עוצרות גלילה בדיגיטל ודפדוף בפרינט. והמיתוג שלי לא נראה כמו עוד לוגו - הוא נראה כמו העסק שלכם, בגרסה הכי טובה שלו.",
+    title: "קוד נקי, לא תבניות.",
+    desc: "חוויה ופונקציונליות אמיתית, בלי להתכופף למבנה מוכן.",
   },
   {
-    label: "למה זה משנה",
-    text: "כי עיצוב טוב הוא לא קישוט. הוא ההבדל בין עסק שמתעלמים ממנו לעסק שבוחרים בו.",
+    title: "מודעות שעוצרות.",
+    desc: "גלילה בדיגיטל, דפדוף בפרינט.",
   },
   {
-    label: "למי זה מתאים",
-    text: "לעסקים ונותני שירות שמבינים שהנראות שלהם היא לא משהו שמטפלים בו \"אחר כך\". היא ההזדמנות הראשונה להגיד: אנחנו רציניים, מקצועיים, ושווים את הבחירה.",
+    title: "מיתוג שנראה כמו העסק שלכם.",
+    desc: "לא עוד לוגו יפה - הגרסה הכי טובה שלו.",
   },
 ];
+
+// ===== תזמון קווי המחיקה =====
+const STRIKE_BASE = 0.2; // השהיה לפני הקו הראשון
+const STRIKE_STAGGER = 0.16; // סטגר בין שורה לשורה
+const STRIKE_DUR = 0.55; // משך מתיחת קו
+// "כל הארבע" נוחתת אחרי שכל הקווים נמתחו
+const PUNCH_DELAY =
+  STRIKE_BASE + (STRIKE_LINES.length - 1) * STRIKE_STAGGER + STRIKE_DUR + 0.15;
+const SUBLINE_DELAY = PUNCH_DELAY + 0.35;
+
+const SMOOTH = [0.65, 0, 0.35, 1] as const;
+const SOFT = [0.22, 1, 0.36, 1] as const;
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -62,62 +76,30 @@ export default function AboutSection() {
       data-theme="light"
     >
       <div className="about-main-grid">
-        {/* צד ימני בעברית - הטקסט המקצועי */}
-        <div className="about-content" ref={contentRef}>
-          <motion.h2
-            className="about-headline"
-            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            animate={
-              contentInView
-                ? { opacity: 1, y: 0 }
-                : reduced
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 20 }
-            }
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          >
-            היי, אני חיה.
-            <br />
-            ואני בונה לעסקים נראות, אתר ומסר שעובדים יחד -{" "}
-            <span className="about-headline-accent">לבד</span>.
-          </motion.h2>
-
-          <div className="about-paragraphs">
-            {PARAGRAPHS.map((p, i) => (
-              <motion.div
-                key={p.label}
-                className="about-paragraph"
-                initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                animate={
-                  contentInView
-                    ? { opacity: 1, y: 0 }
-                    : reduced
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 20 }
-                }
-                transition={{
-                  duration: 0.7,
-                  delay: reduced ? 0 : 0.3 + i * 0.15,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <span className="about-paragraph-label" aria-hidden>
-                  {p.label}
-                </span>
-                <p className="about-paragraph-text">{p.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* צד שמאלי - הטיפוגרפיה הענקית */}
+        {/* צד ההכרזה - הגיבור. ראשון ב-DOM => הצד הימני ב-RTL, נקרא ראשון. */}
         <div className="about-declaration" ref={declarationRef}>
-          {DECLARATION_LINES.map((line, i) => (
+          <div className="about-declaration-lines">
+            {STRIKE_LINES.map((text, i) => (
+              <div key={text} className="about-declaration-line">
+                <span className="about-declaration-text">{text}</span>
+                {!reduced && (
+                  <motion.span
+                    className="about-strike"
+                    aria-hidden
+                    initial={{ scaleX: 0 }}
+                    animate={declarationInView ? { scaleX: 1 } : { scaleX: 0 }}
+                    transition={{
+                      duration: STRIKE_DUR,
+                      delay: STRIKE_BASE + i * STRIKE_STAGGER,
+                      ease: SMOOTH,
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+
             <motion.div
-              key={line.text}
-              className={`about-declaration-line ${
-                line.accent ? "about-declaration-accent" : ""
-              }`}
+              className="about-declaration-line about-declaration-accent"
               initial={
                 reduced
                   ? { opacity: 1, y: 0, clipPath: "inset(0% 0% 0% 0%)" }
@@ -132,17 +114,78 @@ export default function AboutSection() {
               }
               transition={{
                 duration: 0.8,
-                delay: reduced ? 0 : 0.2 + i * 0.15,
-                ease: [0.22, 1, 0.36, 1],
+                delay: reduced ? 0 : PUNCH_DELAY,
+                ease: SOFT,
               }}
-              aria-hidden={i < DECLARATION_LINES.length - 1}
             >
-              {line.text}
+              {PUNCH}
             </motion.div>
-          ))}
+          </div>
+
+          <motion.p
+            className="about-declaration-subline"
+            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+            animate={
+              declarationInView
+                ? { opacity: 1, y: 0 }
+                : reduced
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 16 }
+            }
+            transition={{
+              duration: 0.7,
+              delay: reduced ? 0 : SUBLINE_DELAY,
+              ease: SOFT,
+            }}
+          >
+            {DECLARATION_SUBLINE}
+          </motion.p>
+        </div>
+
+        {/* צד התוכן - תומך. שני ב-DOM => הצד השמאלי ב-RTL. */}
+        <div className="about-content" ref={contentRef}>
+          <motion.h2
+            className="about-intro"
+            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            animate={
+              contentInView
+                ? { opacity: 1, y: 0 }
+                : reduced
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 20 }
+            }
+            transition={{ duration: 0.7, ease: SOFT }}
+          >
+            היי, אני חיה. ואני בונה לעסקים נראות, אתר ומסר שעובדים יחד -{" "}
+            <span className="about-intro-strong">לבד</span>.
+          </motion.h2>
+
+          <div className="about-points">
+            {POINTS.map((p, i) => (
+              <motion.div
+                key={p.title}
+                className="about-point"
+                initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                animate={
+                  contentInView
+                    ? { opacity: 1, y: 0 }
+                    : reduced
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0, y: 20 }
+                }
+                transition={{
+                  duration: 0.6,
+                  delay: reduced ? 0 : 0.25 + i * 0.12,
+                  ease: SOFT,
+                }}
+              >
+                <h3 className="about-point-title">{p.title}</h3>
+                <p className="about-point-desc">{p.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
-
     </section>
   );
 }
