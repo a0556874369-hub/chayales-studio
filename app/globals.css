@@ -3228,66 +3228,59 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(60px, 9vh, 100px);
+  /* אוויר נדיב בין השכבות (הכרזה -> גשר+נקודות) */
+  gap: clamp(64px, 10vh, 112px);
   color: #0B0D0C;
   isolation: isolate;
 }
 
-.about-main-grid {
+/* ===== שכבה 1: ההכרזה כגיבורה, ממורכזת ===== */
+.about-declaration {
   position: relative;
   z-index: 3;
   width: 100%;
-  max-width: 1400px;
-  display: grid;
-  /* ההכרזה (הגיבור) ראשונה ב-DOM => הטראק הראשון, שהוא הימני ב-RTL,
-     ומקבל את הנתח הגדול. התוכן התומך משמאל, צר יותר. */
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: clamp(48px, 6vw, 96px);
-  align-items: start;
-}
-
-/* ===== צד ההכרזה - הגיבור ===== */
-.about-declaration {
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
-  gap: clamp(24px, 3vh, 40px);
-  position: sticky;
-  top: clamp(80px, 12vh, 120px);
+  align-items: center;
+  text-align: center;
+  /* אוויר נדיב בתוך זון ההכרזה - הקטע הרגשי, בלי תחרות */
+  gap: clamp(32px, 4.5vh, 56px);
 }
 
 .about-declaration-lines {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 10px);
 }
 
 .about-declaration-line {
   position: relative;
   font-family: var(--font-heebo), sans-serif;
-  font-size: clamp(36px, 6vw, 88px);
+  /* גיבורה גדולה אך עם מרחב - הוקטנה מ-88px כדי לא לגעת בניווט */
+  font-size: clamp(34px, 5vw, 68px);
   font-weight: 900;
   letter-spacing: -0.035em;
-  line-height: 1.05;
+  line-height: 1.08;
   color: #0B0D0C;
   margin: 0;
   white-space: nowrap;
 }
 
-/* קו המחיקה - אופקי, ממורכז אנכית על הטקסט, נמתח מימין לשמאל */
+/* קו המחיקה - אופקי מעודן, ממורכז אנכית, נמתח מימין לשמאל.
+   נגמר נקי בקצה הטקסט (left/right: 0, בלי חריגה). */
 .about-strike {
   position: absolute;
   top: 50%;
   left: 0;
   right: 0;
-  height: 0.075em;
+  height: 0.045em;
   transform: translateY(-50%);
   transform-origin: right center;
-  background: #4DD8E5;
-  border-radius: 2px;
-  box-shadow: 0 0 10px rgba(77, 216, 229, 0.5);
+  background: rgba(77, 216, 229, 0.9);
+  border-radius: 999px;
+  box-shadow: 0 0 5px rgba(77, 216, 229, 0.3);
   pointer-events: none;
 }
 
@@ -3301,56 +3294,69 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-top: clamp(8px, 1vh, 16px);
+  margin-top: clamp(8px, 1.2vh, 18px);
 }
 
 .about-declaration-subline {
   font-family: var(--font-heebo), sans-serif;
-  font-size: clamp(16px, 1.5vw, 19px);
+  font-size: clamp(15px, 1.5vw, 18px);
   font-weight: 500;
   line-height: 1.6;
   color: #3D5358;
   margin: 0;
-  max-width: 30ch;
+  max-width: 44ch;
 }
 
-/* ===== צד התוכן - תומך ===== */
-.about-content {
+/* ===== שכבות 2+3: גשר וארבע הנקודות ===== */
+.about-lower {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
-  gap: clamp(32px, 4vh, 48px);
-  padding-top: clamp(8px, 1.5vh, 16px);
+  align-items: center;
+  gap: clamp(40px, 6vh, 72px);
 }
 
+/* שכבה 2 - גשר */
 .about-intro {
   font-family: var(--font-heebo), sans-serif;
-  font-size: clamp(22px, 2.8vw, 32px);
-  font-weight: 800;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1.25;
+  line-height: 1.3;
   color: #0B0D0C;
   margin: 0;
+  text-align: center;
+  max-width: 32ch;
 }
 
 .about-intro-strong {
   font-weight: 900;
 }
 
+/* שכבה 3 - ארבע עמודות טקסט נקיות (לא כרטיסים) */
 .about-points {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(24px, 3vh, 32px);
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(24px, 3vw, 48px);
 }
 
 .about-point {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  text-align: right;
+  /* קו עליון דק ומעודן (ניטרלי - לא טורקיז, לשמירת משמעת האקסנט) */
+  padding-top: 16px;
+  border-top: 1px solid rgba(20, 40, 45, 0.14);
 }
 
 .about-point-title {
   font-family: var(--font-heebo), sans-serif;
-  font-size: clamp(17px, 1.7vw, 20px);
+  font-size: clamp(17px, 1.6vw, 20px);
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1.3;
@@ -3360,44 +3366,36 @@ body {
 
 .about-point-desc {
   font-family: var(--font-heebo), sans-serif;
-  font-size: clamp(15px, 1.4vw, 16px);
+  font-size: clamp(14px, 1.3vw, 15.5px);
   font-weight: 500;
   line-height: 1.6;
   color: #3D5358;
   margin: 0;
 }
 
-/* רספונסיביות - מובייל: שני הצדדים מוערמים, ההכרזה למעלה (ראשונה ב-DOM) */
+/* רספונסיביות - פריסה אנכית: 4 עמודות -> 2x2 בטאבלט -> מוערם במובייל */
 @media (max-width: 1024px) {
-  .about-main-grid {
-    grid-template-columns: 1fr;
-    gap: clamp(40px, 6vh, 64px);
-  }
-
-  .about-declaration {
-    position: static;
-    text-align: right;
-    align-items: flex-end;
+  .about-points {
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(24px, 4vw, 40px);
+    max-width: 720px;
   }
 
   .about-declaration-line {
-    font-size: clamp(32px, 8vw, 64px);
     white-space: normal;
-  }
-
-  .about-content {
-    padding-top: 0;
   }
 }
 
 @media (max-width: 600px) {
   .about-section {
     padding: clamp(70px, 11vh, 100px) 16px clamp(60px, 10vh, 90px);
-    gap: clamp(40px, 7vh, 60px);
+    gap: clamp(48px, 8vh, 72px);
   }
 
-  .about-declaration-line {
-    font-size: clamp(28px, 9vw, 48px);
+  .about-points {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 5vw, 28px);
+    max-width: 420px;
   }
 }
 
