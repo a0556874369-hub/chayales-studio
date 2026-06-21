@@ -78,7 +78,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden md:bg-black">
+    <section id="home" className="relative min-h-screen overflow-hidden md:bg-black">
       {/* Mesh gradient layers — visible on mobile only. Desktop is pure black. */}
       <div
         aria-hidden
